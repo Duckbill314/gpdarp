@@ -1,0 +1,5 @@
+https://www.sciencedirect.com/science/article/pii/S0305054821001969 - arc routing under uncertainty
+https://doi.org/10.1111/1475-3995.00256 - modeling and optimising dynamic DARP
+https://doi.org/10.1109/TCYB.2020.3024849 - evolving scheduling heuristic via GP for JSSP
+https://doi.org/10.1007/s10479-007-0170-8 - DARP models and algorithms
+https://orbit.dtu.dk/en/publications/a-heuristic-algorithm-for-the-multivehicle-advance-request-dial-a - heuristic algorithm for dynamic DARP

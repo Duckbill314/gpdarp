@@ -13,14 +13,10 @@ import java.util.*;
  * Created by gphhucarp on 14/06/17.
  */
 public class Graph {
-    private List<Integer> nodes; // the node ids are ascendingly ordered
+    private List<Node> nodes;
     private Map<Pair<Integer, Integer>, Arc> arcMap;
-    private double[][] estCostMatrix; // the estimated cost of edges
-    private double[][] estDistMatrix; // the estimated distance between nodes
     private int[][] pathFrom; // the precedent node of j along the shortest path from i to j
     private int[][] pathTo; // the successive node of i along the shortest path from i to j
-    private Map<Integer, List<Arc>> outNeighbourMap; // the outgoing neighbours of each node.
-    private Map<Integer, List<Arc>> inNeighbourMap; // the incoming neighbours of each node.
 
     public Graph(List<Integer> nodes, Map<Pair<Integer, Integer>, Arc> arcMap) {
         this.nodes = nodes;
