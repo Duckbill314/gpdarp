@@ -21,37 +21,27 @@ import java.util.List;
  * Created by gphhucarp on 25/08/17.
  */
 public class NodeSeqRoute extends Route {
-    private List<Integer> nodeSequence;
-    private List<Double> fracSequence;
+    private List<Node> nodeSequence;
 
     // fields used during the decision process
     private Arc nextTask; // the next task to serve (depot loop if refilling)
 
     public NodeSeqRoute(double capacity, double demand, double cost,
-                        List<Integer> nodeSequence, List<Double> fracSequence) {
+                        List<Node> nodeSequence) {
         super(capacity, demand, cost);
         this.nodeSequence = nodeSequence;
-        this.fracSequence = fracSequence;
     }
 
     public NodeSeqRoute(double capacity) {
-        this(capacity, 0, 0, new LinkedList<>(), new LinkedList<>());
+        this(capacity, 0, 0, new LinkedList<>());
     }
 
-    public List<Integer> getNodeSequence() {
+    public List<Node> getNodeSequence() {
         return nodeSequence;
     }
 
-    public List<Double> getFracSequence() {
-        return fracSequence;
-    }
-
-    public int getNode(int index) {
+    public Node getNode(int index) {
         return nodeSequence.get(index);
-    }
-
-    public double getFraction(int index) {
-        return fracSequence.get(index);
     }
 
     public Arc getNextTask() {
@@ -63,31 +53,14 @@ public class NodeSeqRoute extends Route {
     }
 
     /**
-     * Add a node of an instance in a pilot search (not knowing the actual demand and cost)
-     * @param node the node to be added.
-     * @param fraction
-     * @param instance
-     */
-    public void addPilot(int node, double fraction, Instance instance) {
-        Arc arc = instance.getGraph().getArc(currNode(), node);
-
-        nodeSequence.add(node);
-        fracSequence.add(fraction);
-        demand += arc.getExpectedDemand() * fraction;
-        cost += arc.getServeCost() * fraction + arc.getExpectedDeadheadingCost() * (1-fraction);
-    }
-
-    /**
      * Add a node of an instance with a possible service.
      * @param node the node.
-     * @param fraction the fraction of demand to be served (1 if fully served, 0 if not served).
      */
-    public void add(int node, double fraction, Instance instance) {
+    public void add(Node node, double fraction, Instance instance) {
         Arc arc = instance.getGraph().getArc(currNode(), node);
 
         nodeSequence.add(node);
-        fracSequence.add(fraction);
-        demand += instance.getActDemand(arc) * fraction;
+        demand += instance.getActDemand(arc);
         cost += arc.getServeCost() * fraction + instance.getActDeadheadingCost(arc) * (1-fraction);
     }
 

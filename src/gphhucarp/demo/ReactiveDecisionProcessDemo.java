@@ -3,7 +3,6 @@ package gphhucarp.demo;
 import gphhucarp.decisionprocess.DecisionProcess;
 import gphhucarp.decisionprocess.RoutingPolicy;
 import gphhucarp.decisionprocess.routingpolicy.*;
-import org.apache.commons.math3.random.RandomDataGenerator;
 import gphhucarp.core.Instance;
 import gphhucarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import util.Timer;
@@ -24,7 +23,7 @@ public class ReactiveDecisionProcessDemo {
         double costULevel = 0.2;
 
         // read an instance from a data file
-        Instance instance = Instance.readFromGVE(
+        Instance instance = Instance.readFromFile(
                 new File("data/val/val10C.dat"), 4,
                 demULevel, costULevel);
 

@@ -2,7 +2,6 @@ package gphhucarp.gp.evaluation;
 
 import ec.EvolutionState;
 import ec.Fitness;
-import ec.multiobjective.MultiObjectiveFitness;
 import ec.util.Parameter;
 import gphhucarp.core.Instance;
 import gphhucarp.core.InstanceSamples;
@@ -118,14 +117,14 @@ public abstract class EvaluationModel {
             Instance baseInstance = null;
 
             if (numVehiclesStr.equals("from-file")) {
-                baseInstance = Instance.readFromGVE(
+                baseInstance = Instance.readFromFile(
                         new File("data/" + file),
                         demULevel, costULevel);
             }
             else if (NumberUtils.isNumber(numVehiclesStr)) {
                 int numVehicles = Integer.valueOf(numVehiclesStr);
 
-                baseInstance = Instance.readFromGVE(
+                baseInstance = Instance.readFromFile(
                         new File("data/" + file),
                         numVehicles, demULevel, costULevel);
             }

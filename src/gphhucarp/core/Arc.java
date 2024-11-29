@@ -1,68 +1,38 @@
 package gphhucarp.core;
 
 /**
- * An arc is a directed edge of the graph.
+ * An arc is a directed edge between two positions. It has:
+ *  - (from, to) positions,
+ *  - serving cost (proportional to length).
  *
- * It has:
- *  - (from, to) nodes,
- *  - serving cost (proportional to length)
- *
- * Natural comparison: a < b if a has smaller cost than b
- *
- * In addition, it has a priority field for decision-making process
- *
- * @author gphhucarp, William Huang
+ * @author William Huang
  */
 
 public class Arc implements Comparable<Arc> {
-    private Node from;
-    private Node to;
-    private double serveCost;
-    private double priority;
+    private Position from;
+    private Position to;
+    private final double serveCost;
 
-    public Arc(Node from, Node to) {
+    public Arc(Position from, Position to) {
         this.from = from;
         this.to = to;
         serveCost = from.calcDist(to);
     }
 
-    public Node getFrom() {
+    // Getters
+    public Position getFrom() {
         return from;
     }
-
-    public Node getTo() {
+    public Position getTo() {
         return to;
     }
-
     public double getServeCost() {
         return serveCost;
     }
 
-    public double getPriority() {
-        return priority;
-    }
-
-    public void setPriority(double priority) {
-        this.priority = priority;
-    }
-
-    /**
-     * Whether this arc is prior to another arc.
-     * An arc is prior to another arc if
-     *   (1) it has a smaller priority value, or
-     *   (2) they have the same priority, and this arc is better than the other arc.
-     * @param o the other arc.
-     * @return true if this arc is prior to the other, and false otherwise.
-     */
-    public boolean priorTo(Arc o) {
-        if (Double.compare(priority, o.priority) < 0)
-            return true;
-
-        if (Double.compare(priority, o.priority) > 0)
-            return false;
-
-        return compareTo(o) < 0;
-    }
+    // Setters
+    public void setFrom(Position from) { this.from = from; }
+    public void setTo(Position to) { this.to = to; }
 
     @Override
     public String toString() {
