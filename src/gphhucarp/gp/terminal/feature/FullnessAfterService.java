@@ -20,7 +20,7 @@ public class FullnessAfterService extends FeatureGPNode {
     public double value(CalcPriorityProblem calcPriorityProblem) {
         double routeDemand = calcPriorityProblem.getRoute().getDemand();
         Graph graph = calcPriorityProblem.getState().getInstance().getGraph();
-        int currNode = calcPriorityProblem.getRoute().currNode();
+        int currNode = calcPriorityProblem.getRoute().currPos();
         Arc candidate = calcPriorityProblem.getCandidate();
         int depot = calcPriorityProblem.getState().getInstance().getDepot();
 

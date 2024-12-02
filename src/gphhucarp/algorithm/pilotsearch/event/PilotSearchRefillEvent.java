@@ -11,9 +11,6 @@ import gphhucarp.decisionprocess.RoutingPolicy;
 import gphhucarp.decisionprocess.reactive.ReactiveDecisionSituation;
 import gphhucarp.representation.route.NodeSeqRoute;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * This is the same as ReactiveRefillEvent, but interact with other pilot search events.
  */
@@ -38,7 +35,7 @@ public class PilotSearchRefillEvent extends DecisionProcessEvent {
         Graph graph = instance.getGraph();
         int depot = instance.getDepot();
 
-        int currNode = route.currNode();
+        int currNode = route.currPos();
 
         if (currNode == depot) {
             // refill when arriving the depot

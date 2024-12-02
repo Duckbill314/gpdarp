@@ -23,6 +23,6 @@ public class CostFromHere extends FeatureGPNode {
         Instance instance = calcPriorityProblem.getState().getInstance();
         NodeSeqRoute route = calcPriorityProblem.getRoute();
         Arc candidate = calcPriorityProblem.getCandidate();
-        return instance.getGraph().getEstDistance(route.currNode(), candidate.getFrom());
+        return instance.getGraph().getEstDistance(route.currPos(), candidate.getFrom());
     }
 }

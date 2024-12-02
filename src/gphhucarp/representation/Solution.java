@@ -105,7 +105,7 @@ public class Solution<T extends Route> {
      */
     public void reset(Instance instance) {
         for (int i = 0; i < instance.getNumVehicles(); i++)
-            routes.get(i).reset(instance);
+            routes.get(i).reset();
     }
 
     /**

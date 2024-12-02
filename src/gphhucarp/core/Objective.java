@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * An enumeration for all the possible objectives.
  *
- * Created by gphhucarp on 31/08/17.
+ * @author gphhucarp, William Huang
  */
 public enum Objective {
 
@@ -44,6 +44,7 @@ public enum Objective {
      * @return the reference reactive routing policy.
      */
     public static RoutingPolicy refReactiveRoutingPolicy() {
-        return new PathScanning5Policy();
+        // TODO: set the desired policy
+        return null;
     }
 }

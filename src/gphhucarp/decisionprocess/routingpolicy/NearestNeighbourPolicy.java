@@ -33,6 +33,6 @@ public class NearestNeighbourPolicy extends RoutingPolicy {
 
     @Override
     public double priority(Arc candidate, NodeSeqRoute route, DecisionProcessState state) {
-        return state.getInstance().getGraph().getEstDistance(route.currNode(), candidate.getFrom());
+        return state.getInstance().getGraph().getEstDistance(route.currPos(), candidate.getFrom());
     }
 }

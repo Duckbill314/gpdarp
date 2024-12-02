@@ -2,110 +2,83 @@ package gphhucarp.representation.route;
 
 import gphhucarp.core.Arc;
 import gphhucarp.core.Instance;
+import gphhucarp.core.Position;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * A node sequence route is a sequence of nodes
- * plus a sequence indicating the fraction of demand served (0 if not served).
- * For example:
- * ----------------------------------
- * Node sequence:     [0,1,5,3,4,2,0]
- * Fraction sequence: [ 0,1,0,0,1,1 ]
- * ----------------------------------
- * means the route serves (1,5), (4,2) and (2,0).
+ * A node sequence route is a sequence of nodes (positions).
+ * This class maintains a node sequence, and keeps track of its next task.
  *
- * Note that the indicating vector can be double, i.e. a fraction of demand is served.
- *
- * Created by gphhucarp on 25/08/17.
+ * @author gphhucarp, William Huang
  */
 public class NodeSeqRoute extends Route {
-    private List<Node> nodeSequence;
+    private List<Position> nodeSequence;
 
     // fields used during the decision process
-    private Arc nextTask; // the next task to serve (depot loop if refilling)
+    private Arc nextTask; // the next task to serve
 
-    public NodeSeqRoute(double capacity, double demand, double cost,
-                        List<Node> nodeSequence) {
+    public NodeSeqRoute(double capacity, double demand, double cost, List<Position> nodeSequence) {
         super(capacity, demand, cost);
         this.nodeSequence = nodeSequence;
     }
 
-    public NodeSeqRoute(double capacity) {
-        this(capacity, 0, 0, new LinkedList<>());
+    // Initial sequence constructor
+    public NodeSeqRoute(double capacity, Position initPos) {
+        this(capacity, 0, 0, new LinkedList<Position>(Arrays.asList(initPos)));
     }
 
-    public List<Node> getNodeSequence() {
+    // Getters
+    public List<Position> getNodeSequence() {
         return nodeSequence;
     }
-
-    public Node getNode(int index) {
+    public Position getNode(int index) {
         return nodeSequence.get(index);
     }
-
     public Arc getNextTask() {
         return nextTask;
     }
 
+    // Setters
     public void setNextTask(Arc nextTask) {
         this.nextTask = nextTask;
     }
 
     /**
-     * Add a node of an instance with a possible service.
+     * Update the route by adding a node.
+     *
      * @param node the node.
      */
-    public void add(Node node, double fraction, Instance instance) {
-        Arc arc = instance.getGraph().getArc(currNode(), node);
-
+    public void add(Position node) {
         nodeSequence.add(node);
-        demand += instance.getActDemand(arc);
-        cost += arc.getServeCost() * fraction + instance.getActDeadheadingCost(arc) * (1-fraction);
-    }
-
-    /**
-     * An initial node sequence route for an instance.
-     * It starts from the depot.
-     * @param instance the instance.
-     * @return An initial node sequence route starting from the depot.
-     */
-    public static NodeSeqRoute initial(Instance instance) {
-        NodeSeqRoute initialRoute = new NodeSeqRoute(instance.getCapacity());
-        initialRoute.nodeSequence.add(instance.getDepot());
-
-        return initialRoute;
+        Arc arc = new Arc(currPos(), node);
+        demand += 1;
+        cost += arc.serveCost();
     }
 
     @Override
-    public void reset(Instance instance) {
+    public void reset() {
         demand = 0;
         cost = 0;
+        Position currPos = currPos();
         nodeSequence.clear();
-        fracSequence.clear();
-        nodeSequence.add(instance.getDepot());
+        nodeSequence.add(currPos);
     }
 
     @Override
-    public int currNode() {
+    public Position currPos() {
         return nodeSequence.get(nodeSequence.size()-1);
     }
 
     @Override
     public String toString() {
-        String str = "" + nodeSequence.get(0);
-        for (int i = 0; i < fracSequence.size(); i++) {
-            if (fracSequence.get(i) == 0) {
-                // simply traverse without serving
-                str += " -> " + nodeSequence.get(i+1);
-            }
-            else {
-                // serving the arc/task with the fraction of demand
-                str += " (" + fracSequence.get(i) + ") " + nodeSequence.get(i+1);
-            }
+        String str = "";
+        for (int i = 0; i < nodeSequence.size(); i++) {
+            str += getNode(i);
         }
-
-
         return str;
     }
 
@@ -115,10 +88,9 @@ public class NodeSeqRoute extends Route {
      */
     @Override
     public Route clone() {
-        List<Integer> clonedNodeSeq = new LinkedList<>(nodeSequence);
-        List<Double> clonedFracSeq = new LinkedList<>(fracSequence);
+        List<Position> clonedNodeSeq = new LinkedList<>(nodeSequence);
 
-        NodeSeqRoute cloned = new NodeSeqRoute(capacity, demand, cost, clonedNodeSeq, clonedFracSeq);
+        NodeSeqRoute cloned = new NodeSeqRoute(capacity, demand, cost, clonedNodeSeq);
         cloned.setNextTask(nextTask);
 
         return cloned;

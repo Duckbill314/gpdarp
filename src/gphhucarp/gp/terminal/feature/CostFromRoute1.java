@@ -31,7 +31,7 @@ public class CostFromRoute1 extends FeatureGPNode {
         DecisionProcessState state = calcPriorityProblem.getState();
         Instance instance = state.getInstance();
         Graph graph = instance.getGraph();
-        int currNode = calcPriorityProblem.getRoute().currNode();
+        int currNode = calcPriorityProblem.getRoute().currPos();
         int depot = instance.getDepot();
 
         if (state.getRouteAdjacencyList(candidate).isEmpty())

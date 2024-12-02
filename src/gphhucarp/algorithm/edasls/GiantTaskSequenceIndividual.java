@@ -145,7 +145,7 @@ public class GiantTaskSequenceIndividual extends Individual {
             int beginIndex = routeFromIndex[endIndex];
 
             TaskSeqRoute route = solution.getRoute(currRouteId);
-            route.reset(instance);
+            route.reset();
             route.setCapacity(instance.getCapacity());
             route.setCurrNode(instance.getDepot());
 
@@ -239,7 +239,7 @@ public class GiantTaskSequenceIndividual extends Individual {
             int beginIndex = routeFromIndex[endIndex];
 
             TaskSeqRoute route = solution.getRoute(currRouteId);
-            route.reset(instance);
+            route.reset();
             route.setCapacity(instance.getCapacity());
             route.setCurrNode(instance.getDepot());
 

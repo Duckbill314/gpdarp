@@ -10,7 +10,6 @@ import gphhucarp.decisionprocess.DecisionProcessEvent;
 import gphhucarp.decisionprocess.DecisionProcessState;
 import gphhucarp.decisionprocess.RoutingPolicy;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class ReactiveServingEvent extends DecisionProcessEvent {
         Graph graph = instance.getGraph();
         int depot = instance.getDepot();
 
-        int currNode = route.currNode();
+        int currNode = route.currPos();
 
         // refill the capacity if the current node is the depot
         if (currNode == depot)

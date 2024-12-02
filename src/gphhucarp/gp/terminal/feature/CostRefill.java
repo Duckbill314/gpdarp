@@ -21,6 +21,6 @@ public class CostRefill extends FeatureGPNode {
     public double value(CalcPriorityProblem calcPriorityProblem) {
         Instance instance = calcPriorityProblem.getState().getInstance();
         NodeSeqRoute route = calcPriorityProblem.getRoute();
-        return instance.getGraph().getEstDistance(route.currNode(), instance.getDepot());
+        return instance.getGraph().getEstDistance(route.currPos(), instance.getDepot());
     }
 }

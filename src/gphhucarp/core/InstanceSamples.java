@@ -5,8 +5,8 @@ import java.util.List;
 
 /**
  * A set of instance samples. It includes
- *  - a base instance, which gives the graph topology, and
- *  - a list of random seed.
+ *  - a base instance, which contains all the state information for the problem,
+ *  - a list of random seeds.
  * One random seed corresponds to a sampled instance.
  * The sampled instances are generated on-the-fly to save space.
  */

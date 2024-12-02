@@ -22,7 +22,7 @@ public class ExpFeasibleWithRefillPoolFilter extends PoolFilter {
     public List<Arc> filter(List<Arc> pool,
                             NodeSeqRoute route,
                             DecisionProcessState state) {
-        int currNode = route.currNode();
+        int currNode = route.currPos();
         int depot = state.getInstance().getDepot();
         Graph graph = state.getInstance().getGraph();
         double remainingCapacity = route.getCapacity() - route.getDemand();

@@ -31,7 +31,7 @@ public class ProreactiveRefillThenServeEvent extends DecisionProcessEvent {
         Graph graph = instance.getGraph();
         int depot = instance.getDepot();
 
-        int currNode = route.currNode();
+        int currNode = route.currPos();
 
         if (currNode == depot) {
             // refill when arriving the depot

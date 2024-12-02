@@ -38,7 +38,7 @@ public class PathScanning3Policy extends RoutingPolicy {
     public double priority(Arc candidate, NodeSeqRoute route, DecisionProcessState state) {
         Instance instance = state.getInstance();
         Graph graph = instance.getGraph();
-        double costFromHere = graph.getEstDistance(route.currNode(), candidate.getFrom());
+        double costFromHere = graph.getEstDistance(route.currPos(), candidate.getFrom());
         double yield = state.getInstance().getActDemand(candidate) / candidate.getServeCost();
 
         return ALPHA * costFromHere - yield;

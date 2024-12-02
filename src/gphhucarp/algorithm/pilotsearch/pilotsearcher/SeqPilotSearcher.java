@@ -43,7 +43,7 @@ public class SeqPilotSearcher extends PilotSearcher {
                 DecisionProcessEvent event = queue.poll();
                 event.trigger(dp);
 
-                if (route.currNode() == state.getInstance().getDepot())
+                if (route.currPos() == state.getInstance().getDepot())
                     queue.clear();
             }
 

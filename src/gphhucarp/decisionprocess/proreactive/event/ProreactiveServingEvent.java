@@ -3,7 +3,6 @@ package gphhucarp.decisionprocess.proreactive.event;
 import gphhucarp.core.Arc;
 import gphhucarp.core.Graph;
 import gphhucarp.core.Instance;
-import gphhucarp.decisionprocess.reactive.event.ReactiveServingEvent;
 import gphhucarp.representation.route.NodeSeqRoute;
 import gphhucarp.representation.route.TaskSeqRoute;
 import gphhucarp.decisionprocess.DecisionProcess;
@@ -39,7 +38,7 @@ public class ProreactiveServingEvent extends DecisionProcessEvent {
         Graph graph = instance.getGraph();
         int depot = instance.getDepot();
 
-        int currNode = route.currNode();
+        int currNode = route.currPos();
 
         // refill the capacity if the current node is the depot
         if (currNode == depot)

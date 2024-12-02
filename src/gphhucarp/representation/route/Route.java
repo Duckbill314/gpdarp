@@ -1,13 +1,12 @@
 package gphhucarp.representation.route;
 
-import gphhucarp.core.Instance;
+import gphhucarp.core.Position;
 
 /**
  * An abstract class of a route.
- * A route should start and end at the depot.
  * It cannot serve the demand more than its capacity.
  *
- * Created by gphhucarp on 25/08/17.
+ * @author gphhucarp, William Huang
  */
 public abstract class Route {
 
@@ -21,42 +20,40 @@ public abstract class Route {
         this.cost = cost;
     }
 
+    // Getters
     public double getCapacity() {
         return capacity;
     }
-
     public double getDemand() {
         return demand;
     }
-
     public double getCost() {
         return cost;
     }
 
+    // Setters
     public void setCapacity(double capacity) {
         this.capacity = capacity;
     }
-
     public void setDemand(double demand) {
         this.demand = demand;
     }
-
     public void setCost(double cost) {
         this.cost = cost;
     }
 
     /**
-     * Return the current node of the route, i.e. the current location of the vehicle.
-     * It is essentially the last node in the sequence.
-     * @return the current node of the route.
+     * Return the current position of the route, i.e. the current position of the vehicle.
+     * It is essentially the last position in the sequence.
+     *
+     * @return the current position of the route.
      */
-    public abstract int currNode();
+    public abstract Position currPos();
 
     /**
-     * Reset the node sequence route under an instance.
-     * @param instance the instance.
+     * Reset the sequence.
      */
-    public abstract void reset(Instance instance);
+    public abstract void reset();
 
     /**
      * Clone the route.

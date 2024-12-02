@@ -39,7 +39,7 @@ public class PathScanning5Policy extends RoutingPolicy {
     public double priority(Arc candidate, NodeSeqRoute route, DecisionProcessState state) {
         Instance instance = state.getInstance();
         Graph graph = instance.getGraph();
-        double costFromHere = graph.getEstDistance(route.currNode(), candidate.getFrom());
+        double costFromHere = graph.getEstDistance(route.currPos(), candidate.getFrom());
         double costToDepot = graph.getEstDistance(candidate.getTo(), instance.getDepot());
         double fullness = route.getDemand() / route.getCapacity();
 

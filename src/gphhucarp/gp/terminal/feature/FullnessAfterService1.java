@@ -8,8 +8,6 @@ import gphhucarp.gp.CalcPriorityProblem;
 import gphhucarp.gp.terminal.FeatureGPNode;
 import gphhucarp.representation.route.NodeSeqRoute;
 
-import java.util.List;
-
 /**
  * The fullness of the closest feasible alternative route after serving the task.
  * If the candidate is the depot loop, return 0 (no need to consider alternative route).
@@ -33,7 +31,7 @@ public class FullnessAfterService1 extends FeatureGPNode {
         DecisionProcessState state = calcPriorityProblem.getState();
         Instance instance = state.getInstance();
         Graph graph = instance.getGraph();
-        int currNode = calcPriorityProblem.getRoute().currNode();
+        int currNode = calcPriorityProblem.getRoute().currPos();
         int depot = instance.getDepot();
 
         if (state.getRouteAdjacencyList(candidate).isEmpty())
