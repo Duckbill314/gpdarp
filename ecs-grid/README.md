@@ -4,7 +4,7 @@
 
 1. Read the ECS Grid Tech Notes **carefully**: https://ecs.victoria.ac.nz/Support/TechNoteEcsGrid. Apply your home folder on the Grid server following the instructions of the Tech Notes.
 2. Compile the ```src/gputils/SimpleEvolve.java``` into a runnable jar file (for training, say ```SimpleEvolve.jar```).
-3. Compile the ```src/gphhucarp/gp/GPTest.java``` into a runnable jar file (for testing, say ```GPTest.jar```).
+3. Compile the ```src/gpdarp/gp/GPTest.java``` into a runnable jar file (for testing, say ```GPTest.jar```).
 4. Test your jar files to make sure they work, e.g. run ```$ java -jar SimpleEvolve.jar -file xxx/train.params``` in your command line.
 5. Create a new folder in your home folder, e.g. ```gpucarp```.
 6. Copy/Paste the jar files into ```yourgridhome/gpucarp/package```.

@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Main-Class: gphhucarp.gp.GPTest
+Main-Class: gpdarp.gp.GPTest
 
