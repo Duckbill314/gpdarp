@@ -1,12 +1,12 @@
 package gpdarp.representation.route;
 
 import gpdarp.core.Arc;
+import gpdarp.core.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An abstract class of a route.
  * A route is ostensibly a collection of arcs - nothing more, nothing less.
  * The main information it maintains is the collection of arcs, and implicitly, the cost of the route.
  * Other information such as position, capacity and demand are handled directly by the Vehicle class.
@@ -31,6 +31,21 @@ public class Route {
     public Arc pop() { return arcs.removeFirst(); }
 
     /**
+     * Build a route from a list of nodes by converting the node list to an arc list.
+     * Used for dynamic route recalculation.
+     *
+     * @param nodeList the list of nodes.
+     * @return the corresponding route.
+     */
+    public static Route buildFromNodeList(List<Node> nodeList) {
+        List<Arc> arcList = new ArrayList<>();
+        for (int i = 0; i < nodeList.size()-1; i++) {
+            arcList.add(new Arc(nodeList.get(i), nodeList.get(i+1)));
+        }
+        return new Route(arcList);
+    }
+
+    /**
      * Calculate the cost of the route as the sum of the serving costs of all arcs in the route.
      *
      * @return the total cost.
@@ -48,17 +63,21 @@ public class Route {
 
     public void reset() { arcs = new ArrayList<Arc>(); }
 
-    public Route clone() { return new Route(arcs); }
+    @Override
+    public Route clone() throws CloneNotSupportedException { return (Route) super.clone(); }
 
+    public boolean isEmpty() { return arcs.isEmpty(); }
+
+    @Override
     public String toString() {
         if (arcs.isEmpty()) {
             return "Empty route";
         }
-        String str = "";
-        str += arcs.getFirst().from();
+        StringBuilder str = new StringBuilder();
+        str.append(arcs.getFirst().from());
         for (Arc arc : arcs) {
-            str += arc.to();
+            str.append(arc.to());
         }
-        return str;
+        return str.toString();
     }
 }

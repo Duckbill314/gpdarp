@@ -81,17 +81,17 @@ public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Requ
             reader.readLine(); // line 11: "loc_K[1] ... loc_K[n_K]"
             line = reader.readLine(); // line 12: corresponding entries for line 11
             segments = line.split("\\s+");
-            List<Position> vehiclePositions = new ArrayList<Position>();
+            List<Node> vehicleNodes = new ArrayList<Node>();
             for (int i = 0; i < segments.length; i += 2) {
                 double x = Double.parseDouble(segments[i]);
                 double y = Double.parseDouble(segments[i + 1]);
-                vehiclePositions.add(new Position(x, y));
+                vehicleNodes.add(new Node(x, y));
             }
 
             // Aggregating vehicle information to construct the objects
             for (int i = 0; i < numVehicles; i++) {
                 vehicles.add(new Vehicle(i + 1, capacity, chargeMax, chargeStates.get(i), chargeFillRate,
-                        chargeDepletionRate, serveTime, vehiclePositions.get(i)));
+                        chargeDepletionRate, serveTime, vehicleNodes.get(i)));
             }
 
             reader.readLine(); // line 13: "Requests: id t_arr u_x u_y v_x v_y t_start t_end d_max"
@@ -102,10 +102,10 @@ public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Requ
                 float tRec = Float.parseFloat(segments[1]);
                 double x = Double.parseDouble(segments[2]);
                 double y = Double.parseDouble(segments[3]);
-                Position pickup = new Position(x, y);
+                Node pickup = new Node(x, y);
                 x = Double.parseDouble(segments[4]);
                 y = Double.parseDouble(segments[5]);
-                Position dropoff = new Position(x, y);
+                Node dropoff = new Node(x, y);
                 float tEarly = Float.parseFloat(segments[6]);
                 float tLate = Float.parseFloat(segments[7]);
                 float tMax = Float.parseFloat(segments[8]);
@@ -126,5 +126,6 @@ public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Requ
         return String.format("Instance with %d vehicles, %d stations, and %d requests",
                 getNumVehicles(), getNumStations(), getNumRequests()); }
 
-    public Instance clone() { return new Instance(vehicles, stations, requests, timeHorizon, expectation); }
+    @Override
+    public Instance clone() throws CloneNotSupportedException { return (Instance) super.clone(); }
 }

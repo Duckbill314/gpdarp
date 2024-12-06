@@ -95,14 +95,11 @@ public class Solution<T extends Route> {
      * @return the objective value of the solution.
      */
     public double objValue(Objective objective) {
-        switch (objective) {
-            case TOTAL_COST:
-                return totalCost();
-            case MAX_ROUTE_COST:
-                return maxRouteCost();
-            default:
-                return Double.NaN;
-        }
+        return switch (objective) {
+            case TOTAL_COST -> totalCost();
+            case MAX_ROUTE_COST -> maxRouteCost();
+            default -> Double.NaN;
+        };
     }
 
     @Override
@@ -111,6 +108,7 @@ public class Solution<T extends Route> {
         return null;
     }
 
+    @Override
     public Solution<T> clone() {
         // TODO
         return null;

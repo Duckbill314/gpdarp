@@ -1,15 +1,15 @@
 package gpdarp.core;
 
 /**
- * An arc is a directed edge between two positions. It has:
- *  - (from, to) positions,
+ * An arc is a directed edge between two nodes. It has:
+ *  - (from, to) nodes,
  *  - serving cost (proportional to length).
  *
  * @author William Huang
  */
 
-public record Arc(Position from, Position to, double serveCost) implements Comparable<Arc> {
-    public Arc(Position from, Position to) {
+public record Arc(Node from, Node to, double serveCost) implements Comparable<Arc> {
+    public Arc(Node from, Node to) {
         this(from, to, from.calcDist(to));
     }
 
