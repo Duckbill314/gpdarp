@@ -127,5 +127,12 @@ public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Requ
                 getNumVehicles(), getNumStations(), getNumRequests()); }
 
     @Override
-    public Instance clone() throws CloneNotSupportedException { return (Instance) super.clone(); }
+    public Instance clone() {
+        return new Instance(
+                new ArrayList<Vehicle>(vehicles),
+                new ArrayList<Station>(stations),
+                new ArrayList<Request>(requests),
+                timeHorizon,
+                new ArrayList<Double>(expectation));
+    }
 }

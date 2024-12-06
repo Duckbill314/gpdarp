@@ -8,6 +8,7 @@ import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.RoutingPolicy;
+import gpdarp.representation.route.Route;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class ReactiveRefillEvent extends DecisionProcessEvent {
     private NodeSeqRoute route;
 
     public ReactiveRefillEvent(double time,
-                               NodeSeqRoute route) {
+                               Route route) {
         super(time);
         this.route = route;
     }

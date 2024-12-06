@@ -64,7 +64,7 @@ public class Route {
     public void reset() { arcs = new ArrayList<Arc>(); }
 
     @Override
-    public Route clone() throws CloneNotSupportedException { return (Route) super.clone(); }
+    public Route clone() { return new Route(new ArrayList<Arc>(arcs)); }
 
     public boolean isEmpty() { return arcs.isEmpty(); }
 

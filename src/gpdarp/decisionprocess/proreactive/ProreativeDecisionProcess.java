@@ -1,11 +1,11 @@
 package gpdarp.decisionprocess.proreactive;
 
-import gpdarp.representation.Solution;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.RoutingPolicy;
 import gpdarp.decisionprocess.proreactive.event.ProreactiveServingEvent;
+import gpdarp.representation.route.Route;
 
 import java.util.PriorityQueue;
 
@@ -21,7 +21,7 @@ public class ProreativeDecisionProcess extends DecisionProcess {
     public ProreativeDecisionProcess(DecisionProcessState state,
                                      PriorityQueue<DecisionProcessEvent> eventQueue,
                                      RoutingPolicy routingPolicy,
-                                     Solution<TaskSeqRoute> plan) {
+                                     Route plan) {
         super(state, eventQueue, routingPolicy, plan);
     }
 
@@ -38,7 +38,7 @@ public class ProreativeDecisionProcess extends DecisionProcess {
     protected ProreativeDecisionProcess clone() {
         DecisionProcessState clonedState = state.clone();
         PriorityQueue<DecisionProcessEvent> clonedEQ = new PriorityQueue<>(eventQueue);
-        Solution<TaskSeqRoute> clonedPlan = plan.clone();
+        Route clonedPlan = plan.clone();
 
         return new ProreativeDecisionProcess(clonedState, clonedEQ, routingPolicy, clonedPlan);
     }

@@ -9,6 +9,7 @@ import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.RoutingPolicy;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import gpdarp.representation.Solution;
+import gpdarp.representation.route.Route;
 
 /**
  * A reactive evaluation model is a set of reactive decision process.
@@ -25,8 +26,7 @@ import gpdarp.representation.Solution;
 public class ReactiveEvaluationModel extends EvaluationModel {
 
     @Override
-    public void evaluate(RoutingPolicy policy, Solution<TaskSeqRoute> plan,
-                                  Fitness fitness, EvolutionState state) {
+    public void evaluate(RoutingPolicy policy, Fitness fitness, EvolutionState state) {
         double[] fitnesses = new double[objectives.size()];
 
         int numdps = 0;
@@ -60,9 +60,7 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     }
 
     @Override
-    public void evaluateOriginal(RoutingPolicy policy,
-                                 Solution<TaskSeqRoute> plan,
-                                 Fitness fitness, EvolutionState state) {
+    public void evaluateOriginal(RoutingPolicy policy, Fitness fitness, EvolutionState state) {
         double[] fitnesses = new double[objectives.size()];
 
         int numdps = 0;

@@ -26,18 +26,6 @@ public class UCARPPrimitiveSet extends PrimitiveSet {
      */
     public static UCARPPrimitiveSet basicTerminalSet() {
         UCARPPrimitiveSet terminalSet = new UCARPPrimitiveSet();
-
-        terminalSet.add(new ServeCost());
-        terminalSet.add(new CostFromDepot());
-        terminalSet.add(new CostFromHere());
-        terminalSet.add(new CostToDepot());
-        terminalSet.add(new CostRefill());
-        terminalSet.add(new DeadheadingCost());
-        terminalSet.add(new Demand());
-        terminalSet.add(new RemainingCapacity());
-        terminalSet.add(new Fullness());
-        terminalSet.add(new FractionRemainingTasks());
-        terminalSet.add(new FractionUnassignedTasks());
 //        terminalSet.add(new FloodFill());
 
         return terminalSet;
@@ -51,11 +39,6 @@ public class UCARPPrimitiveSet extends PrimitiveSet {
     public static UCARPPrimitiveSet extendedTerminalSet() {
         UCARPPrimitiveSet terminalSet = basicTerminalSet();
 
-        terminalSet.add(new CostFromRoute1());
-//        terminalSet.add(new RemainingCapacity1());
-        terminalSet.add(new CostToTask1());
-        terminalSet.add(new Demand1());
-
         return terminalSet;
     }
 
@@ -66,9 +49,6 @@ public class UCARPPrimitiveSet extends PrimitiveSet {
      */
     public static UCARPPrimitiveSet seqTerminalSet() {
         UCARPPrimitiveSet terminalSet = basicTerminalSet();
-
-        terminalSet.add(new CostToTask1());
-        terminalSet.add(new Demand1());
 
         return terminalSet;
     }
