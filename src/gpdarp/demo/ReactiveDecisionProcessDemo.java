@@ -1,8 +1,8 @@
 package gpdarp.demo;
 
 import gpdarp.decisionprocess.DecisionProcess;
-import gpdarp.decisionprocess.RoutingPolicy;
-import gpdarp.decisionprocess.routingpolicy.*;
+import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.allocationpolicy.*;
 import gpdarp.core.Instance;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import util.Timer;
@@ -23,16 +23,13 @@ public class ReactiveDecisionProcessDemo {
         double costULevel = 0.2;
 
         // read an instance from a data file
-        Instance instance = Instance.readFromFile(
-                new File("data/val/val10C.dat"), 4,
-                demULevel, costULevel);
+        Instance instance = Instance.readFromFile(new File("")); // TODO: declare data file
 
         // specify a routing policy
-//        RoutingPolicy policy = new NearestNeighbourPolicy(new ExpFeasiblePoolFilter());
-        RoutingPolicy policy = new PathScanning5Policy();
+        AllocationPolicy policy = new PathScanning5Policy(); // TODO: declare policy
 
         // initialise a reactive decision process
-        ReactiveDecisionProcess rdp = DecisionProcess.initReactive(instance, seed, policy);
+        ReactiveDecisionProcess rdp = DecisionProcess.initReactive(instance, policy);
 
         // run the decision process
         // these should give the same results

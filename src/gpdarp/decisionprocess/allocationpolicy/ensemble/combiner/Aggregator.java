@@ -1,9 +1,9 @@
-package gpdarp.decisionprocess.routingpolicy.ensemble.combiner;
+package gpdarp.decisionprocess.allocationpolicy.ensemble.combiner;
 
 import gpdarp.core.Arc;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.routingpolicy.ensemble.EnsemblePolicy;
-import gpdarp.decisionprocess.routingpolicy.ensemble.Combiner;
+import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
+import gpdarp.decisionprocess.allocationpolicy.ensemble.Combiner;
 
 import java.util.List;
 

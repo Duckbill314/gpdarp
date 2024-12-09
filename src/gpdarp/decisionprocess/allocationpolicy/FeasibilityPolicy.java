@@ -1,9 +1,10 @@
-package gpdarp.decisionprocess.routingpolicy;
+package gpdarp.decisionprocess.allocationpolicy;
 
 import gpdarp.core.Arc;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
-import gpdarp.decisionprocess.RoutingPolicy;
+import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.poolfilter.IdentityPoolFilter;
 
 /**
@@ -12,7 +13,7 @@ import gpdarp.decisionprocess.poolfilter.IdentityPoolFilter;
  * Otherwise, refill (priority = capacity - routeDemand - taskDemand < 0).
  */
 
-public class FeasibilityPolicy extends RoutingPolicy {
+public class FeasibilityPolicy extends AllocationPolicy {
     public FeasibilityPolicy(PoolFilter poolFilter) {
         super(poolFilter);
         name = "\"FSB\"";
@@ -23,7 +24,7 @@ public class FeasibilityPolicy extends RoutingPolicy {
     }
 
     @Override
-    public double priority(Arc candidate, NodeSeqRoute route, DecisionProcessState state) {
+    public double priority(Vehicle candidate, NodeSeqRoute route, DecisionProcessState state) {
         return route.getCapacity() - route.getDemand() - candidate.getExpectedDemand();
     }
 }

@@ -25,7 +25,7 @@ import java.util.Enumeration;
  * is made to write text to a log, and the text's maximal verbosity
  * is lower than the verbosity of the log, the log will not write it.
  * Each Output instance also has an instance-level global verbosity;
- * incoming requests to write text are additionally subject to this
+ * incoming getRequests to write text are additionally subject to this
  * verbosity demo.  Lastly, the Output class itself has a global
  * verbosity as well.  This last verbosity is useful for shutting
  * down writing to all logs in the entire system in a simple way.

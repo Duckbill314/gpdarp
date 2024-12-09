@@ -1,6 +1,6 @@
 package gpdarp.core;
 
-import gpdarp.decisionprocess.RoutingPolicy;
+import gpdarp.decisionprocess.AllocationPolicy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public enum Objective {
      * The reference reactive routing policy to calculate the reference objective values.
      * @return the reference reactive routing policy.
      */
-    public static RoutingPolicy refReactiveRoutingPolicy() {
+    public static AllocationPolicy refReactiveRoutingPolicy() {
         // TODO: set the desired policy
         return null;
     }

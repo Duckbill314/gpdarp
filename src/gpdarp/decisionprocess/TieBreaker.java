@@ -1,12 +1,13 @@
 package gpdarp.decisionprocess;
 
-import gpdarp.core.Arc;
+import gpdarp.core.Vehicle;
 
 /**
- * A tie breaker breaks the tie between two arcs when they have the same priority.
+ * A tiebreaker breaks the tie between two vehicle allocations when they have the same priority.
+ *
+ * @author gphhucarp, William Huang
  */
 
 public abstract class TieBreaker {
-
-    public abstract int breakTie(Arc arc1, Arc arc2);
+    public abstract int breakTie(Vehicle v1, Vehicle v2);
 }

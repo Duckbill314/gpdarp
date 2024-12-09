@@ -328,7 +328,7 @@ public class SlaveMonitor
     */
     public void scheduleJobForEvaluation( final EvolutionState state, Job job )
         {
-        if (isShutdownInProgress()) return;  // no more jobs allowed.  This line rejects requests from slaveConnections when THEY'RE shutting down.
+        if (isShutdownInProgress()) return;  // no more jobs allowed.  This line rejects getRequests from slaveConnections when THEY'RE shutting down.
         
         SlaveConnection result = null;
         synchronized(availableSlaves)

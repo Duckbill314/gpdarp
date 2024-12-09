@@ -1,7 +1,10 @@
 package gpdarp.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * In the dial-a-ride problem, customers submit requests to get a ride.
+ * In the dial-a-ride problem, customers submit getRequests to get a ride.
  * This class contains all the relevant details for a single request, including:
  * - the time the request was received,
  * - the pickup and dropoff destinations,
@@ -23,4 +26,22 @@ public record Request(int id, float tRec, Node pickup, Node dropoff, float tEarl
     @Override
     public String toString() { return String.format("Request %d from %s to %s, received at time %f, %s",
             id, pickup, dropoff, tRec, (isFulfilled()) ? "fulfilled" : "not fulfilled"); }
+
+    @Override
+    public Request clone() { return new Request(id, tRec, pickup.clone(), dropoff.clone(), tEarly, tLate, tMax); }
+
+    /**
+     * Utility method for creating deep clones of ArrayLists of Requests.
+     *
+     * @param requests the list of requests to be cloned.
+     *
+     * @return the cloned list.
+     */
+    public static List<Request> listClone(List<Request> requests) {
+        List<Request> clonedRequests = new ArrayList<>();
+        for (Request request : requests) {
+            clonedRequests.add(request.clone());
+        }
+        return clonedRequests;
+    }
 }

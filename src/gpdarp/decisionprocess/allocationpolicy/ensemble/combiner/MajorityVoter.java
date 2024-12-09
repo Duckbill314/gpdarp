@@ -1,10 +1,10 @@
-package gpdarp.decisionprocess.routingpolicy.ensemble.combiner;
+package gpdarp.decisionprocess.allocationpolicy.ensemble.combiner;
 
 import gpdarp.core.Arc;
+import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.RoutingPolicy;
-import gpdarp.decisionprocess.routingpolicy.ensemble.Combiner;
-import gpdarp.decisionprocess.routingpolicy.ensemble.EnsemblePolicy;
+import gpdarp.decisionprocess.allocationpolicy.ensemble.Combiner;
+import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class MajorityVoter extends Combiner {
         int[] votes = new int[pool.size()];
 
         for (int ele = 0; ele < ensemblePolicy.size(); ele++) {
-            RoutingPolicy policy = ensemblePolicy.getPolicy(ele);
+            AllocationPolicy policy = ensemblePolicy.getPolicy(ele);
 
             int bestIdx = 0;
             Arc best = pool.get(bestIdx);

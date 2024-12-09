@@ -217,7 +217,7 @@ public class Slave
         silent = silent || parameters.getBoolean(new Parameter(P_MUZZLE), null, false);
 
                 
-        // 6. Open a server socket and listen for requests
+        // 6. Open a server socket and listen for getRequests
         String slaveName = parameters.getString(
             new Parameter(P_EVALSLAVENAME),null);
                 

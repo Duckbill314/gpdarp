@@ -1,76 +1,66 @@
 package gpdarp.decisionprocess;
 
 import gpdarp.core.Instance;
-import gpdarp.decisionprocess.proreactive.ProreativeDecisionProcess;
-import gpdarp.decisionprocess.proreactive.event.ProreactiveServingEvent;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
-import gpdarp.decisionprocess.reactive.event.ReactiveRefillEvent;
-import gpdarp.representation.route.Route;
 
 import java.util.PriorityQueue;
 
 /**
- * An abstract of a decision process. A decision process is a process where
- * vehicles make decisions as they go to serve the tasks of the graph.
+ * A decision process is in charge of executing a simulated sequence of events.
  * It includes
- *  - A decision process state: the state of the vehicles and the environment.
- *  - An event queue: the events to happen.
- *  - A routing policy that makes decisions as the vehicles go.
- *  - A task sequence solution as a predefined plan. This is used for proactive-reactive decision process.
+ *  - A decision process state: the state of the vehicles and the environment,
+ *  - An event queue: the events to happen,
+ *  - An allocation policy: for allocating requests to vehicles.
+ *
+ * @author gphhucarp, William Huang
  */
-
 public abstract class DecisionProcess {
     protected DecisionProcessState state; // the state
     protected PriorityQueue<DecisionProcessEvent> eventQueue;
-    protected RoutingPolicy routingPolicy;
+    protected AllocationPolicy allocationPolicy;
 
     public DecisionProcess(DecisionProcessState state,
                            PriorityQueue<DecisionProcessEvent> eventQueue,
-                           RoutingPolicy routingPolicy) {
+                           AllocationPolicy allocationPolicy) {
         this.state = state;
         this.eventQueue = eventQueue;
-        this.routingPolicy = routingPolicy;
+        this.allocationPolicy = allocationPolicy;
     }
 
+    // Getters
     public DecisionProcessState getState() {
         return state;
     }
-
     public PriorityQueue<DecisionProcessEvent> getEventQueue() {
         return eventQueue;
     }
-
-    public RoutingPolicy getRoutingPolicy() {
-        return routingPolicy;
+    public AllocationPolicy getAllocationPolicy() {
+        return allocationPolicy;
     }
 
-    public void setRoutingPolicy(RoutingPolicy routingPolicy) {
-        this.routingPolicy = routingPolicy;
+    // Setters
+    public void setAllocationPolicy(AllocationPolicy allocationPolicy) {
+        this.allocationPolicy = allocationPolicy;
     }
 
     /**
-     * Initialise a reactive decision process from an instance and a routing policy.
+     * Initialise a reactive decision process from an instance and an allocation policy.
+     *
      * @param instance the given instance.
-     * @param seed the seed to sample the random variables.
-     * @param routingPolicy the given policy.
+     * @param allocationPolicy the given policy.
+     *
      * @return the initial reactive decision process.
      */
-    public static ReactiveDecisionProcess initReactive(Instance instance,
-                                                       long seed,
-                                                       RoutingPolicy routingPolicy) {
-        DecisionProcessState state = new DecisionProcessState(instance, seed);
+    public static ReactiveDecisionProcess initReactive(Instance instance, AllocationPolicy allocationPolicy) {
+        DecisionProcessState state = new DecisionProcessState(instance);
         PriorityQueue<DecisionProcessEvent> eventQueue = new PriorityQueue<>();
-        for (Route route : state.getSolution().getRoutes())
-            eventQueue.add(new ReactiveRefillEvent(0, route));
-
-        return new ReactiveDecisionProcess(state, eventQueue, routingPolicy);
+        return new ReactiveDecisionProcess(state, eventQueue, allocationPolicy);
     }
 
     /**
      * Run the decision process.
      */
     public void run() {
-
         // trigger the events.
         while (!eventQueue.isEmpty()) {
             DecisionProcessEvent event = eventQueue.poll();
@@ -80,7 +70,7 @@ public abstract class DecisionProcess {
 
     /**
      * Reset the decision process.
-     * This is done by reseting the decision process state and event queue.
+     * This is done by resetting the decision process state and event queue.
      */
     public abstract void reset();
 }

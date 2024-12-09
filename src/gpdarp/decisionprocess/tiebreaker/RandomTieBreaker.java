@@ -1,6 +1,6 @@
 package gpdarp.decisionprocess.tiebreaker;
 
-import gpdarp.core.Arc;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.TieBreaker;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
@@ -13,7 +13,7 @@ public class RandomTieBreaker extends TieBreaker {
     }
 
     @Override
-    public int breakTie(Arc arc1, Arc arc2) {
+    public int breakTie(Vehicle v1, Vehicle v2) {
         double r = rdg.nextUniform(0, 1);
 
         if (r < 0.5)

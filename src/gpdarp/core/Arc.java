@@ -1,5 +1,8 @@
 package gpdarp.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * An arc is a directed edge between two nodes. It has:
  *  - (from, to) nodes,
@@ -9,6 +12,7 @@ package gpdarp.core;
  */
 
 public record Arc(Node from, Node to, double serveCost) implements Comparable<Arc> {
+    // Simplified default constructor
     public Arc(Node from, Node to) {
         this(from, to, from.calcDist(to));
     }
@@ -21,5 +25,23 @@ public record Arc(Node from, Node to, double serveCost) implements Comparable<Ar
     @Override
     public int compareTo(Arc o) {
         return Double.compare(serveCost, o.serveCost());
+    }
+
+    @Override
+    public Arc clone() { return new Arc(from.clone(), to.clone()); }
+
+    /**
+     * Utility method for creating deep clones of ArrayLists of Arcs.
+     *
+     * @param arcs the list of arcs to be cloned.
+     *
+     * @return the cloned list.
+     */
+    public static List<Arc> listClone(List<Arc> arcs) {
+        List<Arc> clonedArcs = new ArrayList<>();
+        for (Arc arc : arcs) {
+            clonedArcs.add(arc.clone());
+        }
+        return clonedArcs;
     }
 }

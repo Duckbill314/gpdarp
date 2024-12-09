@@ -10,9 +10,9 @@ import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import gpdarp.core.Instance;
 import gpdarp.core.Objective;
-import gpdarp.decisionprocess.RoutingPolicy;
-import gpdarp.decisionprocess.routingpolicy.GPRoutingPolicy;
-import gpdarp.decisionprocess.routingpolicy.ensemble.EnsemblePolicy;
+import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.allocationpolicy.GPAllocationPolicy;
+import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
 import gpdarp.gp.evaluation.EvaluationModel;
 import gpdarp.gp.io.FitnessType;
 import gpdarp.gp.io.GPResult;
@@ -142,11 +142,11 @@ public class GPTest {
 
                     switch (solutionType) {
                         case SIMPLE_SOLUTION:
-                            GPRoutingPolicy solution1;
+                            GPAllocationPolicy solution1;
                             int numUniqueTerminals;
                             // write the test results for each generation
                             for (int j = 0; j < result.getSolutions().size(); j++) {
-                                solution1 = (GPRoutingPolicy) result.getSolutionAtGen(j);
+                                solution1 = (GPAllocationPolicy) result.getSolutionAtGen(j);
 
                                 numUniqueTerminals = solution1.getGPTree().child.numNodes(gatherer);
 
@@ -157,7 +157,7 @@ public class GPTest {
                                 writer.newLine();
                             }
                             // write the test results of the best individual, shown as gen = -1
-                            solution1 = (GPRoutingPolicy) result.getBestSolution();
+                            solution1 = (GPAllocationPolicy) result.getBestSolution();
 
                             numUniqueTerminals = solution1.getGPTree().child.numNodes(gatherer);
 
@@ -180,7 +180,7 @@ public class GPTest {
                                 numUniqueTerminalsVec = new int[solution2.size()];
 
                                 for (int k = 0; k < solution2.size(); k++) {
-                                    GPRoutingPolicy policy = (GPRoutingPolicy) solution2.getPolicy(k);
+                                    GPAllocationPolicy policy = (GPAllocationPolicy) solution2.getPolicy(k);
                                     programSize[k] = policy.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
                                     numUniqueTerminalsVec[k] = policy.getGPTree().child.numNodes(gatherer);
                                 }
@@ -200,7 +200,7 @@ public class GPTest {
                             numUniqueTerminalsVec = new int[solution2.size()];
 
                             for (int k = 0; k < solution2.size(); k++) {
-                                GPRoutingPolicy policy = (GPRoutingPolicy) solution2.getPolicy(k);
+                                GPAllocationPolicy policy = (GPAllocationPolicy) solution2.getPolicy(k);
                                 programSize[k] = policy.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
                                 numUniqueTerminalsVec[k] = policy.getGPTree().child.numNodes(gatherer);
                             }
@@ -237,8 +237,8 @@ public class GPTest {
                 for (int i = 0; i < manualPolicies; i++) {
                     p = b.push("" + i);
 
-                    RoutingPolicy policy = (RoutingPolicy)parameters.getInstanceForParameter(
-                            p, null, RoutingPolicy.class);
+                    AllocationPolicy policy = (AllocationPolicy)parameters.getInstanceForParameter(
+                            p, null, AllocationPolicy.class);
 
                     MultiObjectiveFitness fit = new MultiObjectiveFitness();
                     fit.objectives = new double[1];

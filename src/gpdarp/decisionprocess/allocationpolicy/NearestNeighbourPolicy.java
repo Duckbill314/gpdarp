@@ -1,12 +1,13 @@
-package gpdarp.decisionprocess.routingpolicy;
+package gpdarp.decisionprocess.allocationpolicy;
 
 import gpdarp.core.Arc;
+import gpdarp.core.Vehicle;
+import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.TieBreaker;
 import gpdarp.decisionprocess.poolfilter.ExpFeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
-import gpdarp.decisionprocess.RoutingPolicy;
 
 /**
  * The nearest neighbour policy always selects the nearest neighbour.
@@ -15,7 +16,7 @@ import gpdarp.decisionprocess.RoutingPolicy;
  *
  * Created by gphhucarp on 29/08/17.
  */
-public class NearestNeighbourPolicy extends RoutingPolicy {
+public class NearestNeighbourPolicy extends AllocationPolicy {
 
     public NearestNeighbourPolicy(PoolFilter poolFilter, TieBreaker tieBreaker) {
         super(poolFilter, tieBreaker);
@@ -31,7 +32,7 @@ public class NearestNeighbourPolicy extends RoutingPolicy {
     }
 
     @Override
-    public double priority(Arc candidate, NodeSeqRoute route, DecisionProcessState state) {
+    public double priority(Vehicle candidate, NodeSeqRoute route, DecisionProcessState state) {
         return state.getInstance().getGraph().getEstDistance(route.currPos(), candidate.getFrom());
     }
 }

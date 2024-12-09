@@ -6,7 +6,7 @@ import gpdarp.core.Instance;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.RoutingPolicy;
+import gpdarp.decisionprocess.AllocationPolicy;
 
 /**
  * The reactive refill-then-serve event occurs after a route failure occurs.
@@ -29,7 +29,7 @@ public class ReactiveRefillThenServeEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        RoutingPolicy policy = decisionProcess.getRoutingPolicy();
+        AllocationPolicy policy = decisionProcess.getAllocationPolicy();
         DecisionProcessState state = decisionProcess.getState();
         Instance instance = state.getInstance();
         Graph graph = instance.getGraph();

@@ -18,6 +18,7 @@ public class Route {
 
     public Route(List<Arc> arcs) { this.arcs = arcs; }
 
+    // Initialisation constructor
     public Route() { this(new ArrayList<Arc>()); }
 
     // Getters
@@ -61,10 +62,28 @@ public class Route {
         return cost;
     }
 
+    /**
+     * Resets the route by replacing the arc list with an empty list.
+     */
     public void reset() { arcs = new ArrayList<Arc>(); }
 
     @Override
-    public Route clone() { return new Route(new ArrayList<Arc>(arcs)); }
+    public Route clone() { return new Route(Arc.listClone(arcs)); }
+
+    /**
+     * Utility method for creating deep clones of ArrayLists of Routes.
+     *
+     * @param routes the list of routes to be cloned.
+     *
+     * @return the cloned list.
+     */
+    public static List<Route> listClone(List<Route> routes) {
+        ArrayList<Route> clonedRoutes = new ArrayList<>();
+        for (Route route : routes) {
+            clonedRoutes.add(route.clone());
+        }
+        return clonedRoutes;
+    }
 
     public boolean isEmpty() { return arcs.isEmpty(); }
 

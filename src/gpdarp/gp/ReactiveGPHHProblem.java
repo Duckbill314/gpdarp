@@ -8,7 +8,7 @@ import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
 import gpdarp.core.Objective;
 import gpdarp.decisionprocess.TieBreaker;
-import gpdarp.decisionprocess.routingpolicy.GPRoutingPolicy;
+import gpdarp.decisionprocess.allocationpolicy.GPAllocationPolicy;
 import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.gp.evaluation.EvaluationModel;
 
@@ -76,8 +76,8 @@ public class ReactiveGPHHProblem extends GPProblem implements SimpleProblemForm 
                          Individual indi,
                          int subpopulation,
                          int threadnum) {
-        GPRoutingPolicy policy =
-                new GPRoutingPolicy(poolFilter, ((GPIndividual)indi).trees[0]);
+        GPAllocationPolicy policy =
+                new GPAllocationPolicy(poolFilter, ((GPIndividual)indi).trees[0]);
 
         // the evaluation model is reactive, so no plan is specified.
         evaluationModel.evaluate(policy, null, indi.fitness, state);

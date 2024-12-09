@@ -11,11 +11,14 @@ public class Node {
     private double y;
     private boolean visited;
 
-    public Node(double x, double y) {
+    public Node(double x, double y, boolean visited) {
         this.x = x;
         this.y = y;
-        visited = false;
+        this.visited = visited;
     }
+
+    // Initialisation constructor
+    public Node(double x, double y) { this(x, y, false); }
 
     // Getters
     public double getX() { return x; }
@@ -35,7 +38,9 @@ public class Node {
      */
     public double calcDist(Node o) { return Math.sqrt(Math.pow((o.getX() - x), 2) + Math.pow((o.getY() - y), 2)); }
 
-
     @Override
     public String toString() { return String.format("(%f, %f)", x, y); }
+
+    @Override
+    public Node clone() { return new Node(x, y, visited); }
 }

@@ -12,10 +12,10 @@ import java.util.List;
  * @author gphhucarp, William Huang
  */
 
-public class Solution<T extends Route> {
-    private List<T> routes;
+public class Solution {
+    private List<Route> routes;
 
-    public Solution(List<T> routes) {
+    public Solution(List<Route> routes) {
         this.routes = routes;
     }
     public Solution() {
@@ -23,15 +23,15 @@ public class Solution<T extends Route> {
     }
 
     // Getters
-    public List<T> getRoutes() {
+    public List<Route> getRoutes() {
         return routes;
     }
-    public T getRoute(int index) {
+    public Route getRoute(int index) {
         return routes.get(index);
     }
 
     // Setters
-    public void setRoutes(List<T> routes) {
+    public void setRoutes(List<Route> routes) {
         this.routes = routes;
     }
 
@@ -40,7 +40,7 @@ public class Solution<T extends Route> {
      *
      * @param route the added route.
      */
-    public void addRoute(T route) {
+    public void addRoute(Route route) {
         routes.add(route);
     }
 
@@ -57,7 +57,7 @@ public class Solution<T extends Route> {
      * Reset this solution by resetting each route.
      */
     public void reset() {
-        for (T route : routes) {
+        for (Route route : routes) {
             route.reset();
         }
     }
@@ -69,7 +69,7 @@ public class Solution<T extends Route> {
      */
     public double totalCost() {
         double result = 0;
-        for (T route : routes) {
+        for (Route route : routes) {
             result += route.getCost();
         }
         return result;
@@ -82,7 +82,7 @@ public class Solution<T extends Route> {
      */
     public double maxRouteCost() {
         double result = -1;
-        for (T route : routes) {
+        for (Route route : routes) {
             if (result < route.getCost())
                 result = route.getCost();
         }
@@ -103,14 +103,8 @@ public class Solution<T extends Route> {
     }
 
     @Override
-    public String toString() {
-        // TODO
-        return null;
-    }
+    public String toString() { return String.format("Routes: %s", routes); }
 
     @Override
-    public Solution<T> clone() {
-        // TODO
-        return null;
-    }
+    public Solution clone() { return new Solution(Route.listClone(routes)); }
 }

@@ -1,11 +1,12 @@
-package gpdarp.decisionprocess.routingpolicy;
+package gpdarp.decisionprocess.allocationpolicy;
 
 import gpdarp.core.Arc;
 import gpdarp.core.Graph;
 import gpdarp.core.Instance;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
-import gpdarp.decisionprocess.RoutingPolicy;
+import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.TieBreaker;
 import gpdarp.decisionprocess.poolfilter.ExpFeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
@@ -16,7 +17,7 @@ import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
  * it maximises the cost to depot
  */
 
-public class PathScanning1Policy extends RoutingPolicy {
+public class PathScanning1Policy extends AllocationPolicy {
     // a sufficiently large coefficient to guarantee the priority of cost from here
     public static final double ALPHA = 10000;
 
@@ -34,7 +35,7 @@ public class PathScanning1Policy extends RoutingPolicy {
     }
 
     @Override
-    public double priority(Arc candidate, NodeSeqRoute route, DecisionProcessState state) {
+    public double priority(Vehicle candidate, NodeSeqRoute route, DecisionProcessState state) {
         Instance instance = state.getInstance();
         Graph graph = instance.getGraph();
         double costFromHere = graph.getEstDistance(route.currPos(), candidate.getFrom());

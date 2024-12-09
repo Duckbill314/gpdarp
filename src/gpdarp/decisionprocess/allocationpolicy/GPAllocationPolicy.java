@@ -1,10 +1,11 @@
-package gpdarp.decisionprocess.routingpolicy;
+package gpdarp.decisionprocess.allocationpolicy;
 
 import ec.gp.GPTree;
 import gpdarp.core.Arc;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
-import gpdarp.decisionprocess.RoutingPolicy;
+import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.poolfilter.IdentityPoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gputils.DoubleData;
@@ -14,17 +15,17 @@ import gputils.DoubleData;
  *
  * Created by gphhucarp on 30/08/17.
  */
-public class GPRoutingPolicy extends RoutingPolicy {
+public class GPAllocationPolicy extends AllocationPolicy {
 
     private GPTree gpTree;
 
-    public GPRoutingPolicy(PoolFilter poolFilter, GPTree gpTree) {
+    public GPAllocationPolicy(PoolFilter poolFilter, GPTree gpTree) {
         super(poolFilter);
-        name = "\"GPRoutingPolicy\"";
+        name = "\"GPAllocationPolicy\"";
         this.gpTree = gpTree;
     }
 
-    public GPRoutingPolicy(GPTree gpTree) {
+    public GPAllocationPolicy(GPTree gpTree) {
         this(new IdentityPoolFilter(), gpTree);
     }
 
@@ -37,7 +38,7 @@ public class GPRoutingPolicy extends RoutingPolicy {
     }
 
     @Override
-    public double priority(Arc candidate, NodeSeqRoute route, DecisionProcessState state) {
+    public double priority(Vehicle candidate, NodeSeqRoute route, DecisionProcessState state) {
         CalcPriorityProblem calcPrioProb =
                 new CalcPriorityProblem(candidate, route, state);
 

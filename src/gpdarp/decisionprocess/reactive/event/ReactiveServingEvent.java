@@ -3,11 +3,11 @@ package gpdarp.decisionprocess.reactive.event;
 import gpdarp.core.Arc;
 import gpdarp.core.Graph;
 import gpdarp.core.Instance;
+import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionSituation;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.RoutingPolicy;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class ReactiveServingEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        RoutingPolicy policy = decisionProcess.getRoutingPolicy();
+        AllocationPolicy policy = decisionProcess.getAllocationPolicy();
         DecisionProcessState state = decisionProcess.getState();
         Instance instance = state.getInstance();
         Graph graph = instance.getGraph();
@@ -85,7 +85,7 @@ public class ReactiveServingEvent extends DecisionProcessEvent {
             List<Arc> pool = new LinkedList<>(state.getUnassignedTasks());
 
             ReactiveDecisionSituation rds = new ReactiveDecisionSituation(
-                    pool, route, state);
+                    pool, state);
 
             nextTask = policy.next(rds);
 

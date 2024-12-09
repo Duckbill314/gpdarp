@@ -1,6 +1,6 @@
 package gpdarp.decisionprocess.tiebreaker;
 
-import gpdarp.core.Arc;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.TieBreaker;
 
 /**
@@ -10,7 +10,7 @@ import gpdarp.decisionprocess.TieBreaker;
 public class SimpleTieBreaker extends TieBreaker {
 
     @Override
-    public int breakTie(Arc arc1, Arc arc2) {
-        return arc1.compareTo(arc2);
+    public int breakTie(Vehicle v1, Vehicle v2) {
+        return v1.compareTo(v2);
     }
 }

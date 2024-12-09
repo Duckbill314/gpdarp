@@ -1,42 +1,43 @@
-package gpdarp.decisionprocess.routingpolicy.ensemble;
+package gpdarp.decisionprocess.allocationpolicy.ensemble;
 
 import gpdarp.core.Arc;
+import gpdarp.core.Vehicle;
+import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
-import gpdarp.decisionprocess.RoutingPolicy;
 import gpdarp.decisionprocess.TieBreaker;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionSituation;
 
 import java.util.List;
 
-public class EnsemblePolicy extends RoutingPolicy {
+public class EnsemblePolicy extends AllocationPolicy {
 
-    private RoutingPolicy[] policies; // the element policies in the ensemble
+    private AllocationPolicy[] policies; // the element policies in the ensemble
     private double[] weights; // the weights for the element policies
     private Combiner combiner; // the combiner
 
-    public EnsemblePolicy(PoolFilter poolFilter, TieBreaker tieBreaker, RoutingPolicy[] policies, double[] weights, Combiner combiner) {
+    public EnsemblePolicy(PoolFilter poolFilter, TieBreaker tieBreaker, AllocationPolicy[] policies, double[] weights, Combiner combiner) {
         super(poolFilter, tieBreaker);
         this.policies = policies;
         this.weights = weights;
         this.combiner = combiner;
     }
 
-    public EnsemblePolicy(PoolFilter poolFilter, RoutingPolicy[] policies, double[] weights, Combiner combiner) {
+    public EnsemblePolicy(PoolFilter poolFilter, AllocationPolicy[] policies, double[] weights, Combiner combiner) {
         super(poolFilter);
         this.policies = policies;
         this.weights = weights;
         this.combiner = combiner;
     }
 
-    public EnsemblePolicy(TieBreaker tieBreaker, RoutingPolicy[] policies, double[] weights, Combiner combiner) {
+    public EnsemblePolicy(TieBreaker tieBreaker, AllocationPolicy[] policies, double[] weights, Combiner combiner) {
         super(tieBreaker);
         this.policies = policies;
         this.weights = weights;
         this.combiner = combiner;
     }
 
-    public EnsemblePolicy(PoolFilter poolFilter, TieBreaker tieBreaker, RoutingPolicy[] policies, Combiner combiner) {
+    public EnsemblePolicy(PoolFilter poolFilter, TieBreaker tieBreaker, AllocationPolicy[] policies, Combiner combiner) {
         super(poolFilter, tieBreaker);
         this.policies = policies;
         this.combiner = combiner;
@@ -45,7 +46,7 @@ public class EnsemblePolicy extends RoutingPolicy {
             weights[i] = 1;
     }
 
-    public EnsemblePolicy(PoolFilter poolFilter, RoutingPolicy[] policies, Combiner combiner) {
+    public EnsemblePolicy(PoolFilter poolFilter, AllocationPolicy[] policies, Combiner combiner) {
         super(poolFilter);
         this.policies = policies;
         this.combiner = combiner;
@@ -54,7 +55,7 @@ public class EnsemblePolicy extends RoutingPolicy {
             weights[i] = 1;
     }
 
-    public EnsemblePolicy(TieBreaker tieBreaker, RoutingPolicy[] policies, Combiner combiner) {
+    public EnsemblePolicy(TieBreaker tieBreaker, AllocationPolicy[] policies, Combiner combiner) {
         super(tieBreaker);
         this.policies = policies;
         this.combiner = combiner;
@@ -63,19 +64,19 @@ public class EnsemblePolicy extends RoutingPolicy {
             weights[i] = 1;
     }
 
-    public RoutingPolicy[] getPolicies() {
+    public AllocationPolicy[] getPolicies() {
         return policies;
     }
 
-    public void setPolicies(RoutingPolicy[] policies) {
+    public void setPolicies(AllocationPolicy[] policies) {
         this.policies = policies;
     }
 
-    public RoutingPolicy getPolicy(int index) {
+    public AllocationPolicy getPolicy(int index) {
         return policies[index];
     }
 
-    public void setPolicy(int index, RoutingPolicy policy) {
+    public void setPolicy(int index, AllocationPolicy policy) {
         policies[index] = policy;
     }
 
@@ -119,7 +120,7 @@ public class EnsemblePolicy extends RoutingPolicy {
     /**
      * For ensemble routing policies, this function is not used.
      */
-    public double priority(Arc candidate, NodeSeqRoute route, DecisionProcessState state) {
+    public double priority(Vehicle candidate, NodeSeqRoute route, DecisionProcessState state) {
         return 0;
     }
 }

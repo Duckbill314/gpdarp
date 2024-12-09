@@ -8,12 +8,34 @@ import java.util.*;
 
 /**
  * An instance of the dial-a-ride problem.
+ * Acts as a focal point of the simulation by storing all the relevant information.
+ * At any given time, an instance is like a snapshot of the current state of the problem model.
  *
  * @author William Huang
  */
-public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Request> requests, double timeHorizon,
-                       List<Double> expectation) {
+public final class Instance {
+    private List<Vehicle> vehicles;
+    private List<Station> stations;
+    private List<Request> requests;
+    private double timeHorizon;
 
+    // Pseudo-singleton
+    private final Instance originalCopy;
+
+    public Instance(List<Vehicle> vehicles, List<Station> stations, List<Request> requests, double timeHorizon) {
+        this.vehicles = vehicles;
+        this.stations = stations;
+        this.requests = requests;
+        this.timeHorizon = timeHorizon;
+
+        this.originalCopy = this.clone();
+    }
+
+    // Getters
+    public List<Vehicle> getVehicles() { return vehicles; }
+    public List<Station> getStations() { return stations; }
+    public List<Request> getRequests() { return requests; }
+    public double getTimeHorizon() { return timeHorizon; }
     public int getNumVehicles() { return vehicles.size(); }
     public int getNumStations() { return stations.size(); }
     public int getNumRequests() { return requests.size(); }
@@ -30,11 +52,10 @@ public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Requ
         String[] segments;
 
         // Instance fields
-        double timeHorizon;
-        List<Double> expectation = new ArrayList<Double>();
         List<Vehicle> vehicles = new ArrayList<>();
         List<Station> stations = new ArrayList<>();
         List<Request> requests = new ArrayList<Request>();
+        double timeHorizon;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             reader.readLine(); // line 1: "n_K n n_S T"
@@ -63,11 +84,7 @@ public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Requ
             }
 
             reader.readLine(); // line 7: "n_exp[1] ... n_exp[T/60]xx"
-            line = reader.readLine(); // line 8: corresponding entries for line 7
-            segments = line.split("\\s+");
-            for (String segment : segments) {
-                expectation.add(Double.parseDouble(segment));
-            }
+            reader.readLine(); // line 8: corresponding entries for line 7
 
             reader.readLine(); // line 9: "loc_S[1] ... loc_S[n_S]"
             line = reader.readLine(); // line 10: corresponding entries for line 9
@@ -112,7 +129,7 @@ public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Requ
                 requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax));
             }
 
-            return new Instance(vehicles, stations, requests, timeHorizon, expectation);
+            return new Instance(vehicles, stations, requests, timeHorizon);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,16 +140,25 @@ public record Instance(List<Vehicle> vehicles, List<Station> stations, List<Requ
 
     @Override
     public String toString() {
-        return String.format("Instance with %d vehicles, %d stations, and %d requests",
-                getNumVehicles(), getNumStations(), getNumRequests()); }
+        return String.format("Instance with %d vehicles, %d stations, and %d getRequests",
+                getNumVehicles(), getNumStations(), getNumRequests());
+    }
 
     @Override
     public Instance clone() {
-        return new Instance(
-                new ArrayList<Vehicle>(vehicles),
-                new ArrayList<Station>(stations),
-                new ArrayList<Request>(requests),
-                timeHorizon,
-                new ArrayList<Double>(expectation));
+        return new Instance(Vehicle.listClone(vehicles),
+                Station.listClone(stations),
+                Request.listClone(requests),
+                timeHorizon);
+    }
+
+    /**
+     * Resets all values by replacing them with deep clones from a pseudo-singleton copy of the original Instance.
+     */
+    public void reset() {
+        this.vehicles = Vehicle.listClone(originalCopy.vehicles);
+        this.stations = Station.listClone(originalCopy.stations);
+        this.requests = Request.listClone(originalCopy.requests);
+        this.timeHorizon = originalCopy.timeHorizon;
     }
 }

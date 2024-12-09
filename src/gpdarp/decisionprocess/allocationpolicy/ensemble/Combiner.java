@@ -1,4 +1,4 @@
-package gpdarp.decisionprocess.routingpolicy.ensemble;
+package gpdarp.decisionprocess.allocationpolicy.ensemble;
 
 import gpdarp.core.Arc;
 import gpdarp.decisionprocess.DecisionProcessState;

@@ -3,10 +3,9 @@ package gpdarp.gp.io;
 import ec.Fitness;
 import ec.Problem;
 import ec.multiobjective.MultiObjectiveFitness;
-import gpdarp.algorithm.ccgp.CCGPHHProblem;
-import gpdarp.decisionprocess.RoutingPolicy;
-import gpdarp.decisionprocess.routingpolicy.GPRoutingPolicy;
-import gpdarp.decisionprocess.routingpolicy.ensemble.EnsemblePolicy;
+import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.allocationpolicy.GPAllocationPolicy;
+import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
 import gpdarp.gp.UCARPPrimitiveSet;
 import gpdarp.gp.ReactiveGPHHProblem;
 import gputils.LispUtils;
@@ -33,11 +32,11 @@ import java.util.List;
 
 public class GPResult {
     private List<String> expressions;
-    private List<RoutingPolicy> solutions;
+    private List<AllocationPolicy> solutions;
     private List<Fitness> trainFitnesses;
     private List<Fitness> testFitnesses;
     private String bestExpression;
-    private RoutingPolicy bestSolution;
+    private AllocationPolicy bestSolution;
     private Fitness bestTrainFitness;
     private Fitness bestTestFitness;
     private DescriptiveStatistics timeStat;
@@ -65,11 +64,11 @@ public class GPResult {
         this.bestExpression = bestExpression;
     }
 
-    public List<RoutingPolicy> getSolutions() {
+    public List<AllocationPolicy> getSolutions() {
         return solutions;
     }
 
-    public void setSolutions(List<RoutingPolicy> solutions) {
+    public void setSolutions(List<AllocationPolicy> solutions) {
         this.solutions = solutions;
     }
 
@@ -89,11 +88,11 @@ public class GPResult {
         this.testFitnesses = testFitnesses;
     }
 
-    public RoutingPolicy getBestSolution() {
+    public AllocationPolicy getBestSolution() {
         return bestSolution;
     }
 
-    public void setBestSolution(RoutingPolicy bestSolution) {
+    public void setBestSolution(AllocationPolicy bestSolution) {
         this.bestSolution = bestSolution;
     }
 
@@ -121,7 +120,7 @@ public class GPResult {
         this.timeStat = timeStat;
     }
 
-    public RoutingPolicy getSolutionAtGen(int gen) {
+    public AllocationPolicy getSolutionAtGen(int gen) {
         return solutions.get(gen);
     }
 
@@ -141,7 +140,7 @@ public class GPResult {
         expressions.add(expression);
     }
 
-    public void addSolution(RoutingPolicy solution) {
+    public void addSolution(AllocationPolicy solution) {
         solutions.add(solution);
     }
 
@@ -178,7 +177,7 @@ public class GPResult {
 
         String line;
         Fitness fitness = null;
-        RoutingPolicy solution = null;
+        AllocationPolicy solution = null;
         String expression = "";
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -196,16 +195,16 @@ public class GPResult {
 
                     result.addExpression(expression);
 
-                    RoutingPolicy routingPolicy =
-                            new GPRoutingPolicy(prob.getPoolFilter(),
+                    AllocationPolicy allocationPolicy =
+                            new GPAllocationPolicy(prob.getPoolFilter(),
                                     LispUtils.parseExpression(expression,
                                             UCARPPrimitiveSet.wholePrimitiveSet()));
 
-                    result.addSolution(routingPolicy);
+                    result.addSolution(allocationPolicy);
                     result.addTrainFitness(fitness);
                     result.addTestFitness((Fitness)fitness.clone());
 
-                    solution = routingPolicy;
+                    solution = allocationPolicy;
                 }
             }
         } catch (IOException e) {
@@ -230,12 +229,12 @@ public class GPResult {
 
         String line;
         Fitness fitness = null;
-        RoutingPolicy solution = null;
+        AllocationPolicy solution = null;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (!(line = br.readLine()).equals("Best Individual of Run:")) {
                 if (line.startsWith("Generation")) {
-                    List<RoutingPolicy> policies = new ArrayList<>();
+                    List<AllocationPolicy> policies = new ArrayList<>();
 
                     br.readLine(); // Best Individual:
                     line = br.readLine(); // Subpopulation x:
@@ -248,16 +247,16 @@ public class GPResult {
                         String expression = br.readLine();
 
                         expression = LispUtils.simplifyExpression(expression);
-                        policies.add(new GPRoutingPolicy(prob.getPoolFilter(),
+                        policies.add(new GPAllocationPolicy(prob.getPoolFilter(),
                                 LispUtils.parseExpression(expression,
                                         UCARPPrimitiveSet.wholePrimitiveSet())));
 
                         line = br.readLine(); // Subpopulation x: or blank
                     }
 
-                    RoutingPolicy[] policyArray = new RoutingPolicy[policies.size()];
+                    AllocationPolicy[] policyArray = new AllocationPolicy[policies.size()];
                     policyArray = policies.toArray(policyArray);
-                    RoutingPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
+                    AllocationPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
                             policyArray, prob.getCombiner());
 
                     result.addSolution(ensemblePolicy);
@@ -286,12 +285,12 @@ public class GPResult {
 
         String line;
         Fitness fitness = null;
-        RoutingPolicy solution = null;
+        AllocationPolicy solution = null;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (!(line = br.readLine()).equals("Best Individual of Run:")) {
                 if (line.startsWith("Generation")) {
-                    List<RoutingPolicy> policies = new ArrayList<>();
+                    List<AllocationPolicy> policies = new ArrayList<>();
 
                     br.readLine(); // Best Individual:
                     line = br.readLine(); // Subpopulation x:
@@ -304,16 +303,16 @@ public class GPResult {
                         String expression = br.readLine();
 
                         expression = LispUtils.simplifyExpression(expression);
-                        policies.add(new GPRoutingPolicy(prob.getPoolFilter(),
+                        policies.add(new GPAllocationPolicy(prob.getPoolFilter(),
                                 LispUtils.parseExpression(expression,
                                         UCARPPrimitiveSet.wholePrimitiveSet())));
 
                         line = br.readLine(); // Subpopulation x: or blank
                     }
 
-                    RoutingPolicy[] policyArray = new RoutingPolicy[policies.size()];
+                    AllocationPolicy[] policyArray = new AllocationPolicy[policies.size()];
                     policyArray = policies.toArray(policyArray);
-                    RoutingPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
+                    AllocationPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
                             policyArray, prob.getCombiner());
 
                     result.addSolution(ensemblePolicy);
@@ -323,7 +322,7 @@ public class GPResult {
             }
 
             // read the final ensemble (random forest)
-            List<RoutingPolicy> policies = new ArrayList<>();
+            List<AllocationPolicy> policies = new ArrayList<>();
 
             //br.readLine(); // Best Individual:
             line = br.readLine(); // Subpopulation x:
@@ -336,7 +335,7 @@ public class GPResult {
                 String expression = br.readLine();
 
                 expression = LispUtils.simplifyExpression(expression);
-                policies.add(new GPRoutingPolicy(prob.getPoolFilter(),
+                policies.add(new GPAllocationPolicy(prob.getPoolFilter(),
                         LispUtils.parseExpression(expression,
                                 UCARPPrimitiveSet.wholePrimitiveSet())));
 
@@ -346,9 +345,9 @@ public class GPResult {
                     break;
             }
 
-            RoutingPolicy[] policyArray = new RoutingPolicy[policies.size()];
+            AllocationPolicy[] policyArray = new AllocationPolicy[policies.size()];
             policyArray = policies.toArray(policyArray);
-            RoutingPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
+            AllocationPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
                     policyArray, prob.getCombiner());
 
             // Set the best solution as the final ensemble

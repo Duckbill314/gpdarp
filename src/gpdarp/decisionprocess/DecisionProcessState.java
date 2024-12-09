@@ -4,46 +4,38 @@ import gpdarp.core.*;
 import gpdarp.representation.Solution;
 import gpdarp.representation.route.Route;
 
-import java.util.*;
-
 /**
- * TODO
+ * A decision process state maintains high level state-based information to facilitate the decision process.
+ * This information includes
+ * - the instance (which contains most of the information),
+ * - the solution.
  *
  * @author gphhucarp, William Huang
  */
 public class DecisionProcessState {
-
     private Instance instance;
-    private long seed;
-    private Solution<Route> solution;
+    private Solution solution;
 
-
-    public DecisionProcessState(Instance instance, long seed, Solution<Route> solution) {
+    public DecisionProcessState(Instance instance, Solution solution) {
         this.instance = instance;
-        this.seed = seed;
         this.solution = solution;
     }
 
-    public DecisionProcessState(Instance instance, long seed) { this(instance, seed, new Solution<>()); }
+    // Initialisation constructor
+    public DecisionProcessState(Instance instance) { this(instance, new Solution()); }
 
     // Getters
     public Instance getInstance() { return instance; }
-    public long getSeed() { return seed; }
-    public Solution<Route> getSolution() { return solution; }
-
-    // Setters
-    public void setSeed(long seed) { this.seed = seed; }
+    public Solution getSolution() { return solution; }
 
     /**
-     * Reset a decision process state as the initial state.
+     * Resets the decision process state by resetting the instance and solution.
      */
     public void reset() {
-        // TODO
+        instance.reset();
+        solution.reset();
     }
 
     @Override
-    public DecisionProcessState clone() {
-        // TODO
-        return null;
-    }
+    public DecisionProcessState clone() { return new DecisionProcessState(instance, solution); }
 }

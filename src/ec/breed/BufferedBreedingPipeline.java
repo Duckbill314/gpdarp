@@ -20,7 +20,7 @@ import ec.util.*;
  * If empty, a 
  * BufferedBreedingPipeline makes a request of exactly <i>num-inds</i> 
  * individuals from a single child source; it then uses these
- * individuals to fill requests (returning min each time),
+ * individuals to fill getRequests (returning min each time),
  * until the buffer is emptied, at
  * which time it grabs exactly <i>num-inds</i> more individuals, and so on.
  *
@@ -28,7 +28,7 @@ import ec.util.*;
  * you want to cross over two individuals, then cross
  * them over again.  You'd like to hook up two CrossoverPipelines
  * in series.  Unfortunately, CrossoverPipeline takes
- * two sources; even if you set them to the same source, it requests
+ * two sources; even if you set them to the same source, it getRequests
  * <i>one</i> individual from the first source and then <i>one</i>
  * from the second, where what you really want is for it to request
  * <i>two</i> individuals from a single source (the other CrossoverPipeline).

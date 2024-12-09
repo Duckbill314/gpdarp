@@ -1,8 +1,9 @@
 package gpdarp.decisionprocess.reactive;
 
-import gpdarp.core.Arc;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.DecisionSituation;
+import gpdarp.representation.route.Route;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,33 +14,27 @@ import java.util.List;
 
 public class ReactiveDecisionSituation extends DecisionSituation {
 
-    private List<Arc> pool;
-    private NodeSeqRoute route;
+    private List<Vehicle> pool;
     private DecisionProcessState state;
 
-    public ReactiveDecisionSituation(List<Arc> pool, NodeSeqRoute route, DecisionProcessState state) {
+    public ReactiveDecisionSituation(List<Vehicle> pool, DecisionProcessState state) {
         this.pool = pool;
-        this.route = route;
         this.state = state;
     }
 
-    public List<Arc> getPool() {
+    // Getters
+    public List<Vehicle> getPool() {
         return pool;
     }
-
-    public NodeSeqRoute getRoute() {
-        return route;
-    }
-
     public DecisionProcessState getState() {
         return state;
     }
 
+    @Override
     public ReactiveDecisionSituation clone() {
-        List<Arc> clonedPool = new LinkedList<>(pool);
-        NodeSeqRoute clonedRoute = (NodeSeqRoute)route.clone();
+        List<Vehicle> clonedPool = Vehicle.listClone(pool);
         DecisionProcessState clonedState = state.clone();
 
-        return new ReactiveDecisionSituation(clonedPool, clonedRoute, clonedState);
+        return new ReactiveDecisionSituation(clonedPool, clonedState);
     }
 }

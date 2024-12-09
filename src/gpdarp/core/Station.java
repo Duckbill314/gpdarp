@@ -1,5 +1,8 @@
 package gpdarp.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The only circumstance in which a position is fixed and reused is if it is the position of a recharging station.
  * This class emphasises the importance of these positions, giving a point of reference for charging tasks.
@@ -13,4 +16,19 @@ public class Station extends Node {
 
     @Override
     public String toString() { return String.format("Station at %s", super.toString()); }
+
+    /**
+     * Utility method for creating deep clones of ArrayLists of Stations.
+     *
+     * @param stations the list of stations to be cloned.
+     *
+     * @return the cloned list.
+     */
+    public static List<Station> listClone(List<Station> stations) {
+        List<Station> clonedStations = new ArrayList<>();
+        for (Station station : stations) {
+            clonedStations.add((Station) station.clone());
+        }
+        return clonedStations;
+    }
 }

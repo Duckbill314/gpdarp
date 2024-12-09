@@ -7,7 +7,7 @@ import gpdarp.decisionprocess.reactive.ReactiveDecisionSituation;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.RoutingPolicy;
+import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.representation.route.Route;
 
 import java.util.LinkedList;
@@ -33,7 +33,7 @@ public class ReactiveRefillEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        RoutingPolicy policy = decisionProcess.getRoutingPolicy();
+        AllocationPolicy policy = decisionProcess.getAllocationPolicy();
         DecisionProcessState state = decisionProcess.getState();
         Instance instance = state.getInstance();
         Graph graph = instance.getGraph();
@@ -58,7 +58,7 @@ public class ReactiveRefillEvent extends DecisionProcessEvent {
             List<Arc> pool = new LinkedList<>(state.getUnassignedTasks());
 
             ReactiveDecisionSituation rds = new ReactiveDecisionSituation(
-                    pool, route, state);
+                    pool, state);
 
             Arc nextTask = policy.next(rds);
 

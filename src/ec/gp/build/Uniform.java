@@ -44,7 +44,7 @@ import java.io.*;
    Artificial Ant's function set can make NO trees of size 2.
    What happens when we're asked to make a tree of (invalid) size 2 in
    Artificial Ant then?  Uniform presently handles it as follows:
-   <ol><li> If the system specifically requests a given size that's invalid, Uniform will 
+   <ol><li> If the system specifically getRequests a given size that's invalid, Uniform will
    look for the next larger size which is valid.  If it can't find any,
    it will then look for the next smaller size which is valid.
    <li> If a random choice yields a given size that's invalid,
