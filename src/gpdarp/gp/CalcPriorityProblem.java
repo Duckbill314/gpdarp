@@ -5,41 +5,39 @@ import ec.Individual;
 import ec.Problem;
 import ec.simple.SimpleProblemForm;
 import gpdarp.core.Arc;
+import gpdarp.core.Request;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 
 /**
  * The problem for calculating the priority of a candidate task.
  *
- * Created by YiMei on 27/09/16.
+ * @author Yi Mei
  */
 public class CalcPriorityProblem extends Problem implements SimpleProblemForm {
 
-    private Arc candidate;
-    private NodeSeqRoute route;
+    private Vehicle candidate;
+    private Request request;
     private DecisionProcessState state;
 
-    public CalcPriorityProblem(Arc candidate,
-                               NodeSeqRoute route,
+    public CalcPriorityProblem(Vehicle candidate,
+                               Request request,
                                DecisionProcessState state) {
         this.candidate = candidate;
-        this.route = route;
+        this.request = request;
         this.state = state;
     }
 
-    public Arc getCandidate() {
+    public Vehicle getCandidate() {
         return candidate;
     }
-
-    public NodeSeqRoute getRoute() {
-        return route;
+    public Request getRequest() {
+        return request;
     }
-
     public DecisionProcessState getState() {
         return state;
     }
 
     @Override
-    public void evaluate(EvolutionState state, Individual ind,
-                         int subpopulation, int threadnum) {
-    }
+    public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum) { }
 }

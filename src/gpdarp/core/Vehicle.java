@@ -9,7 +9,7 @@ import java.util.*;
  * - capacity and demand,
  * - battery charging information,
  * - current position (i.e. last visited node) and current arc,
- * - getRequests and request service time,
+ * - requests and request service time,
  * - full route history and future planned route.
  * It also has a "temporary" priority value for the purpose of request allocation.
  *
@@ -72,6 +72,7 @@ public class Vehicle {
     public Route getHistoricalRoute() { return historicalRoute; }
     public Route getPlannedRoute() { return plannedRoute; }
     public double getPriority() { return priority; }
+    public int getRemainingCapacity() { return capacity - demand; }
 
     // Setters
     public void setDemand(int demand) { this.demand = demand; }
@@ -106,7 +107,7 @@ public class Vehicle {
         List<Route> routes = new ArrayList<>();
         candidates.forEach(candidate -> routes.add(Route.buildFromNodeList(candidate)));
         return routes.stream()
-                .min(Comparator.comparing(Route::getCost))
+                .min(Comparator.comparing(Route::getLength))
                 .orElseThrow(NoSuchElementException::new);
     }
 
@@ -159,7 +160,7 @@ public class Vehicle {
      *
      * @param tElapsed the time spent charging.
      */
-    public void fill(double tElapsed) {
+    public void fill(int tElapsed) {
         chargeState += chargeFillRate * tElapsed;
         if (chargeState > chargeMax) {
             chargeState = chargeMax;
@@ -167,15 +168,41 @@ public class Vehicle {
     }
 
     /**
-     * Deplete charge at a rate proportional to the elapsed time.
-     * Charge should not fall below empty - however, this function allows it for the sake of determining feasibility.
+     * Estimates the time required to fully charge.
      *
-     * @param tElapsed the time spent charging.
+     * @return the estimated charge time.
      */
-    public double deplete(double tElapsed) {
-        chargeState -= chargeDepletionRate * tElapsed;
+    public int estimateFillTime() {
+        double missing = chargeMax - chargeState;
+        return (int) Math.ceil(missing / chargeFillRate);
+    }
+
+    /**
+     * Deplete charge at a rate proportional to a travelled length.
+     * Charge should not fall below empty, but the safeguard in place is only there for potential rounding errors.
+     * For proper functionality, depletion actions should always be checked for feasibility before they are taken.
+     *
+     * @param length the length travelled.
+     *
+     * @return the resulting charge state (not strictly needed, but available for convenience).
+     */
+    public double deplete(int length) {
+        chargeState -= chargeDepletionRate * length;
+        if (chargeState < 0) {
+            chargeState = 0;
+        }
         return chargeState;
     }
+
+    /**
+     * Estimation of resulting charge from travelling a given length.
+     * Always check using this method before actually depleting!
+     *
+     * @param length the length travelled.
+     *
+     * @return the resulting charge state.
+     */
+    public double estimateDepletion(int length) { return chargeState - chargeDepletionRate * length; }
 
     @Override
     public String toString() { return String.format("Vehicle %d | charge: %f/%f", id, chargeState, chargeMax); }
@@ -201,4 +228,14 @@ public class Vehicle {
         }
         return clonedVehicles;
     }
+
+    /**
+     * Compare the vehicle to another vehicle on the basis of their id number.
+     * This is a quite meaningless natural comparator, because other more meaningful comparisons are made explicitly
+     * whenever necessary.
+     *
+     * @param o the other vehicle.
+     * @return priority of this vehicle in comparison to the other vehicle.
+     */
+    public int compareTo(Vehicle o) { return (id - o.getId()); }
 }

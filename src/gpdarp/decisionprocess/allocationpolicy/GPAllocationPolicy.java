@@ -2,6 +2,7 @@ package gpdarp.decisionprocess.allocationpolicy;
 
 import ec.gp.GPTree;
 import gpdarp.core.Arc;
+import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
@@ -13,10 +14,9 @@ import gputils.DoubleData;
 /**
  * A GP-evolved routing policy.
  *
- * Created by gphhucarp on 30/08/17.
+ * @author gphhucarp
  */
 public class GPAllocationPolicy extends AllocationPolicy {
-
     private GPTree gpTree;
 
     public GPAllocationPolicy(PoolFilter poolFilter, GPTree gpTree) {
@@ -38,10 +38,8 @@ public class GPAllocationPolicy extends AllocationPolicy {
     }
 
     @Override
-    public double priority(Vehicle candidate, NodeSeqRoute route, DecisionProcessState state) {
-        CalcPriorityProblem calcPrioProb =
-                new CalcPriorityProblem(candidate, route, state);
-
+    public double priority(Vehicle candidate, Request request, DecisionProcessState state) {
+        CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, request, state);
         DoubleData tmp = new DoubleData();
         gpTree.child.eval(null, 0, tmp, null, null, calcPrioProb);
 

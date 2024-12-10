@@ -10,7 +10,7 @@ import java.util.List;
  * @author William Huang
  */
 public class Station extends Node {
-    public Station(double x, double y) {
+    public Station(int x, int y) {
         super(x, y);
     }
 

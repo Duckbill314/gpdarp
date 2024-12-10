@@ -4,9 +4,13 @@ import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.TieBreaker;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
+/**
+ * A random tiebreaker that uniformly selects one of the two vehicles.
+ *
+ * @author gphhucarp
+ */
 public class RandomTieBreaker extends TieBreaker {
-
-    private RandomDataGenerator rdg;
+    private final RandomDataGenerator rdg;
 
     public RandomTieBreaker(RandomDataGenerator rdg) {
         this.rdg = rdg;

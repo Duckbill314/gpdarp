@@ -6,12 +6,12 @@ import java.util.List;
 /**
  * An arc is a directed edge between two nodes. It has:
  *  - (from, to) nodes,
- *  - serving cost (proportional to length).
+ *  - length.
  *
  * @author William Huang
  */
 
-public record Arc(Node from, Node to, double serveCost) implements Comparable<Arc> {
+public record Arc(Node from, Node to, int length) implements Comparable<Arc> {
     // Simplified default constructor
     public Arc(Node from, Node to) {
         this(from, to, from.calcDist(to));
@@ -19,13 +19,11 @@ public record Arc(Node from, Node to, double serveCost) implements Comparable<Ar
 
     @Override
     public String toString() {
-        return String.format("(%s, %s): sc = %f", from, to, serveCost);
+        return String.format("(%s, %s): sc = %d", from, to, length);
     }
 
     @Override
-    public int compareTo(Arc o) {
-        return Double.compare(serveCost, o.serveCost());
-    }
+    public int compareTo(Arc o) { return Double.compare(length, o.length()); }
 
     @Override
     public Arc clone() { return new Arc(from.clone(), to.clone()); }

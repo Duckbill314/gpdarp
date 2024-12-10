@@ -17,6 +17,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A GP result is a class that stores the information read from an out.stat file produced by a GP run.
@@ -156,16 +157,10 @@ public class GPResult {
                                         Problem problem,
                                         SolutionType solutionType,
                                         FitnessType fitnessType) {
-        switch (solutionType) {
-            case SIMPLE_SOLUTION:
-                return readSimpleSolutionFromFile(file, problem, fitnessType);
-            case CC_SOLUTION:
-                return readCCSolutionFromFile(file, problem, fitnessType);
-            case RF_SOLUTION:
-                return readRFSolutionFromFile(file, problem, fitnessType);
-            default:
-                return null;
+        if (Objects.requireNonNull(solutionType) == SolutionType.SIMPLE_SOLUTION) {
+            return readSimpleSolutionFromFile(file, problem, fitnessType);
         }
+        return null;
     }
 
     public static GPResult readSimpleSolutionFromFile(File file,
@@ -216,147 +211,6 @@ public class GPResult {
         result.setBestSolution(solution);
         result.setBestTrainFitness(fitness);
         result.setBestTestFitness((Fitness)fitness.clone());
-
-        return result;
-    }
-
-    public static GPResult readCCSolutionFromFile(File file,
-                                                  Problem problem,
-                                                  FitnessType fitnessType) {
-        CCGPHHProblem prob = (CCGPHHProblem)problem;
-
-        GPResult result = new GPResult();
-
-        String line;
-        Fitness fitness = null;
-        AllocationPolicy solution = null;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            while (!(line = br.readLine()).equals("Best Individual of Run:")) {
-                if (line.startsWith("Generation")) {
-                    List<AllocationPolicy> policies = new ArrayList<>();
-
-                    br.readLine(); // Best Individual:
-                    line = br.readLine(); // Subpopulation x:
-                    while (line.startsWith("Subpopulation")) {
-                        br.readLine(); // Evaluated: xxx
-                        line = br.readLine(); // Fitness
-                        fitness = readFitnessFromLine(line, fitnessType);
-                        br.readLine(); // Tree 0:
-
-                        String expression = br.readLine();
-
-                        expression = LispUtils.simplifyExpression(expression);
-                        policies.add(new GPAllocationPolicy(prob.getPoolFilter(),
-                                LispUtils.parseExpression(expression,
-                                        UCARPPrimitiveSet.wholePrimitiveSet())));
-
-                        line = br.readLine(); // Subpopulation x: or blank
-                    }
-
-                    AllocationPolicy[] policyArray = new AllocationPolicy[policies.size()];
-                    policyArray = policies.toArray(policyArray);
-                    AllocationPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
-                            policyArray, prob.getCombiner());
-
-                    result.addSolution(ensemblePolicy);
-                    result.addTrainFitness(fitness);
-                    result.addTestFitness((Fitness)fitness.clone());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Set the best solution as the solution in the last generation
-        result.setBestSolution(result.getSolutionAtGen(result.getSolutions().size()-1));
-        result.setBestTrainFitness(result.getTrainFitnessAtGen(result.getTrainFitnesses().size()-1));
-        result.setBestTestFitness((Fitness)fitness.clone());
-
-        return result;
-    }
-
-    public static GPResult readRFSolutionFromFile(File file,
-                                                  Problem problem,
-                                                  FitnessType fitnessType) {
-        CCGPHHProblem prob = (CCGPHHProblem)problem;
-
-        GPResult result = new GPResult();
-
-        String line;
-        Fitness fitness = null;
-        AllocationPolicy solution = null;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            while (!(line = br.readLine()).equals("Best Individual of Run:")) {
-                if (line.startsWith("Generation")) {
-                    List<AllocationPolicy> policies = new ArrayList<>();
-
-                    br.readLine(); // Best Individual:
-                    line = br.readLine(); // Subpopulation x:
-                    while (line.startsWith("Subpopulation")) {
-                        br.readLine(); // Evaluated: xxx
-                        line = br.readLine(); // Fitness
-                        fitness = readFitnessFromLine(line, fitnessType);
-                        br.readLine(); // Tree 0:
-
-                        String expression = br.readLine();
-
-                        expression = LispUtils.simplifyExpression(expression);
-                        policies.add(new GPAllocationPolicy(prob.getPoolFilter(),
-                                LispUtils.parseExpression(expression,
-                                        UCARPPrimitiveSet.wholePrimitiveSet())));
-
-                        line = br.readLine(); // Subpopulation x: or blank
-                    }
-
-                    AllocationPolicy[] policyArray = new AllocationPolicy[policies.size()];
-                    policyArray = policies.toArray(policyArray);
-                    AllocationPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
-                            policyArray, prob.getCombiner());
-
-                    result.addSolution(ensemblePolicy);
-                    result.addTrainFitness(fitness);
-                    result.addTestFitness((Fitness)fitness.clone());
-                }
-            }
-
-            // read the final ensemble (random forest)
-            List<AllocationPolicy> policies = new ArrayList<>();
-
-            //br.readLine(); // Best Individual:
-            line = br.readLine(); // Subpopulation x:
-            while (line.startsWith("Subpopulation")) {
-                br.readLine(); // Evaluated: xxx
-                line = br.readLine(); // Fitness
-                fitness = readFitnessFromLine(line, fitnessType);
-                br.readLine(); // Tree 0:
-
-                String expression = br.readLine();
-
-                expression = LispUtils.simplifyExpression(expression);
-                policies.add(new GPAllocationPolicy(prob.getPoolFilter(),
-                        LispUtils.parseExpression(expression,
-                                UCARPPrimitiveSet.wholePrimitiveSet())));
-
-                line = br.readLine(); // Subpopulation x: or null
-
-                if (line == null)
-                    break;
-            }
-
-            AllocationPolicy[] policyArray = new AllocationPolicy[policies.size()];
-            policyArray = policies.toArray(policyArray);
-            AllocationPolicy ensemblePolicy = new EnsemblePolicy(prob.getPoolFilter(),
-                    policyArray, prob.getCombiner());
-
-            // Set the best solution as the final ensemble
-            result.setBestSolution(ensemblePolicy);
-            result.setBestTrainFitness(fitness);
-            result.setBestTestFitness((Fitness)fitness.clone());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         return result;
     }

@@ -18,15 +18,20 @@ public final class Instance {
     private List<Station> stations;
     private List<Request> requests;
     private double timeHorizon;
+    private double travelTimeRate;
+    private double latenessPenalty;
 
     // Pseudo-singleton
     private final Instance originalCopy;
 
-    public Instance(List<Vehicle> vehicles, List<Station> stations, List<Request> requests, double timeHorizon) {
+    public Instance(List<Vehicle> vehicles, List<Station> stations, List<Request> requests,
+                    double timeHorizon, double travelTimeRate, double latenessPenalty) {
         this.vehicles = vehicles;
         this.stations = stations;
         this.requests = requests;
         this.timeHorizon = timeHorizon;
+        this.travelTimeRate = travelTimeRate;
+        this.latenessPenalty = latenessPenalty;
 
         this.originalCopy = this.clone();
     }
@@ -36,6 +41,8 @@ public final class Instance {
     public List<Station> getStations() { return stations; }
     public List<Request> getRequests() { return requests; }
     public double getTimeHorizon() { return timeHorizon; }
+    public double getTravelTimeRate() { return travelTimeRate; }
+    public double getLatenessPenalty() { return latenessPenalty; }
     public int getNumVehicles() { return vehicles.size(); }
     public int getNumStations() { return stations.size(); }
     public int getNumRequests() { return requests.size(); }
@@ -54,7 +61,7 @@ public final class Instance {
         // Instance fields
         List<Vehicle> vehicles = new ArrayList<>();
         List<Station> stations = new ArrayList<>();
-        List<Request> requests = new ArrayList<Request>();
+        List<Request> requests = new ArrayList<>();
         double timeHorizon;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -66,7 +73,7 @@ public final class Instance {
             int numStations = Integer.parseInt(segments[2]);
             timeHorizon = Double.parseDouble(segments[3]);
 
-            reader.readLine(); // line 3: "C Q β α d_serv"
+            reader.readLine(); // line 3: "C Q β α d_serv ϕ ρ"
             line = reader.readLine(); // line 4: corresponding entries for line 3
             segments = line.split("\\s+");
             int capacity = Integer.parseInt(segments[0]);
@@ -74,6 +81,8 @@ public final class Instance {
             double chargeDepletionRate = Double.parseDouble(segments[2]);
             double chargeFillRate = Double.parseDouble(segments[3]);
             double serveTime = Double.parseDouble(segments[4]);
+            double travelTimeRate = Double.parseDouble(segments[5]);
+            double latenessPenalty = Double.parseDouble(segments[6]);
 
             reader.readLine(); // line 5: "B0[1] ... B0[n_K]"
             line = reader.readLine(); // line 6: corresponding entries for line 5
@@ -90,8 +99,8 @@ public final class Instance {
             line = reader.readLine(); // line 10: corresponding entries for line 9
             segments = line.split("\\s+");
             for (int i = 0; i < segments.length; i += 2) {
-                double x = Double.parseDouble(segments[i]);
-                double y = Double.parseDouble(segments[i + 1]);
+                int x = Integer.parseInt(segments[i]);
+                int y = Integer.parseInt(segments[i + 1]);
                 stations.add(new Station(x, y));
             }
 
@@ -100,8 +109,8 @@ public final class Instance {
             segments = line.split("\\s+");
             List<Node> vehicleNodes = new ArrayList<Node>();
             for (int i = 0; i < segments.length; i += 2) {
-                double x = Double.parseDouble(segments[i]);
-                double y = Double.parseDouble(segments[i + 1]);
+                int x = Integer.parseInt(segments[i]);
+                int y = Integer.parseInt(segments[i + 1]);
                 vehicleNodes.add(new Node(x, y));
             }
 
@@ -117,25 +126,39 @@ public final class Instance {
                 segments = line.split("\\s+");
                 int id = Integer.parseInt(segments[0]);
                 float tRec = Float.parseFloat(segments[1]);
-                double x = Double.parseDouble(segments[2]);
-                double y = Double.parseDouble(segments[3]);
+                int x = Integer.parseInt(segments[2]);
+                int y = Integer.parseInt(segments[3]);
                 Node pickup = new Node(x, y);
-                x = Double.parseDouble(segments[4]);
-                y = Double.parseDouble(segments[5]);
+                x = Integer.parseInt(segments[4]);
+                y = Integer.parseInt(segments[5]);
                 Node dropoff = new Node(x, y);
                 float tEarly = Float.parseFloat(segments[6]);
                 float tLate = Float.parseFloat(segments[7]);
                 float tMax = Float.parseFloat(segments[8]);
                 requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax));
+                line = reader.readLine();
             }
 
-            return new Instance(vehicles, stations, requests, timeHorizon);
+            return new Instance(vehicles, stations, requests, timeHorizon, travelTimeRate, latenessPenalty);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return null;
+    }
+
+    /**
+     * Find the closest station from any reference point.
+     *
+     * @param pos the node of the reference point.
+     *
+     * @return the closest station.
+     */
+    public Station findClosestStation(Node pos) {
+        return stations.stream()
+                .min(Comparator.comparingDouble(pos::calcDist))
+                .orElseThrow(NoSuchElementException::new);
     }
 
     @Override
@@ -146,10 +169,13 @@ public final class Instance {
 
     @Override
     public Instance clone() {
-        return new Instance(Vehicle.listClone(vehicles),
+        return new Instance(
+                Vehicle.listClone(vehicles),
                 Station.listClone(stations),
                 Request.listClone(requests),
-                timeHorizon);
+                timeHorizon,
+                travelTimeRate,
+                latenessPenalty);
     }
 
     /**
@@ -160,5 +186,7 @@ public final class Instance {
         this.stations = Station.listClone(originalCopy.stations);
         this.requests = Request.listClone(originalCopy.requests);
         this.timeHorizon = originalCopy.timeHorizon;
+        this.travelTimeRate = originalCopy.travelTimeRate;
+        this.latenessPenalty = originalCopy.latenessPenalty;
     }
 }

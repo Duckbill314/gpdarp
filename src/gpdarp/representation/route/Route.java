@@ -23,6 +23,7 @@ public class Route {
 
     // Getters
     public List<Arc> getArcs() { return arcs; }
+    public Node getEndpoint() { return arcs.getLast().to(); }
 
     // Setters
     public void setArcs(List<Arc> arcs) { this.arcs = arcs; }
@@ -47,19 +48,19 @@ public class Route {
     }
 
     /**
-     * Calculate the cost of the route as the sum of the serving costs of all arcs in the route.
+     * Calculate the sum of the lengths of all arcs in the route.
      *
-     * @return the total cost.
+     * @return the total length.
      */
-    public double getCost() {
+    public int getLength() {
         if (arcs.isEmpty()) {
             return 0;
         }
-        double cost = 0;
+        int length = 0;
         for (Arc arc : arcs) {
-            cost += arc.serveCost();
+            length += arc.length();
         }
-        return cost;
+        return length;
     }
 
     /**

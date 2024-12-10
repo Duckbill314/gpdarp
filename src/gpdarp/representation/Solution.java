@@ -70,7 +70,7 @@ public class Solution {
     public double totalCost() {
         double result = 0;
         for (Route route : routes) {
-            result += route.getCost();
+            result += route.getLength();
         }
         return result;
     }
@@ -83,8 +83,8 @@ public class Solution {
     public double maxRouteCost() {
         double result = -1;
         for (Route route : routes) {
-            if (result < route.getCost())
-                result = route.getCost();
+            if (result < route.getLength())
+                result = route.getLength();
         }
         return result;
     }

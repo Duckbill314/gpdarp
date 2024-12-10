@@ -1,6 +1,8 @@
 package gpdarp.decisionprocess.allocationpolicy.ensemble;
 
 import gpdarp.core.Arc;
+import gpdarp.core.Request;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 
 import java.util.List;
@@ -12,5 +14,6 @@ import java.util.List;
 
 public abstract class Combiner {
 
-    public abstract Arc next(List<Arc> pool, NodeSeqRoute route, DecisionProcessState state, EnsemblePolicy ensemblePolicy);
+    public abstract Vehicle next(List<Vehicle> pool, Request request, DecisionProcessState state,
+                                 EnsemblePolicy ensemblePolicy);
 }

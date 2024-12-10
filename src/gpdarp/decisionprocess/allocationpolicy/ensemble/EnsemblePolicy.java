@@ -1,6 +1,7 @@
 package gpdarp.decisionprocess.allocationpolicy.ensemble;
 
 import gpdarp.core.Arc;
+import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
@@ -10,6 +11,11 @@ import gpdarp.decisionprocess.reactive.ReactiveDecisionSituation;
 
 import java.util.List;
 
+/**
+ * An ensemble of allocation policies.
+ *
+ * @author gphhucarp, William Huang
+ */
 public class EnsemblePolicy extends AllocationPolicy {
 
     private AllocationPolicy[] policies; // the element policies in the ensemble
@@ -64,63 +70,33 @@ public class EnsemblePolicy extends AllocationPolicy {
             weights[i] = 1;
     }
 
-    public AllocationPolicy[] getPolicies() {
-        return policies;
-    }
+    // Getters
+    public AllocationPolicy[] getPolicies() { return policies; }
+    public AllocationPolicy getPolicy(int index) { return policies[index]; }
+    public double[] getWeights() { return weights; }
+    public double getWeight(int index) { return weights[index]; }
+    public Combiner getCombiner() { return combiner; }
+    public int size() { return policies.length; }
 
-    public void setPolicies(AllocationPolicy[] policies) {
-        this.policies = policies;
-    }
+    // Setters
+    public void setPolicies(AllocationPolicy[] policies) { this.policies = policies; }
+    public void setPolicy(int index, AllocationPolicy policy) { policies[index] = policy; }
+    public void setCombiner(Combiner combiner) { this.combiner = combiner; }
 
-    public AllocationPolicy getPolicy(int index) {
-        return policies[index];
-    }
-
-    public void setPolicy(int index, AllocationPolicy policy) {
-        policies[index] = policy;
-    }
-
-    public double[] getWeights() {
-        return weights;
-    }
-
-    public double getWeight(int index) {
-        return weights[index];
-    }
-
-    public Combiner getCombiner() {
-        return combiner;
-    }
-
-    public void setCombiner(Combiner combiner) {
-        this.combiner = combiner;
-    }
-
-    public int size() {
-        return policies.length;
-    }
 
     @Override
-    public Arc next(ReactiveDecisionSituation rds) {
-        List<Arc> pool = rds.getPool();
-        NodeSeqRoute route = rds.getRoute();
+    public Vehicle next(ReactiveDecisionSituation rds, Request request) {
+        List<Vehicle> pool = rds.getPool();
         DecisionProcessState state = rds.getState();
 
-        List<Arc> filteredPool = poolFilter.filter(pool, route, state);
+        List<Vehicle> filteredPool = poolFilter.filter(pool, request, state);
 
         if (filteredPool.isEmpty())
             return null;
 
-        Arc next = combiner.next(pool, route, state, this);
-
-        return next;
+        return combiner.next(pool, request, state, this);
     }
 
     @Override
-    /**
-     * For ensemble routing policies, this function is not used.
-     */
-    public double priority(Vehicle candidate, NodeSeqRoute route, DecisionProcessState state) {
-        return 0;
-    }
+    public double priority(Vehicle candidate, Request request, DecisionProcessState state) { return 0; }
 }

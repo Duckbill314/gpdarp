@@ -1,6 +1,7 @@
 package gpdarp.decisionprocess.poolfilter;
 
-import gpdarp.core.Arc;
+import gpdarp.core.Request;
+import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
 
@@ -12,11 +13,6 @@ import java.util.List;
  */
 
 public class IdentityPoolFilter extends PoolFilter {
-
     @Override
-    public List<Arc> filter(List<Arc> pool,
-                            NodeSeqRoute route,
-                            DecisionProcessState state) {
-        return pool;
-    }
+    public List<Vehicle> filter(List<Vehicle> pool, Request request, DecisionProcessState state) { return pool; }
 }
