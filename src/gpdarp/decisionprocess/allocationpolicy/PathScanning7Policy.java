@@ -11,8 +11,8 @@ import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.decisionprocess.AllocationPolicy;
 
 /**
- * The path scanning 7 policy first selects the nearest neighbours.
- * Then, among multiple nearest neighbours, it minimises the length of the historical route.
+ * The path scanning 7 policy first selects the nearest vehicles.
+ * Then, among multiple nearest vehicles, it minimises the length of the historical route.
  *
  * @author gphhucarp, William Huang
  */

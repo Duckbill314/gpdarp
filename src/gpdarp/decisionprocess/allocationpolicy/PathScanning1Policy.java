@@ -10,7 +10,7 @@ import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
 
 /**
  * The path scanning 1 policy first selects the nearest vehicle.
- * Then, among multiple nearest neighbours, it minimises the percentage of remaining capacity.
+ * Then, among multiple nearest vehicles, it minimises the percentage of remaining capacity.
  *
  * @author gphhucarp, William Huang
  */

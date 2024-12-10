@@ -9,8 +9,8 @@ import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
 
 /**
- * The path scanning 2 policy first selects the nearest neighbours.
- * Then, among multiple nearest neighbours, it maximises the percentage of remaining capacity.
+ * The path scanning 2 policy first selects the nearest vehicle.
+ * Then, among multiple nearest vehicles, it maximises the percentage of remaining capacity.
  *
  * @author gphhucarp, William Huang
  */
