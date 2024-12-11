@@ -161,6 +161,15 @@ public final class Instance {
                 .orElseThrow(NoSuchElementException::new);
     }
 
+    /**
+     * Helper method that converts distance into travel time.
+     *
+     * @param distance the given distance.
+     *
+     * @return the calculated travel time.
+     */
+    public int calculateTravelTime(int distance) { return (int) Math.ceil(distance / travelTimeRate); }
+
     @Override
     public String toString() {
         return String.format("Instance with %d vehicles, %d stations, and %d getRequests",

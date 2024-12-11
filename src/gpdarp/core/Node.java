@@ -2,7 +2,6 @@ package gpdarp.core;
 
 /**
  * A Node represents a position on a 2D grid.
- * This class is lightweight in comparison to what is typical for graph problems.
  *
  * @author William Huang
  */
@@ -11,6 +10,9 @@ public class Node {
     private int y;
     private boolean visited;
     private int eta;
+    private Request request = null;
+
+    // TODO: node types
 
     public Node(int x, int y, boolean visited, int eta) {
         this.x = x;
@@ -27,12 +29,14 @@ public class Node {
     public int getY() { return y; }
     public boolean isVisited() { return visited; }
     public int getEta() { return eta; }
+    public Request getRequest() { return request; }
 
     // Setters
     public void setX(int x) { this.x = x; }
     public void setY(int y) { this.y = y; }
     public void visit() { visited = true; }
     public void setEta(int eta) { this.eta = eta; }
+    public void setRequest(Request request) { this.request = request; }
 
     /**
      * Calculates the Euclidean length to another node.
@@ -48,4 +52,10 @@ public class Node {
 
     @Override
     public Node clone() { return new Node(x, y, visited, eta); }
+
+    public enum NodeType {
+        PICKUP,
+        DROPOFF,
+        STATION;
+    }
 }

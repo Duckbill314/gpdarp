@@ -10,13 +10,13 @@ import java.util.List;
  * Created by gphhucarp on 28/08/17.
  */
 public abstract class DecisionProcessEvent implements Comparable<DecisionProcessEvent> {
-    protected double time;
+    protected int time;
 
-    public DecisionProcessEvent(double time) {
+    public DecisionProcessEvent(int time) {
         this.time = time;
     }
 
-    public double getTime() {
+    public int getTime() {
         return time;
     }
 

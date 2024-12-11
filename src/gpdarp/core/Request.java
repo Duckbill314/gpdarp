@@ -15,6 +15,10 @@ import java.util.List;
  * @author William Huang
  */
 public record Request(int id, float tRec, Node pickup, Node dropoff, float tEarly, float tLate, float tMax) {
+    public Request {
+        pickup.setRequest(this);
+        dropoff.setRequest(this);
+    }
 
     /**
      * A request is fulfilled if both its pickup and dropoff nodes have been visited.

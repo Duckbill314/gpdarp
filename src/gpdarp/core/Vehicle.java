@@ -204,6 +204,17 @@ public class Vehicle {
      */
     public double estimateDepletion(int length) { return chargeState - chargeDepletionRate * length; }
 
+    /**
+     * Helper method that updates a vehicle's current arc with the next arc in its planned route.
+     *
+     * @return the arc (for the purposes of calculating time).
+     */
+    public Arc updateArcFromPlannedRoute() {
+        Arc currArc = getPlannedRoute().pop();
+        setCurrArc(currArc);
+        return currArc;
+    }
+
     @Override
     public String toString() { return String.format("Vehicle %d | charge: %f/%f", id, chargeState, chargeMax); }
 
