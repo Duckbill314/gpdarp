@@ -1,13 +1,11 @@
 package gpdarp.decisionprocess.allocationpolicy.ensemble;
 
-import gpdarp.core.Arc;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.decisionprocess.TieBreaker;
-import gpdarp.decisionprocess.reactive.ReactiveDecisionSituation;
 
 import java.util.List;
 
@@ -17,7 +15,6 @@ import java.util.List;
  * @author gphhucarp, William Huang
  */
 public class EnsemblePolicy extends AllocationPolicy {
-
     private AllocationPolicy[] policies; // the element policies in the ensemble
     private double[] weights; // the weights for the element policies
     private Combiner combiner; // the combiner
@@ -85,16 +82,13 @@ public class EnsemblePolicy extends AllocationPolicy {
 
 
     @Override
-    public Vehicle next(ReactiveDecisionSituation rds, Request request) {
-        List<Vehicle> pool = rds.getPool();
-        DecisionProcessState state = rds.getState();
-
-        List<Vehicle> filteredPool = poolFilter.filter(pool, request, state);
+    public Vehicle next(DecisionProcessState state, Request request) {
+        List<Vehicle> filteredPool = poolFilter.filter(request, state);
 
         if (filteredPool.isEmpty())
             return null;
 
-        return combiner.next(pool, request, state, this);
+        return combiner.next(request, state, this);
     }
 
     @Override

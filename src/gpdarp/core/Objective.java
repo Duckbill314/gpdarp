@@ -11,7 +11,6 @@ import java.util.Map;
  * @author gphhucarp, William Huang
  */
 public enum Objective {
-
     TOTAL_COST("total-cost"),
     MAX_ROUTE_COST("max-route-cost");
 

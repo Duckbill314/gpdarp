@@ -19,10 +19,9 @@ public class RandomTieBreaker extends TieBreaker {
     @Override
     public int breakTie(Vehicle v1, Vehicle v2) {
         double r = rdg.nextUniform(0, 1);
-
-        if (r < 0.5)
+        if (r < 0.5) {
             return -1;
-
+        }
         return 1;
     }
 }

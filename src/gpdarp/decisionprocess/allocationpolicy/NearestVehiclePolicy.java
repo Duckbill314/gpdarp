@@ -18,7 +18,6 @@ import gpdarp.decisionprocess.PoolFilter;
  * @author gphhucarp, William Huang
  */
 public class NearestVehiclePolicy extends AllocationPolicy {
-
     public NearestVehiclePolicy(PoolFilter poolFilter, TieBreaker tieBreaker) {
         super(poolFilter, tieBreaker);
         name = "\"NV\"";

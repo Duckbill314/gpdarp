@@ -1,6 +1,5 @@
 package gpdarp.decisionprocess.allocationpolicy.ensemble.combiner;
 
-import gpdarp.core.Arc;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
@@ -16,9 +15,9 @@ import java.util.List;
  * @author gphhucarp, William Huang
  */
 public class Aggregator extends Combiner {
-
     @Override
-    public Vehicle next(List<Vehicle> pool, Request request, DecisionProcessState state, EnsemblePolicy ensemblePolicy) {
+    public Vehicle next(Request request, DecisionProcessState state, EnsemblePolicy ensemblePolicy) {
+        List<Vehicle> pool = state.getInstance().getVehicles();
         Vehicle next = pool.getFirst();
         next.setPriority(priority(next, request, state, ensemblePolicy));
 
@@ -31,7 +30,6 @@ public class Aggregator extends Combiner {
                             ensemblePolicy.getTieBreaker().breakTie(tmp, next) < 0))
                 next = tmp;
         }
-
         return next;
     }
 
@@ -52,7 +50,6 @@ public class Aggregator extends Combiner {
             priority += ensemblePolicy.getPolicy(i).priority(vehicle, request, state) *
                     ensemblePolicy.getWeight(i);
         }
-
         return priority;
     }
 }

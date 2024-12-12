@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * An instance of the dial-a-ride problem.
  * Acts as a focal point of the simulation by storing all the relevant information.
- * At any given time, an instance is like a snapshot of the current state of the problem model.
+ * At any given time, an instance is akin to a snapshot of the current state of the problem model.
  *
  * @author William Huang
  */
@@ -138,13 +138,11 @@ public final class Instance {
                 requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax));
                 line = reader.readLine();
             }
-
             return new Instance(vehicles, stations, requests, timeHorizon, travelTimeRate, latenessPenalty);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 

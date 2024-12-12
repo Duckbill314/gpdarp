@@ -15,7 +15,7 @@ import java.util.PriorityQueue;
  * @author gphhucarp, William Huang
  */
 public abstract class DecisionProcess {
-    protected DecisionProcessState state; // the state
+    protected DecisionProcessState state;
     protected PriorityQueue<DecisionProcessEvent> eventQueue;
     protected AllocationPolicy allocationPolicy;
 
@@ -61,10 +61,10 @@ public abstract class DecisionProcess {
      * Run the decision process.
      */
     public void run() {
-        // trigger the events.
         while (!eventQueue.isEmpty()) {
             DecisionProcessEvent event = eventQueue.poll();
             event.trigger(this);
+            state.updateSolution();
         }
     }
 

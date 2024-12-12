@@ -10,7 +10,6 @@ import java.util.List;
  *
  * @author William Huang
  */
-
 public record Arc(Node from, Node to, int length) implements Comparable<Arc> {
     // Simplified default constructor
     public Arc(Node from, Node to) {

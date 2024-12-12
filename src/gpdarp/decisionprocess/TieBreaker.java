@@ -5,7 +5,7 @@ import gpdarp.core.Vehicle;
 /**
  * A tiebreaker breaks the tie between two vehicle allocations when they have the same priority.
  *
- * @author gphhucarp, William Huang
+ * @author gphhucarp
  */
 
 public abstract class TieBreaker {

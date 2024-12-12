@@ -21,7 +21,6 @@ import java.util.List;
  * @author gphhucarp, William Huang
  */
 public class LowestCostPolicy extends AllocationPolicy {
-
     public LowestCostPolicy(PoolFilter poolFilter, TieBreaker tieBreaker) {
         super(poolFilter, tieBreaker);
         name = "\"LC\"";
@@ -39,7 +38,7 @@ public class LowestCostPolicy extends AllocationPolicy {
     public double priority(Vehicle candidate, Request request, DecisionProcessState state) {
         List<Request> requests = new ArrayList<>(candidate.getRequests());
         requests.add(request);
-        Route route = candidate.recalculate(requests);
+        Route route = candidate.recalculate(state, requests);
         return route.getLength();
     }
 }

@@ -10,9 +10,12 @@ import java.util.List;
 /**
  * The identity pool filter does nothing, but simply returns the pool.
  * It is called "identity" since the filtered pool is the same as the given pool.
+ *
+ * @author gphhucarp, William Huang
  */
-
 public class IdentityPoolFilter extends PoolFilter {
     @Override
-    public List<Vehicle> filter(List<Vehicle> pool, Request request, DecisionProcessState state) { return pool; }
+    public List<Vehicle> filter(Request request, DecisionProcessState state) {
+        return state.getInstance().getVehicles();
+    }
 }

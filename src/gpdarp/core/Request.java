@@ -17,7 +17,9 @@ import java.util.List;
 public record Request(int id, float tRec, Node pickup, Node dropoff, float tEarly, float tLate, float tMax) {
     public Request {
         pickup.setRequest(this);
+        pickup.setType(Node.NodeType.PICKUP);
         dropoff.setRequest(this);
+        dropoff.setType(Node.NodeType.DROPOFF);
     }
 
     /**
@@ -26,6 +28,30 @@ public record Request(int id, float tRec, Node pickup, Node dropoff, float tEarl
      * @return the fulfillment status.
      */
     public boolean isFulfilled() { return pickup.isVisited() && dropoff.isVisited(); }
+
+    /**
+     * Calculated the estimated or actual ride time based on the times the pickup and dropoff points are visited.
+     *
+     * @return the ride time.
+     */
+    public int calcRideTime() {
+        if (pickup.getEta() == -1 || dropoff.getEta() == -1) {
+            return -1;
+        }
+        return dropoff.getEta() - pickup.getEta();
+    }
+
+    /**
+     * For a list of requests, check if there is constraint violation present.
+     * Constraint violation is mainly caused by bad routing.
+     *
+     * @param requests the list of requests.
+     *
+     * @return whether violation occurred.
+     */
+    public static boolean timeConstraintViolation(List<Request> requests) {
+        return requests.stream().anyMatch(r -> r.calcRideTime() < 0 || r.calcRideTime() > r.tMax());
+    }
 
     @Override
     public String toString() { return String.format("Request %d from %s to %s, received at time %f, %s",

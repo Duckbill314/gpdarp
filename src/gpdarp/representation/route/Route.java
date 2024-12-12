@@ -1,7 +1,7 @@
 package gpdarp.representation.route;
 
-import gpdarp.core.Arc;
-import gpdarp.core.Node;
+import gpdarp.core.*;
+import gpdarp.decisionprocess.DecisionProcessState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ public class Route {
 
     // Getters
     public List<Arc> getArcs() { return arcs; }
+    public Node getStartpoint() { return arcs.getFirst().from(); }
     public Node getEndpoint() { return arcs.getLast().to(); }
 
     // Setters
@@ -48,19 +49,29 @@ public class Route {
     }
 
     /**
+     * Updates the estimated arrival times for all nodes in the route.
+     * If the vehicle is moving, the route is set to begin from the current arc's destination, at that node's
+     * estimated arrival time.
+     * If the vehicle is stationary, the route is set to begin from the current position, at the current state's time.
+     *
+     * @param state the state of the decision process.
+     * @param vehicle the vehicle associated with the route.
+     */
+    public void updateEtas(DecisionProcessState state, Vehicle vehicle) {
+        Instance instance = state.getInstance();
+        int time = vehicle.isMoving() ? vehicle.getCurrArc().to().getEta() : state.getTime();
+        arcs.forEach(a -> a.to().setEta(time + instance.calculateTravelTime(a.length())));
+    }
+
+    /**
      * Calculate the sum of the lengths of all arcs in the route.
      *
      * @return the total length.
      */
     public int getLength() {
-        if (arcs.isEmpty()) {
-            return 0;
-        }
-        int length = 0;
-        for (Arc arc : arcs) {
-            length += arc.length();
-        }
-        return length;
+        return arcs.stream()
+                .map(Arc::length)
+                .reduce(0, Integer::sum);
     }
 
     /**

@@ -1,6 +1,5 @@
 package gpdarp.decisionprocess.allocationpolicy.ensemble.combiner;
 
-import gpdarp.core.Arc;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.AllocationPolicy;
@@ -19,8 +18,8 @@ import java.util.List;
  */
 public class MajorityVoter extends Combiner {
     @Override
-    public Vehicle next(List<Vehicle> pool, Request request, DecisionProcessState state,
-                        EnsemblePolicy ensemblePolicy) {
+    public Vehicle next(Request request, DecisionProcessState state, EnsemblePolicy ensemblePolicy) {
+        List<Vehicle> pool = state.getInstance().getVehicles();
         int[] votes = new int[pool.size()];
 
         for (int ele = 0; ele < ensemblePolicy.size(); ele++) {
@@ -41,10 +40,8 @@ public class MajorityVoter extends Combiner {
                     best = tmp;
                 }
             }
-
             votes[bestIdx] += (int) ensemblePolicy.getWeight(ele);
         }
-
         int maxVotes = 0;
         Vehicle next = null;
 
@@ -54,7 +51,6 @@ public class MajorityVoter extends Combiner {
                 next = pool.get(i);
             }
         }
-
         return next;
     }
 }

@@ -16,7 +16,7 @@ public class Solution {
     private List<Route> routes;
 
     public Solution(List<Route> routes) {
-        this.routes = routes;
+        this.routes = Route.listClone(routes);
     }
     public Solution() {
         this(new ArrayList<>());
@@ -32,25 +32,7 @@ public class Solution {
 
     // Setters
     public void setRoutes(List<Route> routes) {
-        this.routes = routes;
-    }
-
-    /**
-     * Add a route into the solution.
-     *
-     * @param route the added route.
-     */
-    public void addRoute(Route route) {
-        routes.add(route);
-    }
-
-    /**
-     * Remove the route with an index.
-     *
-     * @param index the index of the route to be removed.
-     */
-    public void removeRoute(int index) {
-        routes.remove(index);
+        this.routes = Route.listClone(routes);
     }
 
     /**

@@ -3,7 +3,6 @@ package gpdarp.decisionprocess;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.IdentityPoolFilter;
-import gpdarp.decisionprocess.reactive.ReactiveDecisionSituation;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
 
 import java.util.List;
@@ -59,16 +58,13 @@ public abstract class AllocationPolicy {
      * Given the current decision process state and a request to be served,
      * select the vehicle to allocate the request to from the pool of eligible vehicles.
      *
-     * @param rds the reactive decision situation.
+     * @param state the decision process state.
      * @param request the request to be served.
      *
      * @return the next task to be served by the route.
      */
-    public Vehicle next(ReactiveDecisionSituation rds, Request request) {
-        List<Vehicle> pool = rds.getPool();
-        DecisionProcessState state = rds.getState();
-
-        List<Vehicle> filteredPool = poolFilter.filter(pool, request, state);
+    public Vehicle next(DecisionProcessState state, Request request) {
+        List<Vehicle> filteredPool = poolFilter.filter(request, state);
 
         if (filteredPool.isEmpty())
             return null;
