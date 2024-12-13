@@ -14,20 +14,52 @@ import java.util.List;
  *
  * @author William Huang
  */
-public record Request(int id, float tRec, Node pickup, Node dropoff, float tEarly, float tLate, float tMax) {
-    public Request {
+public final class Request {
+    private final int id;
+    private final float tRec;
+    private final Node pickup;
+    private final Node dropoff;
+    private final float tEarly;
+    private final float tLate;
+    private final float tMax;
+    private Vehicle vehicle;
+
+    public Request(int id, float tRec, Node pickup, Node dropoff, float tEarly, float tLate, float tMax) {
+        this.id = id;
+        this.tRec = tRec;
+        this.pickup = pickup;
+        this.dropoff = dropoff;
+        this.tEarly = tEarly;
+        this.tLate = tLate;
+        this.tMax = tMax;
+        this.vehicle = null;
         pickup.setRequest(this);
         pickup.setType(Node.NodeType.PICKUP);
         dropoff.setRequest(this);
         dropoff.setType(Node.NodeType.DROPOFF);
     }
 
+    // Getters
+    public int getId() { return id; }
+    public float getTRec() { return tRec; }
+    public Node getPickup() { return pickup; }
+    public Node getDropoff() { return dropoff; }
+    public float getTEarly() { return tEarly; }
+    public float getTLate() { return tLate; }
+    public float getTMax() { return tMax; }
+    public Vehicle getVehicle() { return vehicle; }
+
+    // Setters
+    public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
+
     /**
      * A request is fulfilled if both its pickup and dropoff nodes have been visited.
      *
      * @return the fulfillment status.
      */
-    public boolean isFulfilled() { return pickup.isVisited() && dropoff.isVisited(); }
+    public boolean isFulfilled() {
+        return pickup.isVisited() && dropoff.isVisited();
+    }
 
     /**
      * Calculated the estimated or actual ride time based on the times the pickup and dropoff points are visited.
@@ -46,25 +78,32 @@ public record Request(int id, float tRec, Node pickup, Node dropoff, float tEarl
      * Constraint violation is mainly caused by bad routing.
      *
      * @param requests the list of requests.
-     *
      * @return whether violation occurred.
      */
     public static boolean timeConstraintViolation(List<Request> requests) {
-        return requests.stream().anyMatch(r -> r.calcRideTime() < 0 || r.calcRideTime() > r.tMax());
+        return requests.stream().anyMatch(r -> r.calcRideTime() < 0 || r.calcRideTime() > r.getTMax());
+    }
+
+    /**
+     * Once a request has been fulfilled, it should remove itself from its associated vehicle's list of requests.
+     */
+    public void finalise() { vehicle.getRequests().remove(this); }
+
+    @Override
+    public String toString() {
+        return String.format("Request %d from %s to %s, received at time %f, %s",
+                id, pickup, dropoff, tRec, (isFulfilled()) ? "fulfilled" : "not fulfilled");
     }
 
     @Override
-    public String toString() { return String.format("Request %d from %s to %s, received at time %f, %s",
-            id, pickup, dropoff, tRec, (isFulfilled()) ? "fulfilled" : "not fulfilled"); }
-
-    @Override
-    public Request clone() { return new Request(id, tRec, pickup.clone(), dropoff.clone(), tEarly, tLate, tMax); }
+    public Request clone() {
+        return new Request(id, tRec, pickup.clone(), dropoff.clone(), tEarly, tLate, tMax);
+    }
 
     /**
      * Utility method for creating deep clones of ArrayLists of Requests.
      *
      * @param requests the list of requests to be cloned.
-     *
      * @return the cloned list.
      */
     public static List<Request> listClone(List<Request> requests) {

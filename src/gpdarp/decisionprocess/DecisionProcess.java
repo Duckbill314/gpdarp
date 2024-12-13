@@ -44,6 +44,13 @@ public abstract class DecisionProcess {
     }
 
     /**
+     * Add an event to the event queue.
+     *
+     * @param event the event to be added.
+     */
+    public void addEvent(DecisionProcessEvent event) { eventQueue.add(event); }
+
+    /**
      * Initialise a reactive decision process from an instance and an allocation policy.
      *
      * @param instance the given instance.
@@ -63,6 +70,7 @@ public abstract class DecisionProcess {
     public void run() {
         while (!eventQueue.isEmpty()) {
             DecisionProcessEvent event = eventQueue.poll();
+            state.setTime(event.getTime());
             event.trigger(this);
             state.updateSolution();
         }

@@ -2,6 +2,9 @@ package gpdarp.decisionprocess;
 
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
+import gpdarp.representation.Pool;
+import gpdarp.representation.route.Route;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -13,5 +16,5 @@ import java.util.List;
  * @author gphhucarp, William Huang
  */
 public abstract class PoolFilter {
-    public abstract List<Vehicle> filter(Request request, DecisionProcessState state);
+    public abstract Pool filter(DecisionProcessState state, Request request);
 }

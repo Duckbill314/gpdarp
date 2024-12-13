@@ -2,10 +2,14 @@ package gpdarp.decisionprocess;
 
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
-import gpdarp.decisionprocess.poolfilter.IdentityPoolFilter;
+import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
+import gpdarp.representation.Pool;
+import gpdarp.representation.route.Route;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * An allocation policy makes a decision on which vehicle should serve a request.
@@ -35,7 +39,7 @@ public abstract class AllocationPolicy {
 
     // Constructor with only tiebreaker specified
     public AllocationPolicy(TieBreaker tieBreaker) {
-        this(new IdentityPoolFilter(), tieBreaker);
+        this(new FeasiblePoolFilter(), tieBreaker);
     }
 
     // Getters
@@ -58,41 +62,35 @@ public abstract class AllocationPolicy {
      * Given the current decision process state and a request to be served,
      * select the vehicle to allocate the request to from the pool of eligible vehicles.
      *
-     * @param state the decision process state.
+     * @param state   the decision process state.
      * @param request the request to be served.
      *
-     * @return the next task to be served by the route.
+     * @return the allocated vehicle and corresponding optimal route.
      */
-    public Vehicle next(DecisionProcessState state, Request request) {
-        List<Vehicle> filteredPool = poolFilter.filter(request, state);
+    public Map.Entry<Vehicle, Route> next(DecisionProcessState state, Request request) {
+        Pool filteredPool = poolFilter.filter(state, request);
 
-        if (filteredPool.isEmpty())
-            return null;
+        filteredPool.forEach((v, k) -> v.setPriority(priority(v, state, request)));
 
-        Vehicle next = filteredPool.getFirst();
-        next.setPriority(priority(next, request, state));
-
-        for (int i = 1; i < filteredPool.size(); i++) {
-            Vehicle tmp = filteredPool.get(i);
-            tmp.setPriority(priority(tmp, request, state));
-
-            if (Double.compare(tmp.getPriority(), next.getPriority()) < 0 ||
-                    (Double.compare(tmp.getPriority(), next.getPriority()) == 0 &&
-                            tieBreaker.breakTie(tmp, next) < 0))
-                next = tmp;
-        }
-
-        return next;
+        return filteredPool.entrySet().stream()
+                .min((e1, e2) -> {
+                    Vehicle v1 = e1.getKey();
+                    Vehicle v2 = e2.getKey();
+                    if (Double.compare(v1.getPriority(), v2.getPriority()) == 0) {
+                        return tieBreaker.breakTie(v1, v2);
+                    }
+                    return Double.compare(v1.getPriority(), v2.getPriority());
+                })
+                .orElse(null);
     }
 
     /**
      * Calculate the priority of a candidate vehicle for a request given a state.
      *
      * @param candidate the candidate vehicle.
-     * @param request the given request.
-     * @param state the state.
-     *
+     * @param state     the state.
+     * @param request   the given request.
      * @return the priority of the candidate task.
      */
-    public abstract double priority(Vehicle candidate, Request request, DecisionProcessState state);
+    public abstract double priority(Vehicle candidate, DecisionProcessState state, Request request);
 }

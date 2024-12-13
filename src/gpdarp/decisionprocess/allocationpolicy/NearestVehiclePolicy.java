@@ -23,16 +23,12 @@ public class NearestVehiclePolicy extends AllocationPolicy {
         name = "\"NV\"";
     }
 
-    public NearestVehiclePolicy(TieBreaker tieBreaker) {
-        this(new FeasiblePoolFilter(), tieBreaker);
-    }
-
     public NearestVehiclePolicy() {
-        this(new SimpleTieBreaker());
+        this(new FeasiblePoolFilter(), new SimpleTieBreaker());
     }
 
     @Override
-    public double priority(Vehicle candidate, Request request, DecisionProcessState state) {
+    public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
         Node pos;
         if (candidate.getCurrArc() == null) {
             pos = candidate.getCurrPos();
@@ -40,6 +36,6 @@ public class NearestVehiclePolicy extends AllocationPolicy {
         else {
             pos = candidate.getCurrArc().to();
         }
-        return pos.calcDist(request.pickup());
+        return pos.calcDist(request.getPickup());
     }
 }

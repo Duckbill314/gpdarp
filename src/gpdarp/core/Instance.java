@@ -80,7 +80,7 @@ public final class Instance {
             double chargeMax = Double.parseDouble(segments[1]);
             double chargeDepletionRate = Double.parseDouble(segments[2]);
             double chargeFillRate = Double.parseDouble(segments[3]);
-            double serveTime = Double.parseDouble(segments[4]);
+            int serveTime = Integer.parseInt(segments[4]);
             double travelTimeRate = Double.parseDouble(segments[5]);
             double latenessPenalty = Double.parseDouble(segments[6]);
 

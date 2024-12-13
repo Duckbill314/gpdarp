@@ -1,13 +1,12 @@
 package gpdarp.decisionprocess.allocationpolicy;
 
 import ec.gp.GPTree;
-import gpdarp.core.Arc;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.decisionprocess.AllocationPolicy;
-import gpdarp.decisionprocess.poolfilter.IdentityPoolFilter;
+import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gputils.DoubleData;
 
@@ -26,7 +25,7 @@ public class GPAllocationPolicy extends AllocationPolicy {
     }
 
     public GPAllocationPolicy(GPTree gpTree) {
-        this(new IdentityPoolFilter(), gpTree);
+        this(new FeasiblePoolFilter(), gpTree);
     }
 
     public GPTree getGPTree() {
@@ -38,7 +37,7 @@ public class GPAllocationPolicy extends AllocationPolicy {
     }
 
     @Override
-    public double priority(Vehicle candidate, Request request, DecisionProcessState state) {
+    public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
         CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, request, state);
         DoubleData tmp = new DoubleData();
         gpTree.child.eval(null, 0, tmp, null, null, calcPrioProb);

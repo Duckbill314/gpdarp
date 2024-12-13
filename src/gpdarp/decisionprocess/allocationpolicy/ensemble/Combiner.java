@@ -3,6 +3,9 @@ package gpdarp.decisionprocess.allocationpolicy.ensemble;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
+import gpdarp.representation.route.Route;
+
+import java.util.Map;
 
 /**
  * A combiner combines the decisions made by the policy elements in the ensemble,
@@ -12,5 +15,6 @@ import gpdarp.decisionprocess.DecisionProcessState;
  */
 
 public abstract class Combiner {
-    public abstract Vehicle next(Request request, DecisionProcessState state, EnsemblePolicy ensemblePolicy);
+    public abstract Map.Entry<Vehicle, Route> next(DecisionProcessState state, Request request,
+                                                   EnsemblePolicy ensemblePolicy);
 }

@@ -1,6 +1,5 @@
 package gpdarp.decisionprocess.allocationpolicy;
 
-import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.AllocationPolicy;
@@ -26,16 +25,12 @@ public class LowestCostPolicy extends AllocationPolicy {
         name = "\"LC\"";
     }
 
-    public LowestCostPolicy(TieBreaker tieBreaker) {
-        this(new FeasiblePoolFilter(), tieBreaker);
-    }
-
     public LowestCostPolicy() {
-        this(new SimpleTieBreaker());
+        this(new FeasiblePoolFilter(), new SimpleTieBreaker());
     }
 
     @Override
-    public double priority(Vehicle candidate, Request request, DecisionProcessState state) {
+    public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
         List<Request> requests = new ArrayList<>(candidate.getRequests());
         requests.add(request);
         Route route = candidate.recalculate(state, requests);

@@ -6,8 +6,12 @@ import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.decisionprocess.TieBreaker;
+import gpdarp.representation.Pool;
+import gpdarp.representation.route.Route;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * An ensemble of allocation policies.
@@ -82,15 +86,16 @@ public class EnsemblePolicy extends AllocationPolicy {
 
 
     @Override
-    public Vehicle next(DecisionProcessState state, Request request) {
-        List<Vehicle> filteredPool = poolFilter.filter(request, state);
+    public Map.Entry<Vehicle, Route> next(DecisionProcessState state, Request request) {
+        Pool filteredPool = poolFilter.filter(state, request);
+        state.setPool(filteredPool);
 
         if (filteredPool.isEmpty())
             return null;
 
-        return combiner.next(request, state, this);
+        return combiner.next(state, request, this);
     }
 
     @Override
-    public double priority(Vehicle candidate, Request request, DecisionProcessState state) { return 0; }
+    public double priority(Vehicle candidate, DecisionProcessState state, Request request) { return 0; }
 }

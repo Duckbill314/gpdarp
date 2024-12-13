@@ -9,8 +9,9 @@ import java.util.*;
  * A vehicle is a defined construct with a set of important properties, including:
  * - capacity and demand,
  * - battery charging information,
- * - current position (if stationary) and current arc (if moving),
- * - requests,
+ * - the latest known idle position (implies that requests are not being served),
+ * - the current arc (implies that requests are being served),
+ * - requests that have been allocated to the vehicle,
  * - full route history and future planned route.
  * It also has a "temporary" priority value for the purpose of request allocation.
  *
@@ -24,7 +25,7 @@ public class Vehicle {
     private double chargeState;
     private final double chargeFillRate;
     private final double chargeDepletionRate;
-    private final double serveTime;
+    private final int serveTime;
     private Node currPos;
     private Arc currArc;
     private List<Request> requests;
@@ -33,7 +34,7 @@ public class Vehicle {
     private double priority;
 
     public Vehicle(int id, int capacity, int demand, double chargeMax, double chargeState, double chargeFillRate,
-                   double chargeDepletionRate, double serveTime, Node currPos, Arc currArc, List<Request> requests,
+                   double chargeDepletionRate, int serveTime, Node currPos, Arc currArc, List<Request> requests,
                    Route historicalRoute, Route plannedRoute, double priority) {
         this.id = id;
         this.capacity = capacity;
@@ -53,7 +54,7 @@ public class Vehicle {
 
     // Initialisation constructor
     public Vehicle(int id, int capacity, double chargeMax, double chargeState, double chargeFillRate,
-                   double chargeDepletionRate, double serveTime, Node currPos) {
+                   double chargeDepletionRate, int serveTime, Node currPos) {
         this(id, capacity, 0, chargeMax, chargeState, chargeFillRate, chargeDepletionRate, serveTime,
                 currPos, null, new ArrayList<Request>(), new Route(), new Route(), 0.0);
     }
@@ -66,7 +67,7 @@ public class Vehicle {
     public double getChargeState() { return chargeState; }
     public double getChargeFillRate() { return chargeFillRate; }
     public double getChargeDepletionRate() { return chargeDepletionRate; }
-    public double getServeTime() { return serveTime; }
+    public int getServeTime() { return serveTime; }
     public Node getCurrPos() { return currPos; }
     public Arc getCurrArc() { return this.currArc; }
     public List<Request> getRequests() { return requests; }
@@ -119,14 +120,9 @@ public class Vehicle {
             }
         }
 
-        Route best = routes.stream()
+        return routes.stream()
                 .min(Comparator.comparing(Route::getLength))
                 .orElse(null);
-
-        if (best != null) {
-            best.updateEtas(state, this);
-        }
-        return best;
     }
 
     /**
@@ -149,8 +145,8 @@ public class Vehicle {
         else {
             List<Request> requestsCopy = new ArrayList<>(requests);
             Request request = requestsCopy.removeFirst();
-            Node pickup = request.pickup();
-            Node dropoff = request.dropoff();
+            Node pickup = request.getPickup();
+            Node dropoff = request.getDropoff();
 
             for (int i = 0; i < candidate.size(); i++) {
                 List<Node> candidateCopy1 = new ArrayList<>(candidate);
@@ -170,6 +166,68 @@ public class Vehicle {
                 }
             }
         }
+    }
+
+    /**
+     * Convenient method for ensuring the relationship between a request and its assigned vehicle is
+     * established properly.
+     *
+     * @param request the request to allocate to this vehicle.
+     */
+    public void allocate(Request request) {
+        request.setVehicle(this);
+        requests.add(request);
+    }
+
+    /**
+     * Convenience method for ensuring that the vehicle's route and the ETA of nodes along the route are
+     * properly updated.
+     *
+     * @param state the current state.
+     * @param plannedRoute the optimal route.
+     */
+    public void updateRoute(DecisionProcessState state, Route plannedRoute) {
+        plannedRoute.updateEtas(state, this);
+        setPlannedRoute(plannedRoute);
+    }
+
+    /**
+     * Convenience method for handling pickup events.
+     *
+     * @param node the node at which the event occurs.
+     */
+    public void pickup(Node node) {
+        node.visit();
+        demand++;
+        deplete(currArc.length());
+        historicalRoute.push(currArc);
+    }
+
+    /**
+     * Convenience method for handling dropoff events.
+     *
+     * @param node the node at which the event occurs.
+     */
+    public void dropoff(Node node) {
+        node.visit();
+        node.getRequest().finalise();
+        demand--;
+        deplete(currArc.length());
+        historicalRoute.push(currArc);
+    }
+
+    /**
+     * Helper method that updates a vehicle's current arc with the next arc in its planned route.
+     *
+     * @return the next destination node (for the purpose of invoking a new event).
+     */
+    public Node updateArcFromPlannedRoute() {
+        Arc currArc = getPlannedRoute().pop();
+        setCurrArc(currArc);
+        if (currArc == null) {
+            return null;
+        }
+        return currArc.to();
     }
 
     /**
@@ -201,15 +259,12 @@ public class Vehicle {
      * For proper functionality, depletion actions should always be checked for feasibility before they are taken.
      *
      * @param length the length travelled.
-     *
-     * @return the resulting charge state (not strictly needed, but available for convenience).
      */
-    public double deplete(int length) {
+    public void deplete(int length) {
         chargeState -= chargeDepletionRate * length;
         if (chargeState < 0) {
             chargeState = 0;
         }
-        return chargeState;
     }
 
     /**
@@ -221,17 +276,6 @@ public class Vehicle {
      * @return the resulting charge state.
      */
     public double estimateDepletion(int length) { return chargeState - chargeDepletionRate * length; }
-
-    /**
-     * Helper method that updates a vehicle's current arc with the next arc in its planned route.
-     *
-     * @return the arc (for the purposes of calculating time).
-     */
-    public Arc updateArcFromPlannedRoute() {
-        Arc currArc = getPlannedRoute().pop();
-        setCurrArc(currArc);
-        return currArc;
-    }
 
     @Override
     public String toString() { return String.format("Vehicle %d | charge: %f/%f", id, chargeState, chargeMax); }

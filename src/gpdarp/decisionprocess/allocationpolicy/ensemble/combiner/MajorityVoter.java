@@ -6,8 +6,10 @@ import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.Combiner;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
+import gpdarp.representation.Pool;
+import gpdarp.representation.route.Route;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * The majority voter selects the next candidate by majority voting.
@@ -18,39 +20,40 @@ import java.util.List;
  */
 public class MajorityVoter extends Combiner {
     @Override
-    public Vehicle next(Request request, DecisionProcessState state, EnsemblePolicy ensemblePolicy) {
-        List<Vehicle> pool = state.getInstance().getVehicles();
-        int[] votes = new int[pool.size()];
+    public Map.Entry<Vehicle, Route> next(DecisionProcessState state, Request request, EnsemblePolicy ensemblePolicy) {
+        List<Map.Entry<Vehicle, Route>> pool = new ArrayList<>(state.getPool().entrySet());
+        ArrayList<Double> votes = new ArrayList<>();
+        for (int i = 0; i < pool.size(); i++) {
+            votes.add(0.0);
+        }
 
         for (int ele = 0; ele < ensemblePolicy.size(); ele++) {
             AllocationPolicy policy = ensemblePolicy.getPolicy(ele);
 
-            int bestIdx = 0;
-            Vehicle best = pool.get(bestIdx);
-            best.setPriority(policy.priority(best, request, state));
+            pool.forEach(e -> {
+                Vehicle v = e.getKey();
+                v.setPriority(policy.priority(v, state, request));
+            });
 
-            for (int i = 1; i < pool.size(); i++) {
-                Vehicle tmp = pool.get(i);
-                tmp.setPriority(policy.priority(tmp, request, state));
+            Map.Entry<Vehicle, Route> best = pool.stream()
+                    .min((e1, e2) -> {
+                        Vehicle v1 = e1.getKey();
+                        Vehicle v2 = e2.getKey();
+                        if (Double.compare(v1.getPriority(), v2.getPriority()) == 0) {
+                            return ensemblePolicy.getTieBreaker().breakTie(v1, v2);
+                        }
+                        return Double.compare(v1.getPriority(), v2.getPriority());
+                    })
+                    .orElseThrow(NoSuchElementException::new);
 
-                if (Double.compare(tmp.getPriority(), best.getPriority()) < 0 ||
-                        (Double.compare(tmp.getPriority(), best.getPriority()) == 0 &&
-                                policy.getTieBreaker().breakTie(tmp, best) < 0)) {
-                    bestIdx = i;
-                    best = tmp;
-                }
-            }
-            votes[bestIdx] += (int) ensemblePolicy.getWeight(ele);
+            int bestIdx = pool.indexOf(best);
+            votes.set(bestIdx, votes.get(bestIdx) + ensemblePolicy.getWeight(ele));
         }
-        int maxVotes = 0;
-        Vehicle next = null;
 
-        for (int i = 0; i < pool.size(); i++) {
-            if (maxVotes < votes[i]) {
-                maxVotes = votes[i];
-                next = pool.get(i);
-            }
-        }
-        return next;
+        Double maxVotes = votes.stream()
+                .max(Double::compare)
+                .orElseThrow(NoSuchElementException::new);
+
+        return pool.get(votes.indexOf(maxVotes));
     }
 }

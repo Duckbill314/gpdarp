@@ -7,9 +7,9 @@ import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.reactive.ReactiveDecisionSituation;
+import gpdarp.representation.route.Route;
 
-import java.util.List;
+import java.util.Map;
 
 public class ReactiveRequestEvent extends DecisionProcessEvent {
     Request request;
@@ -21,28 +21,23 @@ public class ReactiveRequestEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        // Build a reactive decision situation
         DecisionProcessState state = decisionProcess.getState();
-        List<Vehicle> vehicles = state.getInstance().getVehicles();
-        ReactiveDecisionSituation rds = new ReactiveDecisionSituation(vehicles, state);
+        Map.Entry<Vehicle, Route> allocation = decisionProcess.getAllocationPolicy().next(state, request);
 
-        // Use the reactive decision situation in the allocation policy to find the vehicle allocation
-        Vehicle allocation = decisionProcess.getAllocationPolicy().next(rds, request);
+        if (allocation == null) {
+            // TODO: add request to waiting queue
+        }
+        else {
+            Vehicle vehicle = allocation.getKey();
+            Route route = allocation.getValue();
+            vehicle.allocate(request);
+            vehicle.updateRoute(state, route);
 
-        // Recalculate the planned route with the inclusion of the new request
-        List<Request> requests = allocation.getRequests();
-        requests.add(request);
-        allocation.setPlannedRoute(allocation.recalculate(requests));
-
-        // Invoke movement if the vehicle is not currently moving
-        if (allocation.getCurrArc() == null) {
-            allocation.setCurrPos(null);
-            Arc currArc = allocation.updateArcFromPlannedRoute();
-            int timeTaken = state.getInstance().calculateTravelTime(currArc.length());
-            int time = this.getTime() + timeTaken;
-            Node destination = currArc.to();
-            decisionProcess.getEventQueue().add(new ReactivePickupEvent(time, destination));
-            destination.setEta(time);
+            if (!vehicle.isMoving()) {
+                vehicle.setCurrPos(null);
+                Node destination = vehicle.updateArcFromPlannedRoute();
+                decisionProcess.addEvent(new ReactivePickupEvent(destination.getEta(), destination, vehicle));
+            }
         }
     }
 }

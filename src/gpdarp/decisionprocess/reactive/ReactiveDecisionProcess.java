@@ -32,9 +32,7 @@ public class ReactiveDecisionProcess extends DecisionProcess {
     protected ReactiveDecisionProcess clone() {
         DecisionProcessState clonedState = state.clone();
         PriorityQueue<DecisionProcessEvent> clonedEQ = new PriorityQueue<>();
-        for (DecisionProcessEvent event : eventQueue) {
-            clonedEQ.add(event);
-        }
+        clonedEQ.addAll(eventQueue);
 
         return new ReactiveDecisionProcess(clonedState, clonedEQ, allocationPolicy);
     }

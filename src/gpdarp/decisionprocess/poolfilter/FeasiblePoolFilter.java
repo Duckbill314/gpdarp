@@ -6,7 +6,9 @@ import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
+import gpdarp.representation.Pool;
 import gpdarp.representation.route.Route;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,28 +24,30 @@ import java.util.List;
  */
 public class FeasiblePoolFilter extends PoolFilter {
     @Override
-    public List<Vehicle> filter(Request request, DecisionProcessState state) {
+    public Pool filter(DecisionProcessState state, Request request) {
         Instance instance = state.getInstance();
-        List<Vehicle> filtered = new ArrayList<>(instance.getVehicles());
-        filtered.removeIf(v -> v.getRemainingCapacity() == 0);
+        List<Vehicle> vehicles = new ArrayList<>(instance.getVehicles());
+        vehicles.removeIf(v -> v.getRemainingCapacity() == 0);
 
-        for (Vehicle vehicle : filtered) {
+        Pool pool = new Pool();
+
+        for (Vehicle vehicle : vehicles) {
             List<Request> requests = new ArrayList<>(vehicle.getRequests());
             requests.add(request);
             Route route = vehicle.recalculate(state, requests);
-            if (route == null) {
-                filtered.remove(vehicle);
-            }
-            else {
+
+            if (route != null) {
                 int routeLength = route.getLength();
                 Node endpoint = route.getEndpoint();
                 int returnLength = endpoint.calcDist(instance.findClosestStation(endpoint));
                 double estimatedChargeState = vehicle.estimateDepletion(routeLength + returnLength);
-                if (estimatedChargeState < 0) {
-                    filtered.remove(vehicle);
+
+                if (estimatedChargeState >= 0) {
+                    pool.put(vehicle, route);
                 }
             }
         }
-        return filtered;
+
+        return pool;
     }
 }

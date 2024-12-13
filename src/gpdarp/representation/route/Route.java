@@ -31,7 +31,12 @@ public class Route {
 
     // Manipulators
     public void push(Arc arc) { arcs.add(arc); }
-    public Arc pop() { return arcs.removeFirst(); }
+    public Arc pop() {
+        if (arcs.isEmpty()) {
+            return null;
+        }
+        return arcs.removeFirst();
+    }
 
     /**
      * Build a route from a list of nodes by converting the node list to an arc list.
@@ -50,17 +55,42 @@ public class Route {
 
     /**
      * Updates the estimated arrival times for all nodes in the route.
-     * If the vehicle is moving, the route is set to begin from the current arc's destination, at that node's
-     * estimated arrival time.
-     * If the vehicle is stationary, the route is set to begin from the current position, at the current state's time.
+     * If the vehicle is moving:
+     * - the route is set to begin from the current arc's destination,
+     * - at that node's pre-established estimated arrival time,
+     * - with each arc being deterministic from the one before it,
+     * - and including serve costs explicitly.
+     * If the vehicle is stationary:
+     * - the route is set to begin from the current position,
+     * - at either the current state's time or the vehicle's next available time (whichever comes later),
+     * - and there will be an additional arc present to begin the chain,
+     * - that includes the serve cost implicitly, i.e., pending availability.
      *
      * @param state the state of the decision process.
      * @param vehicle the vehicle associated with the route.
      */
     public void updateEtas(DecisionProcessState state, Vehicle vehicle) {
         Instance instance = state.getInstance();
-        int time = vehicle.isMoving() ? vehicle.getCurrArc().to().getEta() : state.getTime();
-        arcs.forEach(a -> a.to().setEta(time + instance.calculateTravelTime(a.length())));
+
+        Arc arc;
+        int startTime;
+        int serveTime;
+        int i = 0;
+
+        if (!vehicle.isMoving()) {
+            arc = arcs.get(i);
+            startTime = Math.max(state.getTime(), vehicle.getCurrPos().getEta());
+            arc.to().setEta(startTime + instance.calculateTravelTime(arc.length()));
+            i++;
+        }
+
+        while (i < arcs.size()) {
+            arc = arcs.get(i);
+            startTime = arc.from().getEta();
+            serveTime = vehicle.getServeTime();
+            arc.to().setEta(startTime + serveTime + instance.calculateTravelTime(arc.length()));
+            i++;
+        }
     }
 
     /**
