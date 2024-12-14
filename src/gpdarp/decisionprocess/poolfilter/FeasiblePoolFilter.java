@@ -27,6 +27,7 @@ public class FeasiblePoolFilter extends PoolFilter {
     public Pool filter(DecisionProcessState state, Request request) {
         Instance instance = state.getInstance();
         List<Vehicle> vehicles = new ArrayList<>(instance.getVehicles());
+        // TODO: this capacity constraint is not quite right
         vehicles.removeIf(v -> v.getRemainingCapacity() == 0);
 
         Pool pool = new Pool();

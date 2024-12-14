@@ -19,7 +19,7 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
     public void trigger(DecisionProcess decisionProcess) {
         vehicle.dropoff(node);
 
-        Node pending = node.clone();
+        Node waiting = node.clone();
         Node destination = vehicle.updateArcFromPlannedRoute();
 
         if (destination != null) {
@@ -32,10 +32,13 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
             }
         }
         else {
-            pending.setEta(pending.getEta() + vehicle.getServeTime());
-            vehicle.setCurrPos(pending);
+            waiting.setEta(waiting.getEta() + vehicle.getServeTime());
+            vehicle.setCurrPos(waiting);
 
-            // TODO: set the condition for whether a vehicle waits where it is or goes to a charging station
+            // TODO: set the condition for whether a vehicle waits where it is or decides to charge
+            if (true) {
+
+            }
         }
 
     }

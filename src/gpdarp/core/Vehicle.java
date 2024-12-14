@@ -217,6 +217,30 @@ public class Vehicle {
     }
 
     /**
+     * Convenience method for handling charging events.
+     * Because a vehicle cannot serve requests while it is on the way to a charging station or while it is
+     * charging, the "dead" time can be accumulated to calculate the next available time.
+     * A vehicle can still accept requests during the "dead" time, but route calculation will begin no earlier than
+     * the next available time.
+     *
+     * @param instance the instance of the problem.
+     */
+    public void charge(Instance instance) {
+        Station station = instance.findClosestStation(currPos).clone();
+
+        int distanceToStation = currPos.calcDist(station);
+        int travelTime = instance.calculateTravelTime(distanceToStation);
+        deplete(distanceToStation);
+
+        int chargeTime = estimateFillTime();
+        fill(chargeTime);
+
+        int nextAvailableTime = currPos.getEta() + travelTime + chargeTime;
+        station.setEta(nextAvailableTime);
+        setCurrPos(station);
+    }
+
+    /**
      * Helper method that updates a vehicle's current arc with the next arc in its planned route.
      *
      * @return the next destination node (for the purpose of invoking a new event).

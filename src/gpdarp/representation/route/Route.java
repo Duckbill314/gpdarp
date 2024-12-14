@@ -59,7 +59,7 @@ public class Route {
      * - the route is set to begin from the current arc's destination,
      * - at that node's pre-established estimated arrival time,
      * - with each arc being deterministic from the one before it,
-     * - and including serve costs explicitly.
+     * - and including serve costs and wait times explicitly.
      * If the vehicle is stationary:
      * - the route is set to begin from the current position,
      * - at either the current state's time or the vehicle's next available time (whichever comes later),
@@ -74,6 +74,7 @@ public class Route {
 
         Arc arc;
         int startTime;
+        int pickupTime;
         int serveTime;
         int i = 0;
 
@@ -86,11 +87,37 @@ public class Route {
 
         while (i < arcs.size()) {
             arc = arcs.get(i);
-            startTime = arc.from().getEta();
+            Node from = arc.from();
+            Node to = arc.to();
+
+            startTime = from.getEta();
+
+            if (from.getType() == Node.NodeType.PICKUP) {
+                pickupTime = from.getRequest().getTEarly();
+                if (startTime < pickupTime) {
+                    startTime = pickupTime;
+                }
+            }
+
             serveTime = vehicle.getServeTime();
-            arc.to().setEta(startTime + serveTime + instance.calculateTravelTime(arc.length()));
+
+            to.setEta(startTime + serveTime + instance.calculateTravelTime(arc.length()));
             i++;
         }
+    }
+
+    /**
+     * The penalty is the sum of all the time that a vehicle was late to pick up a request.
+     *
+     * @return the penalty.
+     */
+    public int calculatePenalty() {
+        return arcs.stream()
+                .map(Arc::from)
+                .filter(n -> n.getType() == Node.NodeType.PICKUP)
+                .map(n -> n.getEta() - n.getRequest().getTLate())
+                .filter(t -> t > 0)
+                .reduce(0, Integer::sum);
     }
 
     /**

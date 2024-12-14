@@ -16,15 +16,15 @@ import java.util.List;
  */
 public final class Request {
     private final int id;
-    private final float tRec;
+    private final int tRec;
     private final Node pickup;
     private final Node dropoff;
-    private final float tEarly;
-    private final float tLate;
-    private final float tMax;
+    private final int tEarly;
+    private final int tLate;
+    private final int tMax;
     private Vehicle vehicle;
 
-    public Request(int id, float tRec, Node pickup, Node dropoff, float tEarly, float tLate, float tMax) {
+    public Request(int id, int tRec, Node pickup, Node dropoff, int tEarly, int tLate, int tMax) {
         this.id = id;
         this.tRec = tRec;
         this.pickup = pickup;
@@ -41,12 +41,12 @@ public final class Request {
 
     // Getters
     public int getId() { return id; }
-    public float getTRec() { return tRec; }
+    public int getTRec() { return tRec; }
     public Node getPickup() { return pickup; }
     public Node getDropoff() { return dropoff; }
-    public float getTEarly() { return tEarly; }
-    public float getTLate() { return tLate; }
-    public float getTMax() { return tMax; }
+    public int getTEarly() { return tEarly; }
+    public int getTLate() { return tLate; }
+    public int getTMax() { return tMax; }
     public Vehicle getVehicle() { return vehicle; }
 
     // Setters

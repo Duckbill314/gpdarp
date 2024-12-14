@@ -67,7 +67,6 @@ public class Node {
      */
     public enum NodeType {
         PICKUP,
-        DROPOFF,
-        STATION;
+        DROPOFF
     }
 }

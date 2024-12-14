@@ -125,16 +125,16 @@ public final class Instance {
             while (line != null) {
                 segments = line.split("\\s+");
                 int id = Integer.parseInt(segments[0]);
-                float tRec = Float.parseFloat(segments[1]);
+                int tRec = Integer.parseInt(segments[1]);
                 int x = Integer.parseInt(segments[2]);
                 int y = Integer.parseInt(segments[3]);
                 Node pickup = new Node(x, y);
                 x = Integer.parseInt(segments[4]);
                 y = Integer.parseInt(segments[5]);
                 Node dropoff = new Node(x, y);
-                float tEarly = Float.parseFloat(segments[6]);
-                float tLate = Float.parseFloat(segments[7]);
-                float tMax = Float.parseFloat(segments[8]);
+                int tEarly = Integer.parseInt(segments[6]);
+                int tLate = Integer.parseInt(segments[7]);
+                int tMax = Integer.parseInt(segments[8]);
                 requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax));
                 line = reader.readLine();
             }
