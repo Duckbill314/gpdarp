@@ -4,9 +4,12 @@ import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
+import gpdarp.representation.RequestPool;
 import gpdarp.representation.VehiclePool;
 import gpdarp.representation.route.Route;
 
+import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,6 +83,36 @@ public abstract class AllocationPolicy {
                         return tieBreaker.breakTie(v1, v2);
                     }
                     return Double.compare(v1.getPriority(), v2.getPriority());
+                })
+                .orElse(null);
+    }
+
+    /**
+     * A variant of the main selection method.
+     * Instead, only a singular vehicle is considered, and the pool comprises the different requests from the
+     * waiting list that the vehicle can choose to accept.
+     *
+     * @param vehicle the vehicle that is trying to accept a request.
+     * @param state the decision process state.
+     * @param requests the waiting list of requests.
+     *
+     * @return the allocated request and corresponding optimal route.
+     */
+    public Map.Entry<Request, Route> next(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
+        RequestPool requestPool = poolFilter.filterRequests(vehicle, state, requests);
+        Set<Map.Entry<Request, Route>> poolSet = requestPool.entrySet();
+
+        poolSet.forEach(e -> e.getKey().setPriority(priority(
+                new AbstractMap.SimpleEntry<Vehicle, Route>(vehicle, e.getValue()), state, e.getKey())));
+
+        return poolSet.stream()
+                .min((e1, e2) -> {
+                    Request r1 = e1.getKey();
+                    Request r2 = e2.getKey();
+                    if (Double.compare(r1.getPriority(), r2.getPriority()) == 0) {
+                        return tieBreaker.breakTie(r1, r2);
+                    }
+                    return Double.compare(r1.getPriority(), r2.getPriority());
                 })
                 .orElse(null);
     }

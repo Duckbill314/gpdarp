@@ -40,9 +40,19 @@ public class FeasiblePoolFilter extends PoolFilter {
 
     @Override
     public RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
-        return null;
-    }
+        RequestPool requestPool = new RequestPool();
+        for (Request request : requests) {
+            List<Request> vehicleRequests = new ArrayList<>(vehicle.getRequests());
+            vehicleRequests.add(request);
+            Route route = recalculate(vehicle, state, vehicleRequests);
 
+            if (route != null) {
+                requestPool.put(request, route);
+            }
+        }
+
+        return requestPool;
+    }
 
     /**
      * Based on the unvisited nodes of a pool of requests, find the optimal feasible route.

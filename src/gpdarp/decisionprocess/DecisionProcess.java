@@ -59,7 +59,7 @@ public abstract class DecisionProcess {
     public void addEvent(DecisionProcessEvent event) { eventQueue.add(event); }
 
     /**
-     * Add a request to the waiting queue.
+     * Add a request to the waiting list.
      *
      * @param request the request to be added.
      */

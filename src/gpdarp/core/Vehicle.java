@@ -13,7 +13,7 @@ import java.util.*;
  * - the current arc (implies that requests are being served),
  * - requests that have been allocated to the vehicle,
  * - full route history and future planned route.
- * It also has a "temporary" priority value for the purpose of request allocation.
+ * It also has a temporary priority value for the purpose of request allocation.
  *
  * @author William Huang
  */

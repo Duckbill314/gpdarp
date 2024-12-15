@@ -10,7 +10,8 @@ import java.util.List;
  * - the pickup and dropoff destinations,
  * - the earliest and latest possible time the customer wishes to be picked up,
  * - the maximum ride time.
- * In addition, it also has a pseudo-flag for checking whether the request has been fulfilled.
+ * In addition, it also has a pseudo-flag for checking whether the request has been fulfilled,
+ * and a temporary priority value for the purpose of vehicle allocation.
  *
  * @author William Huang
  */
@@ -23,6 +24,7 @@ public final class Request {
     private final int tLate;
     private final int tMax;
     private Vehicle vehicle;
+    private double priority;
 
     public Request(int id, int tRec, Node pickup, Node dropoff, int tEarly, int tLate, int tMax) {
         this.id = id;
@@ -37,6 +39,7 @@ public final class Request {
         pickup.setType(Node.NodeType.PICKUP);
         dropoff.setRequest(this);
         dropoff.setType(Node.NodeType.DROPOFF);
+        this.priority = 0;
     }
 
     // Getters
@@ -48,9 +51,11 @@ public final class Request {
     public int getTLate() { return tLate; }
     public int getTMax() { return tMax; }
     public Vehicle getVehicle() { return vehicle; }
+    public double getPriority() { return priority; }
 
     // Setters
     public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
+    public void setPriority(double priority) { this.priority = priority; }
 
     /**
      * A request is fulfilled if both its pickup and dropoff nodes have been visited.
@@ -77,6 +82,15 @@ public final class Request {
      * Once a request has been fulfilled, it should remove itself from its associated vehicle's list of requests.
      */
     public void finalise() { vehicle.getRequests().remove(this); }
+
+    /**
+     * Natural comparator that prefers the request with the received time.
+     *
+     * @param o the other request to which this request is being compared against.
+     *
+     * @return this request's priority value.
+     */
+    public int compareTo(Request o) { return tRec - o.getTRec(); }
 
     @Override
     public String toString() {

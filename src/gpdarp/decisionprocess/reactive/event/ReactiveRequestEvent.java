@@ -12,9 +12,9 @@ import java.util.Map;
 
 /**
  * This event represents when a new request has been received.
- * During this event, the request is allocated to a vehicle.
- * If no vehicle allocation is made, the request is instead added to a waiting queue.
- * If the vehicle is currently idle, a new event is invoked to put it into motion.
+ * During this event, the request is allocated to a vehicle, and the vehicle's route is updated.
+ * If the vehicle is not currently moving, a new event is invoked to move to the next point in the route.
+ * If no vehicle allocation is made, instead, the request is added to a waiting queue.
  *
  * @author William Huang
  */
@@ -28,18 +28,9 @@ public class ReactiveRequestEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        DecisionProcessState state = decisionProcess.getState();
-        Map.Entry<Vehicle, Route> allocation = decisionProcess.getAllocationPolicy().next(state, request);
+        Vehicle vehicle = vehicleAllocation(decisionProcess, request);
 
-        if (allocation == null) {
-            decisionProcess.addWaiting(request);
-        }
-        else {
-            Vehicle vehicle = allocation.getKey();
-            Route route = allocation.getValue();
-            vehicle.allocate(request);
-            vehicle.updateRoute(state, route);
-
+        if (vehicle != null) {
             if (!vehicle.isMoving()) {
                 vehicle.setCurrPos(null);
                 Node destination = vehicle.updateArcFromPlannedRoute();

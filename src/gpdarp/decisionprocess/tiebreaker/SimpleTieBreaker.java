@@ -1,7 +1,9 @@
 package gpdarp.decisionprocess.tiebreaker;
 
+import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.TieBreaker;
+import gpdarp.representation.route.Route;
 
 /**
  * A simple tiebreaker between two vehicles uses the natural comparator.
@@ -14,4 +16,7 @@ public class SimpleTieBreaker extends TieBreaker {
     public int breakTie(Vehicle v1, Vehicle v2) {
         return v1.compareTo(v2);
     }
+
+    @Override
+    public int breakTie(Request r1, Request r2) { return r1.compareTo(r2); }
 }
