@@ -1,8 +1,11 @@
 package gpdarp.decisionprocess;
 
 import gpdarp.core.Instance;
+import gpdarp.core.Request;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -10,6 +13,7 @@ import java.util.PriorityQueue;
  * It includes
  *  - A decision process state: the state of the vehicles and the environment,
  *  - An event queue: the events to happen,
+ *  - A waiting list: the list of requests that were not accepted,
  *  - An allocation policy: for allocating requests to vehicles.
  *
  * @author gphhucarp, William Huang
@@ -17,13 +21,16 @@ import java.util.PriorityQueue;
 public abstract class DecisionProcess {
     protected DecisionProcessState state;
     protected PriorityQueue<DecisionProcessEvent> eventQueue;
+    protected List<Request> waitingList;
     protected AllocationPolicy allocationPolicy;
 
     public DecisionProcess(DecisionProcessState state,
                            PriorityQueue<DecisionProcessEvent> eventQueue,
+                           List<Request> waitingList,
                            AllocationPolicy allocationPolicy) {
         this.state = state;
         this.eventQueue = eventQueue;
+        this.waitingList = waitingList;
         this.allocationPolicy = allocationPolicy;
     }
 
@@ -34,6 +41,7 @@ public abstract class DecisionProcess {
     public PriorityQueue<DecisionProcessEvent> getEventQueue() {
         return eventQueue;
     }
+    public List<Request> getWaitingList() { return waitingList; }
     public AllocationPolicy getAllocationPolicy() {
         return allocationPolicy;
     }
@@ -51,6 +59,13 @@ public abstract class DecisionProcess {
     public void addEvent(DecisionProcessEvent event) { eventQueue.add(event); }
 
     /**
+     * Add a request to the waiting queue.
+     *
+     * @param request the request to be added.
+     */
+    public void addWaiting(Request request) { waitingList.add(request); }
+
+    /**
      * Initialise a reactive decision process from an instance and an allocation policy.
      *
      * @param instance the given instance.
@@ -61,7 +76,8 @@ public abstract class DecisionProcess {
     public static ReactiveDecisionProcess initReactive(Instance instance, AllocationPolicy allocationPolicy) {
         DecisionProcessState state = new DecisionProcessState(instance);
         PriorityQueue<DecisionProcessEvent> eventQueue = new PriorityQueue<>();
-        return new ReactiveDecisionProcess(state, eventQueue, allocationPolicy);
+        List<Request> waitingList = new ArrayList<>();
+        return new ReactiveDecisionProcess(state, eventQueue, waitingList, allocationPolicy);
     }
 
     /**

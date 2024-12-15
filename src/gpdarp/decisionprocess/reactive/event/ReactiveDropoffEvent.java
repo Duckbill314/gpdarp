@@ -5,6 +5,14 @@ import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 
+/**
+ * This event represents arrival of a vehicle to a dropoff point in its route.
+ * During this event, the node is visited, the vehicle state is updated,
+ * and a new event is invoked to move to the next point in the route.
+ * If there is no next point in the route, instead, an event is invoked to put the vehicle in an idle state.
+ *
+ * @author William Huang
+ */
 public class ReactiveDropoffEvent extends DecisionProcessEvent {
     Node node;
     Vehicle vehicle;
@@ -34,11 +42,7 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
         else {
             waiting.setEta(waiting.getEta() + vehicle.getServeTime());
             vehicle.setCurrPos(waiting);
-
-            // TODO: set the condition for whether a vehicle waits where it is or decides to charge
-            if (true) {
-
-            }
+            decisionProcess.addEvent(new ReactiveIdleEvent(waiting.getEta(), waiting, vehicle));
         }
 
     }

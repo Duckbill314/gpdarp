@@ -5,13 +5,12 @@ import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.Combiner;
-import gpdarp.representation.Pool;
+import gpdarp.representation.VehiclePool;
 import gpdarp.representation.route.Route;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * The aggregator combiner simply sums up the weighted priority calculated by all the elements,
@@ -22,11 +21,12 @@ import java.util.NoSuchElementException;
 public class Aggregator extends Combiner {
     @Override
     public Map.Entry<Vehicle, Route> next(DecisionProcessState state, Request request, EnsemblePolicy ensemblePolicy) {
-        Pool pool = state.getPool();
+        VehiclePool vehiclePool = state.getPool();
+        Set<Map.Entry<Vehicle, Route>> poolSet = vehiclePool.entrySet();
 
-        pool.forEach((v, k) -> v.setPriority(priority(v, state, request, ensemblePolicy)));
+        poolSet.forEach(e -> e.getKey().setPriority(priority(e, state, request, ensemblePolicy)));
 
-        return pool.entrySet().stream()
+        return vehiclePool.entrySet().stream()
                 .min((e1, e2) -> {
                     Vehicle v1 = e1.getKey();
                     Vehicle v2 = e2.getKey();
@@ -39,19 +39,20 @@ public class Aggregator extends Combiner {
     }
 
     /**
-     * Calculate the priority of a candidate vehicle by an ensemble policy.
+     * Calculate the priority of a candidate vehicle (and its route) by an ensemble policy.
      *
-     * @param vehicle        the vehicle whose priority is to be calculated.
+     * @param candidate      the candidate vehicle + route.
      * @param state          the decision process state.
      * @param request        the request to be allocated.
      * @param ensemblePolicy the ensemble policy.
-     * @return the priority of the vehicle calculated by the ensemble policy.
+     *
+     * @return the priority of the candidate vehicle calculated by the ensemble policy.
      */
-    private double priority(Vehicle vehicle, DecisionProcessState state, Request request,
+    private double priority(Map.Entry<Vehicle, Route> candidate, DecisionProcessState state, Request request,
                             EnsemblePolicy ensemblePolicy) {
         double priority = 0;
         for (int i = 0; i < ensemblePolicy.size(); i++) {
-            priority += ensemblePolicy.getPolicy(i).priority(vehicle, state, request) *
+            priority += ensemblePolicy.getPolicy(i).priority(candidate, state, request) *
                     ensemblePolicy.getWeight(i);
         }
         return priority;

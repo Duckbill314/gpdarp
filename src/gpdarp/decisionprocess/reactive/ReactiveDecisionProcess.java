@@ -1,10 +1,12 @@
 package gpdarp.decisionprocess.reactive;
 
+import gpdarp.core.Request;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.AllocationPolicy;
 
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -18,8 +20,9 @@ public class ReactiveDecisionProcess extends DecisionProcess {
 
     public ReactiveDecisionProcess(DecisionProcessState state,
                                    PriorityQueue<DecisionProcessEvent> eventQueue,
+                                   List<Request> waitingList,
                                    AllocationPolicy allocationPolicy) {
-        super(state, eventQueue, allocationPolicy);
+        super(state, eventQueue, waitingList, allocationPolicy);
     }
 
     @Override

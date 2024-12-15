@@ -74,17 +74,6 @@ public final class Request {
     }
 
     /**
-     * For a list of requests, check if there is constraint violation present.
-     * Constraint violation is mainly caused by bad routing.
-     *
-     * @param requests the list of requests.
-     * @return whether violation occurred.
-     */
-    public static boolean timeConstraintViolation(List<Request> requests) {
-        return requests.stream().anyMatch(r -> r.calcRideTime() < 0 || r.calcRideTime() > r.getTMax());
-    }
-
-    /**
      * Once a request has been fulfilled, it should remove itself from its associated vehicle's list of requests.
      */
     public void finalise() { vehicle.getRequests().remove(this); }

@@ -9,6 +9,9 @@ import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
+import gpdarp.representation.route.Route;
+
+import java.util.Map;
 
 /**
  * The nearest vehicle policy selects the vehicle whose current position (if it is stationary) or whose current
@@ -28,13 +31,14 @@ public class NearestVehiclePolicy extends AllocationPolicy {
     }
 
     @Override
-    public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
+    public double priority(Map.Entry<Vehicle, Route> candidate, DecisionProcessState state, Request request) {
         Node pos;
-        if (candidate.getCurrArc() == null) {
-            pos = candidate.getCurrPos();
+        Vehicle vehicle = candidate.getKey();
+        if (!vehicle.isMoving()) {
+            pos = vehicle.getCurrPos();
         }
         else {
-            pos = candidate.getCurrArc().to();
+            pos = vehicle.getCurrArc().to();
         }
         return pos.calcDist(request.getPickup());
     }

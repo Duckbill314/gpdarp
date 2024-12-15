@@ -88,87 +88,6 @@ public class Vehicle {
     public void setPriority(double priority) { this.priority = priority; }
 
     /**
-     * Based on the unvisited nodes of a pool of requests, find the optimal route.
-     * If the vehicle is currently travelling along an arc, the planned route must begin with the current arc's
-     * destination node.
-     * If the vehicle is not currently travelling along an arc, all routes will have the current position node
-     * appended to the front.
-     * The route must satisfy the constraint that all requests are served within the time limit and that for all
-     * requests, their pickup point is arrived at before their dropoff point.
-     *
-     * @param requests the pool of requests.
-     *
-     * @return the route with the lowest cost.
-     */
-    public Route recalculate(DecisionProcessState state, List<Request> requests) {
-        List<List<Node>> candidates = new ArrayList<>();
-        recursiveAdd(candidates, new ArrayList<Node>(), requests);
-        if (isMoving()) {
-            candidates.removeIf(candidate -> candidate.getFirst() != currArc.to());
-        }
-        else {
-            candidates.forEach(candidate -> candidate.addFirst(currPos));
-        }
-
-        List<Route> routes = new ArrayList<>();
-        candidates.forEach(c -> routes.add(Route.buildFromNodeList(c)));
-
-        for (Route route : routes) {
-            route.updateEtas(state, this);
-            if (Request.timeConstraintViolation(requests)) {
-                routes.remove(route);
-            }
-        }
-
-        return routes.stream()
-                .min(Comparator.comparing(Route::getLength))
-                .orElse(null);
-    }
-
-    /**
-     * Helper method for route recalculation.
-     * Recursively inserts nodes into a singular candidate solution.
-     * When there are no more available nodes to insert, add the completed candidate solution to a list.
-     * Nodes are added pairwise on a request basis, to ensure that the dropoff node will always be after the
-     * pickup node for all requests.
-     * The exception to this is if a request's pickup node has already been visited, in which case, there is no
-     * constraint on where the dropoff node is placed in the route order.
-     *
-     * @param candidates a shared list of candidate routes.
-     * @param candidate a singular candidate route, represented as a list of nodes.
-     * @param requests a pool of requests that gets increasingly smaller for each search.
-     */
-    private void recursiveAdd(List<List<Node>> candidates, List<Node> candidate, List<Request> requests) {
-        if (requests.isEmpty()) {
-            candidates.add(candidate);
-        }
-        else {
-            List<Request> requestsCopy = new ArrayList<>(requests);
-            Request request = requestsCopy.removeFirst();
-            Node pickup = request.getPickup();
-            Node dropoff = request.getDropoff();
-
-            for (int i = 0; i < candidate.size(); i++) {
-                List<Node> candidateCopy1 = new ArrayList<>(candidate);
-
-                if (!pickup.isVisited()) {
-                    candidateCopy1.add(i, pickup);
-
-                    for (int j = i+1; j < candidateCopy1.size(); j++) {
-                        List<Node> candidateCopy2 = new ArrayList<>(candidateCopy1);
-                        candidateCopy2.add(j, dropoff);
-                        recursiveAdd(candidates, candidateCopy2, requestsCopy);
-                    }
-                }
-                else {
-                    candidateCopy1.add(i, dropoff);
-                    recursiveAdd(candidates, candidateCopy1, requestsCopy);
-                }
-            }
-        }
-    }
-
-    /**
      * Convenient method for ensuring the relationship between a request and its assigned vehicle is
      * established properly.
      *
@@ -227,10 +146,12 @@ public class Vehicle {
      */
     public void charge(Instance instance) {
         Station station = instance.findClosestStation(currPos).clone();
+        Arc toStation = new Arc(currPos, station);
 
-        int distanceToStation = currPos.calcDist(station);
+        int distanceToStation = toStation.length();
         int travelTime = instance.calculateTravelTime(distanceToStation);
         deplete(distanceToStation);
+        historicalRoute.push(toStation);
 
         int chargeTime = estimateFillTime();
         fill(chargeTime);

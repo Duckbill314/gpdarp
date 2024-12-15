@@ -6,7 +6,6 @@ import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.Combiner;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
-import gpdarp.representation.Pool;
 import gpdarp.representation.route.Route;
 
 import java.util.*;
@@ -30,10 +29,7 @@ public class MajorityVoter extends Combiner {
         for (int ele = 0; ele < ensemblePolicy.size(); ele++) {
             AllocationPolicy policy = ensemblePolicy.getPolicy(ele);
 
-            pool.forEach(e -> {
-                Vehicle v = e.getKey();
-                v.setPriority(policy.priority(v, state, request));
-            });
+            pool.forEach(e -> e.getKey().setPriority(policy.priority(e, state, request)));
 
             Map.Entry<Vehicle, Route> best = pool.stream()
                     .min((e1, e2) -> {

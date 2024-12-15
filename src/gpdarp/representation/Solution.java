@@ -14,6 +14,7 @@ import java.util.List;
 
 public class Solution {
     private List<Route> routes;
+    private double penalty;
 
     public Solution(List<Route> routes) {
         this.routes = Route.listClone(routes);
@@ -29,19 +30,19 @@ public class Solution {
     public Route getRoute(int index) {
         return routes.get(index);
     }
+    public double getPenalty() { return penalty; }
 
     // Setters
     public void setRoutes(List<Route> routes) {
         this.routes = Route.listClone(routes);
     }
+    public void setPenalty(double penalty) { this.penalty = penalty; }
 
     /**
      * Reset this solution by resetting each route.
      */
     public void reset() {
-        for (Route route : routes) {
-            route.reset();
-        }
+        routes.forEach(Route::reset);
     }
 
     /**
@@ -50,11 +51,9 @@ public class Solution {
      * @return the total cost.
      */
     public double totalCost() {
-        double result = 0;
-        for (Route route : routes) {
-            result += route.getLength();
-        }
-        return result;
+        return routes.stream()
+                .map(r -> r.getLength() + penalty * r.calculatePenalty())
+                .reduce(0.0, Double::sum);
     }
 
     /**
@@ -63,12 +62,10 @@ public class Solution {
      * @return the maximal route cost.
      */
     public double maxRouteCost() {
-        double result = -1;
-        for (Route route : routes) {
-            if (result < route.getLength())
-                result = route.getLength();
-        }
-        return result;
+        return routes.stream()
+                .map(r -> r.getLength() + penalty * r.calculatePenalty())
+                .max(Double::compare)
+                .orElse(0.0);
     }
 
     /**

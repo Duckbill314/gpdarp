@@ -4,8 +4,14 @@ import gpdarp.core.Node;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
-import gpdarp.decisionprocess.DecisionProcessState;
 
+/**
+ * This event represents arrival of a vehicle to a pickup point in its route.
+ * During this event, the node is visited, the vehicle state is updated,
+ * and a new event is invoked to move to the next point in the route.
+ *
+ * @author William Huang
+ */
 public class ReactivePickupEvent extends DecisionProcessEvent {
     Node node;
     Vehicle vehicle;

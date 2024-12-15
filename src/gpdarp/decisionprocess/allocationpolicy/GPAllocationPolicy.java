@@ -8,7 +8,10 @@ import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.decisionprocess.AllocationPolicy;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
+import gpdarp.representation.route.Route;
 import gputils.DoubleData;
+
+import java.util.Map;
 
 /**
  * A GP-evolved routing policy.
@@ -37,7 +40,7 @@ public class GPAllocationPolicy extends AllocationPolicy {
     }
 
     @Override
-    public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
+    public double priority(Map.Entry<Vehicle, Route> candidate, DecisionProcessState state, Request request) {
         CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, request, state);
         DoubleData tmp = new DoubleData();
         gpTree.child.eval(null, 0, tmp, null, null, calcPrioProb);

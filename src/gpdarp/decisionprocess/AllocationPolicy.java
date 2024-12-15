@@ -4,12 +4,11 @@ import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
-import gpdarp.representation.Pool;
+import gpdarp.representation.VehiclePool;
 import gpdarp.representation.route.Route;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An allocation policy makes a decision on which vehicle should serve a request.
@@ -68,11 +67,12 @@ public abstract class AllocationPolicy {
      * @return the allocated vehicle and corresponding optimal route.
      */
     public Map.Entry<Vehicle, Route> next(DecisionProcessState state, Request request) {
-        Pool filteredPool = poolFilter.filter(state, request);
+        VehiclePool vehiclePool = poolFilter.filterVehicles(state, request);
+        Set<Map.Entry<Vehicle, Route>> poolSet = vehiclePool.entrySet();
 
-        filteredPool.forEach((v, k) -> v.setPriority(priority(v, state, request)));
+        poolSet.forEach(e -> e.getKey().setPriority(priority(e, state, request)));
 
-        return filteredPool.entrySet().stream()
+        return poolSet.stream()
                 .min((e1, e2) -> {
                     Vehicle v1 = e1.getKey();
                     Vehicle v2 = e2.getKey();
@@ -85,12 +85,13 @@ public abstract class AllocationPolicy {
     }
 
     /**
-     * Calculate the priority of a candidate vehicle for a request given a state.
+     * Calculate the priority of a candidate vehicle (and its route) for a request given a state.
      *
-     * @param candidate the candidate vehicle.
-     * @param state     the state.
-     * @param request   the given request.
-     * @return the priority of the candidate task.
+     * @param candidate the candidate vehicle + route.
+     * @param state     the decision process state.
+     * @param request   the request to be allocated.
+     *
+     * @return the priority of the candidate vehicle.
      */
-    public abstract double priority(Vehicle candidate, DecisionProcessState state, Request request);
+    public abstract double priority(Map.Entry<Vehicle, Route> candidate, DecisionProcessState state, Request request);
 }

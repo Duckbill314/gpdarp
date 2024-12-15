@@ -1,6 +1,5 @@
 package gpdarp.decisionprocess.reactive.event;
 
-import gpdarp.core.Arc;
 import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
@@ -11,6 +10,14 @@ import gpdarp.representation.route.Route;
 
 import java.util.Map;
 
+/**
+ * This event represents when a new request has been received.
+ * During this event, the request is allocated to a vehicle.
+ * If no vehicle allocation is made, the request is instead added to a waiting queue.
+ * If the vehicle is currently idle, a new event is invoked to put it into motion.
+ *
+ * @author William Huang
+ */
 public class ReactiveRequestEvent extends DecisionProcessEvent {
     Request request;
 
@@ -25,7 +32,7 @@ public class ReactiveRequestEvent extends DecisionProcessEvent {
         Map.Entry<Vehicle, Route> allocation = decisionProcess.getAllocationPolicy().next(state, request);
 
         if (allocation == null) {
-            // TODO: add request to waiting queue
+            decisionProcess.addWaiting(request);
         }
         else {
             Vehicle vehicle = allocation.getKey();
