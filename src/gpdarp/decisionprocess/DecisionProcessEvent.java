@@ -69,7 +69,7 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
     public void requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle) {
         DecisionProcessState state = decisionProcess.getState();
         List<IdleRequest> waitingList = decisionProcess.getWaitingList();
-        Map.Entry<Request, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
+        Map.Entry<IdleRequest, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
 
         if (allocation != null) {
             Request request = allocation.getKey();

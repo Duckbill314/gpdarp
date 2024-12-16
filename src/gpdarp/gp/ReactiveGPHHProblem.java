@@ -46,10 +46,6 @@ public class ReactiveGPHHProblem extends GPProblem implements SimpleProblemForm 
         return tieBreaker;
     }
 
-    public void rotateEvaluationModel() {
-        evaluationModel.rotateSeeds();
-    }
-
     @Override
     public void setup(final EvolutionState state, final Parameter base) {
         super.setup(state, base);
