@@ -1,9 +1,10 @@
 package gpdarp.demo;
 
 import gpdarp.decisionprocess.DecisionProcess;
-import gpdarp.decisionprocess.AllocationPolicy;
-import gpdarp.decisionprocess.allocationpolicy.*;
+import gpdarp.decisionprocess.RequestPolicy;
+import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.core.Instance;
+import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.LowestCostVehiclePolicy;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import util.Timer;
 
@@ -25,11 +26,12 @@ public class ReactiveDecisionProcessDemo {
         // read an instance from a data file
         Instance instance = Instance.readFromFile(new File("")); // TODO: declare data file
 
-        // specify a routing policy
-        AllocationPolicy policy = new PathScanning5Policy(); // TODO: declare policy
+        // specify a vehicle allocation policy
+        VehiclePolicy vehiclePolicy = null; // TODO: declare policy
+        RequestPolicy requestPolicy = null; // TODO: declare policy
 
         // initialise a reactive decision process
-        ReactiveDecisionProcess rdp = DecisionProcess.initReactive(instance, policy);
+        ReactiveDecisionProcess rdp = DecisionProcess.initReactive(instance, vehiclePolicy, requestPolicy);
 
         // run the decision process
         // these should give the same results

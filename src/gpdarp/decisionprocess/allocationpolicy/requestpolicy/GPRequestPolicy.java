@@ -1,11 +1,11 @@
-package gpdarp.decisionprocess.allocationpolicy;
+package gpdarp.decisionprocess.allocationpolicy.requestpolicy;
 
 import ec.gp.GPTree;
-import gpdarp.core.Request;
+import gpdarp.core.IdleRequest;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
-import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.representation.route.Route;
@@ -13,21 +13,16 @@ import gputils.DoubleData;
 
 import java.util.Map;
 
-/**
- * A GP-evolved routing policy.
- *
- * @author gphhucarp
- */
-public class GPAllocationPolicy extends AllocationPolicy {
+public class GPRequestPolicy extends RequestPolicy {
     private GPTree gpTree;
 
-    public GPAllocationPolicy(PoolFilter poolFilter, GPTree gpTree) {
+    public GPRequestPolicy(PoolFilter poolFilter, GPTree gpTree) {
         super(poolFilter);
-        name = "\"GPAllocationPolicy\"";
+        name = "\"GPRequestPolicy\"";
         this.gpTree = gpTree;
     }
 
-    public GPAllocationPolicy(GPTree gpTree) {
+    public GPRequestPolicy(GPTree gpTree) {
         this(new FeasiblePoolFilter(), gpTree);
     }
 
@@ -40,8 +35,8 @@ public class GPAllocationPolicy extends AllocationPolicy {
     }
 
     @Override
-    public double priority(Map.Entry<Vehicle, Route> candidate, DecisionProcessState state, Request request) {
-        CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, request, state);
+    public double priority(Map.Entry<IdleRequest, Route> candidate, DecisionProcessState state, Vehicle vehicle) {
+        CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, state, vehicle);
         DoubleData tmp = new DoubleData();
         gpTree.child.eval(null, 0, tmp, null, null, calcPrioProb);
 

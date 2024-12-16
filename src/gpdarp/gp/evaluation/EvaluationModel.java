@@ -5,11 +5,11 @@ import ec.Fitness;
 import ec.util.Parameter;
 import gpdarp.core.Instance;
 import gpdarp.core.Objective;
-import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.RequestPolicy;
+import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.representation.Solution;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
-import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
@@ -110,7 +110,8 @@ public abstract class EvaluationModel {
     public void calcObjRefValueMap() {
         int index = 0;
         for (Instance sample : instanceSamples) {
-            ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample, Objective.refReactiveRoutingPolicy());
+            ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample, 
+                    Objective.refVehiclePolicy(), Objective.refRequestPolicy());
 
             // get the objective reference values by applying the reference routing policy
             dp.run();
@@ -125,21 +126,25 @@ public abstract class EvaluationModel {
     }
 
     /**
-     * Evaluate an individual (a policy) using this evaluation model.
+     * Evaluate an individual (a combination of policies) using this evaluation model.
      *
-     * @param policy the policy to be evaluated.
+     * @param vehiclePolicy the vehicle allocation policy to be evaluated.
+     * @param requestPolicy the request allocation policy to be evaluated.
      * @param fitness the fitness of the individual.
      * @param state the evolution state.
      */
-    public abstract void evaluate(AllocationPolicy policy, Fitness fitness, EvolutionState state);
+    public abstract void evaluate(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
+                                  Fitness fitness, EvolutionState state);
 
     /**
-     * Evaluate an individual (a policy) using this evaluation model.
+     * Evaluate an individual (a combination of policies) using this evaluation model.
      * The fitness is original --- without normalisation.
      *
-     * @param policy the policy to be evaluated.
+     * @param vehiclePolicy the vehicle allocation policy to be evaluated.
+     * @param requestPolicy the request allocation policy to be evaluated.
      * @param fitness the fitness of the individual.
      * @param state the evolution state.
      */
-    public abstract void evaluateOriginal(AllocationPolicy policy, Fitness fitness, EvolutionState state);
+    public abstract void evaluateOriginal(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
+                                          Fitness fitness, EvolutionState state);
 }

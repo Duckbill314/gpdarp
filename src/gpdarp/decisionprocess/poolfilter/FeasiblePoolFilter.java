@@ -39,15 +39,20 @@ public class FeasiblePoolFilter extends PoolFilter {
     }
 
     @Override
-    public RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
+    public RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<IdleRequest> requests) {
         RequestPool requestPool = new RequestPool();
-        for (Request request : requests) {
-            List<Request> vehicleRequests = new ArrayList<>(vehicle.getRequests());
-            vehicleRequests.add(request);
-            Route route = recalculate(vehicle, state, vehicleRequests);
+        for (IdleRequest request : requests) {
+            if (!request.isRequest) {
+                requestPool.put(request, null);
+            }
+            else {
+                List<Request> vehicleRequests = new ArrayList<>(vehicle.getRequests());
+                vehicleRequests.add(request);
+                Route route = recalculate(vehicle, state, vehicleRequests);
 
-            if (route != null) {
-                requestPool.put(request, route);
+                if (route != null) {
+                    requestPool.put(request, route);
+                }
             }
         }
 
@@ -167,8 +172,8 @@ public class FeasiblePoolFilter extends PoolFilter {
         for (Arc arc : arcs) {
             Node to = arc.to();
             switch (to.getType()) {
-                case PICKUP -> futureDemand++;
-                case DROPOFF -> futureDemand--;
+                case PICKUP -> futureDemand += to.getRequest().getDemand();
+                case DROPOFF -> futureDemand -= to.getRequest().getDemand();
             }
 
             if (futureDemand > vehicle.getCapacity()) {

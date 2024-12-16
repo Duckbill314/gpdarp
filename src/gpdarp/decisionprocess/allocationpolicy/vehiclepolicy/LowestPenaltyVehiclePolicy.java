@@ -1,8 +1,8 @@
-package gpdarp.decisionprocess.allocationpolicy;
+package gpdarp.decisionprocess.allocationpolicy.vehiclepolicy;
 
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
-import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.decisionprocess.TieBreaker;
@@ -18,13 +18,13 @@ import java.util.Map;
  *
  * @author gphhucarp, William Huang
  */
-public class LowestPenaltyPolicy extends AllocationPolicy {
-    public LowestPenaltyPolicy(PoolFilter poolFilter, TieBreaker tieBreaker) {
+public class LowestPenaltyVehiclePolicy extends VehiclePolicy {
+    public LowestPenaltyVehiclePolicy(PoolFilter poolFilter, TieBreaker tieBreaker) {
         super(poolFilter, tieBreaker);
         name = "\"LP\"";
     }
 
-    public LowestPenaltyPolicy() {
+    public LowestPenaltyVehiclePolicy() {
         this(new FeasiblePoolFilter(), new SimpleTieBreaker());
     }
 

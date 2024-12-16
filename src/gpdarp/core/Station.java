@@ -12,6 +12,7 @@ import java.util.List;
 public class Station extends Node {
     public Station(int x, int y) {
         super(x, y);
+        setType(NodeType.STATION);
     }
 
     @Override

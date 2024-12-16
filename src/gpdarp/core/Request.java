@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * In the dial-a-ride problem, customers submit getRequests to get a ride.
+ * In the dial-a-ride problem, customers submit Requests to get a ride.
  * This class contains all the relevant details for a single request, including:
  * - the time the request was received,
  * - the pickup and dropoff destinations,
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author William Huang
  */
-public final class Request {
+public class Request implements Allocatable {
     private final int id;
     private final int tRec;
     private final Node pickup;
@@ -23,10 +23,11 @@ public final class Request {
     private final int tEarly;
     private final int tLate;
     private final int tMax;
+    private int demand;
     private Vehicle vehicle;
     private double priority;
 
-    public Request(int id, int tRec, Node pickup, Node dropoff, int tEarly, int tLate, int tMax) {
+    public Request(int id, int tRec, Node pickup, Node dropoff, int tEarly, int tLate, int tMax, int demand) {
         this.id = id;
         this.tRec = tRec;
         this.pickup = pickup;
@@ -34,12 +35,13 @@ public final class Request {
         this.tEarly = tEarly;
         this.tLate = tLate;
         this.tMax = tMax;
+        this.demand = demand;
         this.vehicle = null;
+        this.priority = 0;
         pickup.setRequest(this);
         pickup.setType(Node.NodeType.PICKUP);
         dropoff.setRequest(this);
         dropoff.setType(Node.NodeType.DROPOFF);
-        this.priority = 0;
     }
 
     // Getters
@@ -52,6 +54,7 @@ public final class Request {
     public int getTMax() { return tMax; }
     public Vehicle getVehicle() { return vehicle; }
     public double getPriority() { return priority; }
+    public int getDemand() { return demand; }
 
     // Setters
     public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
@@ -100,7 +103,7 @@ public final class Request {
 
     @Override
     public Request clone() {
-        return new Request(id, tRec, pickup.clone(), dropoff.clone(), tEarly, tLate, tMax);
+        return new Request(id, tRec, pickup.clone(), dropoff.clone(), tEarly, tLate, tMax, demand);
     }
 
     /**
@@ -109,10 +112,10 @@ public final class Request {
      * @param requests the list of requests to be cloned.
      * @return the cloned list.
      */
-    public static List<Request> listClone(List<Request> requests) {
-        List<Request> clonedRequests = new ArrayList<>();
+    public static <T extends Request> List<T> listClone(List<T> requests) {
+        List<T> clonedRequests = new ArrayList<>();
         for (Request request : requests) {
-            clonedRequests.add(request.clone());
+            clonedRequests.add((T) request.clone());
         }
         return clonedRequests;
     }

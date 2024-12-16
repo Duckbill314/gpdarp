@@ -1,10 +1,8 @@
 package gpdarp.decisionprocess.reactive;
 
+import gpdarp.core.IdleRequest;
 import gpdarp.core.Request;
-import gpdarp.decisionprocess.DecisionProcess;
-import gpdarp.decisionprocess.DecisionProcessEvent;
-import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.*;
 
 import java.util.List;
 import java.util.PriorityQueue;
@@ -20,9 +18,10 @@ public class ReactiveDecisionProcess extends DecisionProcess {
 
     public ReactiveDecisionProcess(DecisionProcessState state,
                                    PriorityQueue<DecisionProcessEvent> eventQueue,
-                                   List<Request> waitingList,
-                                   AllocationPolicy allocationPolicy) {
-        super(state, eventQueue, waitingList, allocationPolicy);
+                                   List<IdleRequest> waitingList,
+                                   VehiclePolicy vehiclePolicy,
+                                   RequestPolicy requestPolicy) {
+        super(state, eventQueue, waitingList, vehiclePolicy, requestPolicy);
     }
 
     @Override
@@ -37,6 +36,7 @@ public class ReactiveDecisionProcess extends DecisionProcess {
         PriorityQueue<DecisionProcessEvent> clonedEQ = new PriorityQueue<>();
         clonedEQ.addAll(eventQueue);
 
-        return new ReactiveDecisionProcess(clonedState, clonedEQ, allocationPolicy);
+        return new ReactiveDecisionProcess(clonedState, clonedEQ, Request.listClone(waitingList),
+                vehiclePolicy, requestPolicy);
     }
 }

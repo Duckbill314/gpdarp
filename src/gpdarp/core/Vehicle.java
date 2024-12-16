@@ -17,7 +17,7 @@ import java.util.*;
  *
  * @author William Huang
  */
-public class Vehicle {
+public class Vehicle implements Allocatable {
     private final int id;
     private final int capacity;
     private int demand;
@@ -117,7 +117,7 @@ public class Vehicle {
      */
     public void pickup(Node node) {
         node.visit();
-        demand++;
+        demand += node.getRequest().getDemand();
         deplete(currArc.length());
         historicalRoute.push(currArc);
     }
@@ -130,7 +130,7 @@ public class Vehicle {
     public void dropoff(Node node) {
         node.visit();
         node.getRequest().finalise();
-        demand--;
+        demand -= node.getRequest().getDemand();
         deplete(currArc.length());
         historicalRoute.push(currArc);
     }
@@ -145,6 +145,7 @@ public class Vehicle {
      * @param instance the instance of the problem.
      */
     public void charge(Instance instance) {
+        // TODO: incorporate idlerequest
         Station station = instance.findClosestStation(currPos).clone();
         Arc toStation = new Arc(currPos, station);
 

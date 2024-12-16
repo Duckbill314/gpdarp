@@ -14,6 +14,7 @@ import java.util.*;
  * @author William Huang
  */
 public final class Instance {
+    private final String name;
     private List<Vehicle> vehicles;
     private List<Station> stations;
     private List<Request> requests;
@@ -24,8 +25,9 @@ public final class Instance {
     // Pseudo-singleton
     private final Instance originalCopy;
 
-    public Instance(List<Vehicle> vehicles, List<Station> stations, List<Request> requests,
+    public Instance(String name, List<Vehicle> vehicles, List<Station> stations, List<Request> requests,
                     double timeHorizon, double travelTimeRate, double latenessPenalty) {
+        this.name = name;
         this.vehicles = vehicles;
         this.stations = stations;
         this.requests = requests;
@@ -37,6 +39,7 @@ public final class Instance {
     }
 
     // Getters
+    public String getName() { return name; }
     public List<Vehicle> getVehicles() { return vehicles; }
     public List<Station> getStations() { return stations; }
     public List<Request> getRequests() { return requests; }
@@ -135,10 +138,11 @@ public final class Instance {
                 int tEarly = Integer.parseInt(segments[6]);
                 int tLate = Integer.parseInt(segments[7]);
                 int tMax = Integer.parseInt(segments[8]);
-                requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax));
+                requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax, 1));
                 line = reader.readLine();
             }
-            return new Instance(vehicles, stations, requests, timeHorizon, travelTimeRate, latenessPenalty);
+            return new Instance(file.getName(), vehicles, stations, requests, timeHorizon, travelTimeRate,
+                    latenessPenalty);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -177,6 +181,7 @@ public final class Instance {
     @Override
     public Instance clone() {
         return new Instance(
+                name,
                 Vehicle.listClone(vehicles),
                 Station.listClone(stations),
                 Request.listClone(requests),

@@ -2,7 +2,7 @@ package gpdarp.decisionprocess.allocationpolicy.ensemble.combiner;
 
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
-import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.Combiner;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
@@ -27,7 +27,7 @@ public class MajorityVoter extends Combiner {
         }
 
         for (int ele = 0; ele < ensemblePolicy.size(); ele++) {
-            AllocationPolicy policy = ensemblePolicy.getPolicy(ele);
+            VehiclePolicy policy = ensemblePolicy.getPolicy(ele);
 
             pool.forEach(e -> e.getKey().setPriority(policy.priority(e, state, request)));
 

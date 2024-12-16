@@ -1,9 +1,9 @@
-package gpdarp.decisionprocess.allocationpolicy;
+package gpdarp.decisionprocess.allocationpolicy.vehiclepolicy;
 
 import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
-import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.TieBreaker;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
@@ -20,7 +20,7 @@ import java.util.Map;
  *
  * @author gphhucarp, William Huang
  */
-public class NearestVehiclePolicy extends AllocationPolicy {
+public class NearestVehiclePolicy extends VehiclePolicy {
     public NearestVehiclePolicy(PoolFilter poolFilter, TieBreaker tieBreaker) {
         super(poolFilter, tieBreaker);
         name = "\"NV\"";

@@ -4,41 +4,34 @@ import ec.EvolutionState;
 import ec.Individual;
 import ec.Problem;
 import ec.simple.SimpleProblemForm;
-import gpdarp.core.Request;
-import gpdarp.core.Vehicle;
+import gpdarp.core.Allocatable;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.representation.route.Route;
 
 import java.util.Map;
 
 /**
- * The problem for calculating the priority of a candidate task.
+ * The problem for calculating the priority of a candidate vehicle or request.
  *
- * @author Yi Mei
+ * @author Yi Mei, William Huang
  */
-public class CalcPriorityProblem extends Problem implements SimpleProblemForm {
+public class CalcPriorityProblem<T1 extends Allocatable, T2 extends Allocatable>
+        extends Problem implements SimpleProblemForm {
 
-    private Map.Entry<Vehicle, Route> candidate;
-    private Request request;
+    private Map.Entry<T1, Route> candidate;
     private DecisionProcessState state;
+    private T2 control;
 
-    public CalcPriorityProblem(Map.Entry<Vehicle, Route> candidate,
-                               Request request,
-                               DecisionProcessState state) {
+    public CalcPriorityProblem(Map.Entry<T1, Route> candidate, DecisionProcessState state, T2 control) {
         this.candidate = candidate;
-        this.request = request;
         this.state = state;
+        this.control = control;
     }
 
-    public Map.Entry<Vehicle, Route> getCandidate() {
-        return candidate;
-    }
-    public Request getRequest() {
-        return request;
-    }
-    public DecisionProcessState getState() {
-        return state;
-    }
+    // Getters
+    public Map.Entry<T1, Route> getCandidate() { return candidate; }
+    public DecisionProcessState getState() { return state; }
+    public T2 getControl() { return control; }
 
     @Override
     public void evaluate(EvolutionState state, Individual ind, int subpopulation, int threadnum) { }

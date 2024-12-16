@@ -10,8 +10,8 @@ import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import gpdarp.core.Instance;
 import gpdarp.core.Objective;
-import gpdarp.decisionprocess.AllocationPolicy;
-import gpdarp.decisionprocess.allocationpolicy.GPAllocationPolicy;
+import gpdarp.decisionprocess.VehiclePolicy;
+import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
 import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
 import gpdarp.gp.evaluation.EvaluationModel;
 import gpdarp.gp.io.FitnessType;
@@ -142,11 +142,11 @@ public class GPTest {
 
                     switch (solutionType) {
                         case SIMPLE_SOLUTION:
-                            GPAllocationPolicy solution1;
+                            GPVehiclePolicy solution1;
                             int numUniqueTerminals;
                             // write the test results for each generation
                             for (int j = 0; j < result.getSolutions().size(); j++) {
-                                solution1 = (GPAllocationPolicy) result.getSolutionAtGen(j);
+                                solution1 = (GPVehiclePolicy) result.getSolutionAtGen(j);
 
                                 numUniqueTerminals = solution1.getGPTree().child.numNodes(gatherer);
 
@@ -157,7 +157,7 @@ public class GPTest {
                                 writer.newLine();
                             }
                             // write the test results of the best individual, shown as gen = -1
-                            solution1 = (GPAllocationPolicy) result.getBestSolution();
+                            solution1 = (GPVehiclePolicy) result.getBestSolution();
 
                             numUniqueTerminals = solution1.getGPTree().child.numNodes(gatherer);
 
@@ -180,7 +180,7 @@ public class GPTest {
                                 numUniqueTerminalsVec = new int[solution2.size()];
 
                                 for (int k = 0; k < solution2.size(); k++) {
-                                    GPAllocationPolicy policy = (GPAllocationPolicy) solution2.getPolicy(k);
+                                    GPVehiclePolicy policy = (GPVehiclePolicy) solution2.getPolicy(k);
                                     programSize[k] = policy.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
                                     numUniqueTerminalsVec[k] = policy.getGPTree().child.numNodes(gatherer);
                                 }
@@ -200,7 +200,7 @@ public class GPTest {
                             numUniqueTerminalsVec = new int[solution2.size()];
 
                             for (int k = 0; k < solution2.size(); k++) {
-                                GPAllocationPolicy policy = (GPAllocationPolicy) solution2.getPolicy(k);
+                                GPVehiclePolicy policy = (GPVehiclePolicy) solution2.getPolicy(k);
                                 programSize[k] = policy.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
                                 numUniqueTerminalsVec[k] = policy.getGPTree().child.numNodes(gatherer);
                             }
@@ -237,8 +237,8 @@ public class GPTest {
                 for (int i = 0; i < manualPolicies; i++) {
                     p = b.push("" + i);
 
-                    AllocationPolicy policy = (AllocationPolicy)parameters.getInstanceForParameter(
-                            p, null, AllocationPolicy.class);
+                    VehiclePolicy policy = (VehiclePolicy)parameters.getInstanceForParameter(
+                            p, null, VehiclePolicy.class);
 
                     MultiObjectiveFitness fit = new MultiObjectiveFitness();
                     fit.objectives = new double[1];
@@ -260,10 +260,8 @@ public class GPTest {
         for (Objective objective : testEvaluationModel.getObjectives())
             str += objective.getName() + "-";
 
-        Instance instance = testEvaluationModel.getInstanceSamples().get(0).getBaseInstance();
-        str += instance.getName() + "-" + instance.getNumVehicles() + "-"
-                + instance.getDemandUncertaintyLevel() + "-"
-                + instance.getCostUncertaintyLevel();
+        Instance instance = testEvaluationModel.getInstanceSamples().get(0);
+        str += instance.getName() + "-" + instance.getNumVehicles() + "-";
 
         return str;
     }

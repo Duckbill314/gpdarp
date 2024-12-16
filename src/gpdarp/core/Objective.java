@@ -1,6 +1,7 @@
 package gpdarp.core;
 
-import gpdarp.decisionprocess.AllocationPolicy;
+import gpdarp.decisionprocess.RequestPolicy;
+import gpdarp.decisionprocess.VehiclePolicy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,10 +39,19 @@ public enum Objective {
     }
 
     /**
-     * The reference reactive routing policy to calculate the reference objective values.
-     * @return the reference reactive routing policy.
+     * The reference vehicle allocation policy for calculating the reference objective.
+     * @return the reference policy.
      */
-    public static AllocationPolicy refReactiveRoutingPolicy() {
+    public static VehiclePolicy refVehiclePolicy() {
+        // TODO: set the desired policy
+        return null;
+    }
+
+    /**
+     * The reference request allocation policy for calculating the reference objective.
+     * @return the reference policy.
+     */
+    public static RequestPolicy refRequestPolicy() {
         // TODO: set the desired policy
         return null;
     }

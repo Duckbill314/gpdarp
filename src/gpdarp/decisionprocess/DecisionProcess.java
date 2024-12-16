@@ -1,7 +1,7 @@
 package gpdarp.decisionprocess;
 
+import gpdarp.core.IdleRequest;
 import gpdarp.core.Instance;
-import gpdarp.core.Request;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 
 import java.util.ArrayList;
@@ -21,17 +21,20 @@ import java.util.PriorityQueue;
 public abstract class DecisionProcess {
     protected DecisionProcessState state;
     protected PriorityQueue<DecisionProcessEvent> eventQueue;
-    protected List<Request> waitingList;
-    protected AllocationPolicy allocationPolicy;
+    protected List<IdleRequest> waitingList;
+    protected VehiclePolicy vehiclePolicy;
+    protected RequestPolicy requestPolicy;
 
     public DecisionProcess(DecisionProcessState state,
                            PriorityQueue<DecisionProcessEvent> eventQueue,
-                           List<Request> waitingList,
-                           AllocationPolicy allocationPolicy) {
+                           List<IdleRequest> waitingList,
+                           VehiclePolicy vehiclePolicy,
+                           RequestPolicy requestPolicy) {
         this.state = state;
         this.eventQueue = eventQueue;
         this.waitingList = waitingList;
-        this.allocationPolicy = allocationPolicy;
+        this.vehiclePolicy = vehiclePolicy;
+        this.requestPolicy = requestPolicy;
     }
 
     // Getters
@@ -41,15 +44,11 @@ public abstract class DecisionProcess {
     public PriorityQueue<DecisionProcessEvent> getEventQueue() {
         return eventQueue;
     }
-    public List<Request> getWaitingList() { return waitingList; }
-    public AllocationPolicy getAllocationPolicy() {
-        return allocationPolicy;
+    public List<IdleRequest> getWaitingList() { return waitingList; }
+    public VehiclePolicy getVehiclePolicy() {
+        return vehiclePolicy;
     }
-
-    // Setters
-    public void setAllocationPolicy(AllocationPolicy allocationPolicy) {
-        this.allocationPolicy = allocationPolicy;
-    }
+    public RequestPolicy getRequestPolicy() { return requestPolicy; }
 
     /**
      * Add an event to the event queue.
@@ -63,21 +62,24 @@ public abstract class DecisionProcess {
      *
      * @param request the request to be added.
      */
-    public void addWaiting(Request request) { waitingList.add(request); }
+    public void addWaiting(IdleRequest request) { waitingList.add(request); }
 
     /**
-     * Initialise a reactive decision process from an instance and an allocation policy.
+     * Initialise a reactive decision process from an instance,
+     * a vehicle allocation policy, and a request allocation policy.
      *
      * @param instance the given instance.
-     * @param allocationPolicy the given policy.
+     * @param vehiclePolicy the vehicle allocation policy.
+     * @param requestPolicy the request allocation policy.
      *
      * @return the initial reactive decision process.
      */
-    public static ReactiveDecisionProcess initReactive(Instance instance, AllocationPolicy allocationPolicy) {
+    public static ReactiveDecisionProcess initReactive(Instance instance,
+                                                       VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy) {
         DecisionProcessState state = new DecisionProcessState(instance);
         PriorityQueue<DecisionProcessEvent> eventQueue = new PriorityQueue<>();
-        List<Request> waitingList = new ArrayList<>();
-        return new ReactiveDecisionProcess(state, eventQueue, waitingList, allocationPolicy);
+        List<IdleRequest> waitingList = new ArrayList<>();
+        return new ReactiveDecisionProcess(state, eventQueue, waitingList, vehiclePolicy, requestPolicy);
     }
 
     /**

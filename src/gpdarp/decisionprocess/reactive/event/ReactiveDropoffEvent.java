@@ -52,7 +52,7 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
             waiting.setEta(waiting.getEta() + vehicle.getServeTime());
             vehicle.setCurrPos(waiting);
 
-            // TODO: charge event
+            // TODO: idle decision
         }
     }
 }
