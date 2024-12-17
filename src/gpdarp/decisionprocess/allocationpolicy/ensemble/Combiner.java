@@ -16,5 +16,5 @@ import java.util.Map;
 
 public abstract class Combiner {
     public abstract Map.Entry<Vehicle, Route> next(DecisionProcessState state, Request request,
-                                                   EnsemblePolicy ensemblePolicy);
+                                                   gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy ensemblePolicy);
 }

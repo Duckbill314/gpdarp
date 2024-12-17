@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Rework this file
 /**
  * The evolution state of evolving routing policy with GPHH.
  *
@@ -286,12 +287,6 @@ public class GPHHEvolutionState extends TerminalERCEvolutionState {
 	    statistics.prePostBreedingExchangeStatistics(this);
 	    population = exchanger.postBreedingExchangePopulation(this);
 	    statistics.postPostBreedingExchangeStatistics(this);
-
-	    // Generate new instances if needed
-		if (rotateEvalModel) {
-			ReactiveGPHHProblem problem = (ReactiveGPHHProblem)evaluator.p_problem;
-			problem.rotateEvaluationModel();
-		}
 
 	    // INCREMENT GENERATION AND CHECKPOINT
 	    generation++;
