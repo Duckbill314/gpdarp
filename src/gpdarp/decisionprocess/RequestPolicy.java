@@ -1,7 +1,6 @@
 package gpdarp.decisionprocess;
 
-import gpdarp.core.IdleRequest;
-import gpdarp.core.Request;
+import gpdarp.core.WaitingRequest;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
@@ -69,16 +68,16 @@ public abstract class RequestPolicy {
      *
      * @return the allocated request and corresponding optimal route.
      */
-    public Map.Entry<IdleRequest, Route> next(Vehicle vehicle, DecisionProcessState state, List<IdleRequest> requests) {
+    public Map.Entry<WaitingRequest, Route> next(Vehicle vehicle, DecisionProcessState state, List<WaitingRequest> requests) {
         RequestPool requestPool = poolFilter.filterRequests(vehicle, state, requests);
-        Set<Map.Entry<IdleRequest, Route>> poolSet = requestPool.entrySet();
+        Set<Map.Entry<WaitingRequest, Route>> poolSet = requestPool.entrySet();
 
         poolSet.forEach(e -> e.getKey().setPriority(priority(e, state, vehicle)));
 
         return poolSet.stream()
                 .min((e1, e2) -> {
-                    IdleRequest r1 = e1.getKey();
-                    IdleRequest r2 = e2.getKey();
+                    WaitingRequest r1 = e1.getKey();
+                    WaitingRequest r2 = e2.getKey();
                     if (Double.compare(r1.getPriority(), r2.getPriority()) == 0) {
                         return tieBreaker.breakTie(r1, r2);
                     }
@@ -97,5 +96,5 @@ public abstract class RequestPolicy {
      * @return the priority of the candidate request.
      */
     public abstract double priority(
-            Map.Entry<IdleRequest, Route> candidate, DecisionProcessState state, Vehicle vehicle);
+            Map.Entry<WaitingRequest, Route> candidate, DecisionProcessState state, Vehicle vehicle);
 }

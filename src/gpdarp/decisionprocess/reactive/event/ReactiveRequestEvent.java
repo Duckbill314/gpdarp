@@ -5,10 +5,6 @@ import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
-import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.representation.route.Route;
-
-import java.util.Map;
 
 /**
  * This event represents when a new request has been received.

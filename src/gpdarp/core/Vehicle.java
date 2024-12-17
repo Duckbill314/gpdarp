@@ -88,7 +88,7 @@ public class Vehicle implements Allocatable {
     public void setPriority(double priority) { this.priority = priority; }
 
     /**
-     * Convenient method for ensuring the relationship between a request and its assigned vehicle is
+     * Helper method for ensuring the relationship between a request and its assigned vehicle is
      * established properly.
      *
      * @param request the request to allocate to this vehicle.
@@ -99,7 +99,7 @@ public class Vehicle implements Allocatable {
     }
 
     /**
-     * Convenience method for ensuring that the vehicle's route and the ETA of nodes along the route are
+     * Helper method for ensuring that the vehicle's route and the ETA of nodes along the route are
      * properly updated.
      *
      * @param state the current state.
@@ -108,58 +108,6 @@ public class Vehicle implements Allocatable {
     public void updateRoute(DecisionProcessState state, Route plannedRoute) {
         plannedRoute.updateEtas(state, this);
         setPlannedRoute(plannedRoute);
-    }
-
-    /**
-     * Convenience method for handling pickup events.
-     *
-     * @param node the node at which the event occurs.
-     */
-    public void pickup(Node node) {
-        node.visit();
-        demand += node.getRequest().getDemand();
-        deplete(currArc.length());
-        historicalRoute.push(currArc);
-    }
-
-    /**
-     * Convenience method for handling dropoff events.
-     *
-     * @param node the node at which the event occurs.
-     */
-    public void dropoff(Node node) {
-        node.visit();
-        node.getRequest().finalise();
-        demand -= node.getRequest().getDemand();
-        deplete(currArc.length());
-        historicalRoute.push(currArc);
-    }
-
-    /**
-     * Convenience method for handling charging events.
-     * Because a vehicle cannot serve requests while it is on the way to a charging station or while it is
-     * charging, the "dead" time can be accumulated to calculate the next available time.
-     * A vehicle can still accept requests during the "dead" time, but route calculation will begin no earlier than
-     * the next available time.
-     *
-     * @param instance the instance of the problem.
-     */
-    public void charge(Instance instance) {
-        // TODO: incorporate idlerequest
-        Station station = instance.findClosestStation(currPos).clone();
-        Arc toStation = new Arc(currPos, station);
-
-        int distanceToStation = toStation.length();
-        int travelTime = instance.calculateTravelTime(distanceToStation);
-        deplete(distanceToStation);
-        historicalRoute.push(toStation);
-
-        int chargeTime = estimateFillTime();
-        fill(chargeTime);
-
-        int nextAvailableTime = currPos.getEta() + travelTime + chargeTime;
-        station.setEta(nextAvailableTime);
-        setCurrPos(station);
     }
 
     /**
@@ -174,6 +122,59 @@ public class Vehicle implements Allocatable {
             return null;
         }
         return currArc.to();
+    }
+
+    /**
+     * Helper method for handling pickup events.
+     *
+     * @param node the node at which the event occurs.
+     */
+    public void pickup(Node node) {
+        node.visit();
+        demand += node.getRequest().getDemand();
+        deplete(currArc.length());
+        historicalRoute.push(currArc);
+    }
+
+    /**
+     * Helper method for handling dropoff events.
+     *
+     * @param node the node at which the event occurs.
+     */
+    public void dropoff(Node node) {
+        node.visit();
+        node.getRequest().finalise();
+        demand -= node.getRequest().getDemand();
+        deplete(currArc.length());
+        historicalRoute.push(currArc);
+    }
+
+    /**
+     * Helper method for handling charging events.
+     * Because a vehicle cannot serve requests while it is on the way to a charging station or while it is
+     * charging, the "dead" time can be accumulated to calculate the next available time.
+     * A vehicle can still accept requests during the "dead" time, but route calculation will begin no earlier than
+     * the next available time.
+     *
+     * @param instance the instance of the problem.
+     * @param request the selected charging "request".
+     */
+    public void charge(Instance instance, WaitingRequest request) {
+        Node currPos = request.getPickup();
+        Station station = (Station) request.getDropoff();
+        Arc toStation = new Arc(currPos, station);
+
+        int distanceToStation = toStation.length();
+        int travelTime = instance.calculateTravelTime(distanceToStation);
+        deplete(distanceToStation);
+        historicalRoute.push(toStation);
+
+        int chargeTime = estimateFillTime();
+        fill(chargeTime);
+
+        int nextAvailableTime = currPos.getEta() + travelTime + chargeTime;
+        station.setEta(nextAvailableTime);
+        setCurrPos(station);
     }
 
     /**

@@ -1,14 +1,14 @@
 package gpdarp.decisionprocess.reactive.event;
 
+import gpdarp.core.Node;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 
 /**
- * This event represents a vehicle in its charging state.
- * During this event, the vehicle will move to a charging station, and then replenish its charge.
- * For the entire duration of this event, the vehicle is still able to accept incoming requests, but it is considered
- * "dead" and cannot serve those requests until its "dead" time is over.
+ * This event represents the moment right after a vehicle has finished charging.
+ * It will be given one final opportunity to accept a waiting request.
+ * If it does not accept, it will wait where it is until it receives its next fresh request.
  *
  * @author William Huang
  */
@@ -22,6 +22,13 @@ public class ReactiveChargeEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        vehicle.charge(decisionProcess.getState().getInstance());
+        requestAllocation(decisionProcess, vehicle, null, false);
+
+        Node destination = vehicle.updateArcFromPlannedRoute();
+
+        if (destination != null) {
+            vehicle.setCurrPos(null);
+            decisionProcess.addEvent(new ReactivePickupEvent(destination.getEta(), destination, vehicle));
+        }
     }
 }

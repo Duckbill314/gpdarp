@@ -1,7 +1,7 @@
 package gpdarp.decisionprocess.allocationpolicy.requestpolicy;
 
 import ec.gp.GPTree;
-import gpdarp.core.IdleRequest;
+import gpdarp.core.WaitingRequest;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
@@ -35,7 +35,7 @@ public class GPRequestPolicy extends RequestPolicy {
     }
 
     @Override
-    public double priority(Map.Entry<IdleRequest, Route> candidate, DecisionProcessState state, Vehicle vehicle) {
+    public double priority(Map.Entry<WaitingRequest, Route> candidate, DecisionProcessState state, Vehicle vehicle) {
         CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, state, vehicle);
         DoubleData tmp = new DoubleData();
         gpTree.child.eval(null, 0, tmp, null, null, calcPrioProb);

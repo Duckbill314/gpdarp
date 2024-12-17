@@ -1,6 +1,6 @@
 package gpdarp.decisionprocess.reactive;
 
-import gpdarp.core.IdleRequest;
+import gpdarp.core.WaitingRequest;
 import gpdarp.core.Request;
 import gpdarp.decisionprocess.*;
 
@@ -18,7 +18,7 @@ public class ReactiveDecisionProcess extends DecisionProcess {
 
     public ReactiveDecisionProcess(DecisionProcessState state,
                                    PriorityQueue<DecisionProcessEvent> eventQueue,
-                                   List<IdleRequest> waitingList,
+                                   List<WaitingRequest> waitingList,
                                    VehiclePolicy vehiclePolicy,
                                    RequestPolicy requestPolicy) {
         super(state, eventQueue, waitingList, vehiclePolicy, requestPolicy);

@@ -1,10 +1,12 @@
 package gpdarp.decisionprocess;
 
-import gpdarp.core.IdleRequest;
+import gpdarp.core.WaitingRequest;
+import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.representation.route.Route;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +51,7 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
         Map.Entry<Vehicle, Route> allocation = decisionProcess.getVehiclePolicy().next(state, request);
 
         if (allocation == null) {
-            decisionProcess.addWaiting((IdleRequest) request);
+            decisionProcess.addWaiting(new WaitingRequest(request));
             return null;
         }
 
@@ -64,19 +66,35 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      * Helper method for handling waiting list request allocation.
      *
      * @param decisionProcess the decision process that invoked this event.
-     * @param vehicle the vehicle to which a request is to be allocated.
+     * @param vehicle         the vehicle to which a request is to be allocated.
+     * @param waitingPoint    the point and time at which the vehicle will be after finishing its current task.
+     * @param includeStations whether to also consider returning to a charging station.
+     *
+     * @return the request allocation.
      */
-    public void requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle) {
-        DecisionProcessState state = decisionProcess.getState();
-        List<IdleRequest> waitingList = decisionProcess.getWaitingList();
-        Map.Entry<IdleRequest, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
+    public WaitingRequest requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint,
+                                            boolean includeStations) {
 
-        if (allocation != null) {
-            Request request = allocation.getKey();
+        DecisionProcessState state = decisionProcess.getState();
+        List<WaitingRequest> waitingList = new ArrayList<>(decisionProcess.getWaitingList());
+
+        if (includeStations) {
+            state.getInstance().getStations().forEach(s -> waitingList.add(
+                    new WaitingRequest(waitingPoint.getEta(), waitingPoint, s.clone())));
+        }
+        Map.Entry<WaitingRequest, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
+
+        if (allocation == null) {
+            return null;
+        }
+
+        WaitingRequest request = allocation.getKey();
+        if (request.isRequest) {
             Route route = allocation.getValue();
             vehicle.allocate(request);
             vehicle.updateRoute(state, route);
-            waitingList.remove(request);
+            decisionProcess.removeWaiting(request);
         }
+        return request;
     }
 }

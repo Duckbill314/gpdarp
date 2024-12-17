@@ -39,9 +39,9 @@ public class FeasiblePoolFilter extends PoolFilter {
     }
 
     @Override
-    public RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<IdleRequest> requests) {
+    public RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<WaitingRequest> requests) {
         RequestPool requestPool = new RequestPool();
-        for (IdleRequest request : requests) {
+        for (WaitingRequest request : requests) {
             if (!request.isRequest) {
                 requestPool.put(request, null);
             }

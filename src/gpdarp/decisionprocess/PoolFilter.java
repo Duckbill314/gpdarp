@@ -1,6 +1,6 @@
 package gpdarp.decisionprocess;
 
-import gpdarp.core.IdleRequest;
+import gpdarp.core.WaitingRequest;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.representation.RequestPool;
@@ -35,5 +35,5 @@ public abstract class PoolFilter {
      *
      * @return the filtered pool, containing potentially multiple routes for the one vehicle.
      */
-    public abstract RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<IdleRequest> requests);
+    public abstract RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<WaitingRequest> requests);
 }
