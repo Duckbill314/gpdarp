@@ -13,8 +13,7 @@ import java.util.List;
  * This information includes
  * - the instance (which contains most of the information),
  * - the current time,
- * - the solution,
- * - the pool of candidate allocations (mainly for ensemble policies).
+ * - the solution.
  *
  * @author gphhucarp, William Huang
  */
@@ -22,28 +21,25 @@ public class DecisionProcessState {
     private final Instance instance;
     private int time;
     private final Solution solution;
-    private VehiclePool vehiclePool;
 
-    public DecisionProcessState(Instance instance, int time, Solution solution, VehiclePool vehiclePool) {
+    public DecisionProcessState(Instance instance, int time, Solution solution) {
         this.instance = instance;
         this.time = time;
         this.solution = solution;
-        this.vehiclePool = vehiclePool;
-        this.solution.setPenalty(instance.getLatenessPenalty());
+        this.solution.setTravelTimeRate(instance.getTravelTimeRate());
+        this.solution.setLatenessPenalty(instance.getLatenessPenalty());
     }
 
     // Initialisation constructor
-    public DecisionProcessState(Instance instance) { this(instance, 0, new Solution(), new VehiclePool()); }
+    public DecisionProcessState(Instance instance) { this(instance, 0, new Solution()); }
 
     // Getters
     public Instance getInstance() { return instance; }
     public int getTime() { return time; }
     public Solution getSolution() { return solution; }
-    public VehiclePool getPool() { return vehiclePool; }
 
     // Setters
     public void setTime(int time) { this.time = time; }
-    public void setPool(VehiclePool vehiclePool) { this.vehiclePool = vehiclePool; }
 
     /**
      * Update the solution with all the vehicles' current historical routes.
@@ -65,6 +61,6 @@ public class DecisionProcessState {
 
     @Override
     public DecisionProcessState clone() {
-        return new DecisionProcessState(instance.clone(), time, solution.clone(), vehiclePool.clone());
+        return new DecisionProcessState(instance.clone(), time, solution.clone());
     }
 }

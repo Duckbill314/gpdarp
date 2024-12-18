@@ -1,9 +1,6 @@
 package gpdarp.decisionprocess;
 
-import gpdarp.core.WaitingRequest;
-import gpdarp.core.Node;
-import gpdarp.core.Request;
-import gpdarp.core.Vehicle;
+import gpdarp.core.*;
 import gpdarp.representation.route.Route;
 
 import java.util.ArrayList;
@@ -79,17 +76,18 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
         List<WaitingRequest> waitingList = new ArrayList<>(decisionProcess.getWaitingList());
 
         if (includeStations) {
-            state.getInstance().getStations().forEach(s -> waitingList.add(
-                    new WaitingRequest(waitingPoint.getEta(), waitingPoint, s.clone())));
+            Station station = state.getInstance().findClosestStation(waitingPoint).clone();
+            waitingList.add(new WaitingRequest(waitingPoint.getEta(), waitingPoint, station));
         }
-        Map.Entry<WaitingRequest, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
+        Map.Entry<WaitingRequest, Route> allocation = decisionProcess.getRequestPolicy()
+                .next(vehicle, state, waitingList);
 
         if (allocation == null) {
             return null;
         }
 
         WaitingRequest request = allocation.getKey();
-        if (request.isRequest) {
+        if (request.getType() == WaitingRequest.RequestType.REQUEST) {
             Route route = allocation.getValue();
             vehicle.allocate(request);
             vehicle.updateRoute(state, route);

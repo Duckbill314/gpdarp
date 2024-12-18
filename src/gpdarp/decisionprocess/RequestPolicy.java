@@ -3,9 +3,11 @@ package gpdarp.decisionprocess;
 import gpdarp.core.WaitingRequest;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
+import gpdarp.decisionprocess.tiebreaker.RandomTieBreaker;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
 import gpdarp.representation.RequestPool;
 import gpdarp.representation.route.Route;
+import org.apache.commons.math3.random.RandomDataGenerator;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,9 @@ public abstract class RequestPolicy {
         this(new FeasiblePoolFilter(), tieBreaker);
     }
 
+    // Constructor with neither pool filter nor tiebreaker specified
+    public RequestPolicy() { this(new FeasiblePoolFilter(), new SimpleTieBreaker()); }
+
     // Getters
     public String getName() {
         return name;
@@ -68,7 +73,9 @@ public abstract class RequestPolicy {
      *
      * @return the allocated request and corresponding optimal route.
      */
-    public Map.Entry<WaitingRequest, Route> next(Vehicle vehicle, DecisionProcessState state, List<WaitingRequest> requests) {
+    public Map.Entry<WaitingRequest, Route> next(Vehicle vehicle, DecisionProcessState state,
+                                                 List<WaitingRequest> requests) {
+
         RequestPool requestPool = poolFilter.filterRequests(vehicle, state, requests);
         Set<Map.Entry<WaitingRequest, Route>> poolSet = requestPool.entrySet();
 

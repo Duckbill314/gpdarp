@@ -138,6 +138,7 @@ public final class Instance {
                 int tEarly = Integer.parseInt(segments[6]);
                 int tLate = Integer.parseInt(segments[7]);
                 int tMax = Integer.parseInt(segments[8]);
+                // TODO: different demand amounts
                 requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax, 1));
                 line = reader.readLine();
             }

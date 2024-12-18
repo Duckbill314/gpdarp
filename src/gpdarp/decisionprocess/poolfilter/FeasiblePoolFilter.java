@@ -42,16 +42,17 @@ public class FeasiblePoolFilter extends PoolFilter {
     public RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<WaitingRequest> requests) {
         RequestPool requestPool = new RequestPool();
         for (WaitingRequest request : requests) {
-            if (!request.isRequest) {
-                requestPool.put(request, null);
-            }
-            else {
-                List<Request> vehicleRequests = new ArrayList<>(vehicle.getRequests());
-                vehicleRequests.add(request);
-                Route route = recalculate(vehicle, state, vehicleRequests);
+            switch (request.getType()) {
+                case CHARGE -> requestPool.put(request, null);
 
-                if (route != null) {
-                    requestPool.put(request, route);
+                case REQUEST -> {
+                    List<Request> vehicleRequests = new ArrayList<>(vehicle.getRequests());
+                    vehicleRequests.add(request);
+                    Route route = recalculate(vehicle, state, vehicleRequests);
+
+                    if (route != null) {
+                        requestPool.put(request, route);
+                    }
                 }
             }
         }

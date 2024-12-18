@@ -3,13 +3,12 @@ package gpdarp.decisionprocess;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
+import gpdarp.decisionprocess.tiebreaker.RandomTieBreaker;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
-import gpdarp.representation.RequestPool;
 import gpdarp.representation.VehiclePool;
 import gpdarp.representation.route.Route;
+import org.apache.commons.math3.random.RandomDataGenerator;
 
-import java.util.AbstractMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,6 +42,9 @@ public abstract class VehiclePolicy {
     public VehiclePolicy(TieBreaker tieBreaker) {
         this(new FeasiblePoolFilter(), tieBreaker);
     }
+
+    // Constructor with neither pool filter nor tiebreaker specified
+    public VehiclePolicy() { this(new FeasiblePoolFilter(), new SimpleTieBreaker()); }
 
     // Getters
     public String getName() {

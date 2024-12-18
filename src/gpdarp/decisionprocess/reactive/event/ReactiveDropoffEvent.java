@@ -49,7 +49,7 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
         }
         else {
             vehicle.setCurrPos(waitingPoint);
-            if (!request.isRequest) {
+            if (request != null) {
                 vehicle.charge(decisionProcess.getState().getInstance(), request);
                 decisionProcess.addEvent(new ReactiveChargeEvent(vehicle.getCurrPos().getEta(), vehicle));
             }

@@ -190,8 +190,7 @@ public class GPResult {
                     result.addExpression(expression);
 
                     VehiclePolicy vehiclePolicy =
-                            new GPVehiclePolicy(prob.getPoolFilter(),
-                                    LispUtils.parseExpression(expression,
+                            new GPVehiclePolicy(LispUtils.parseExpression(expression,
                                             UCARPPrimitiveSet.wholePrimitiveSet()));
 
                     result.addSolution(vehiclePolicy);

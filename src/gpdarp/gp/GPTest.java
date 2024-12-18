@@ -12,7 +12,6 @@ import gpdarp.core.Instance;
 import gpdarp.core.Objective;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
-import gpdarp.decisionprocess.allocationpolicy.ensemble.EnsemblePolicy;
 import gpdarp.gp.evaluation.EvaluationModel;
 import gpdarp.gp.io.FitnessType;
 import gpdarp.gp.io.GPResult;
@@ -26,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Rework this file
 /**
  * The main program of the GP test process.
  * It reads the out.stat files from the training path subject to the solution and fitness types.
@@ -168,50 +168,6 @@ public class GPTest {
                             writer.newLine();
                             break;
                         case CC_SOLUTION:
-                        case RF_SOLUTION:
-                            EnsemblePolicy solution2;
-                            int[] programSize;
-                            int[] numUniqueTerminalsVec;
-
-                            // write the test results for each generation
-                            for (int j = 0; j < result.getSolutions().size(); j++) {
-                                solution2 = (EnsemblePolicy) result.getSolutionAtGen(j);
-                                programSize = new int[solution2.size()];
-                                numUniqueTerminalsVec = new int[solution2.size()];
-
-                                for (int k = 0; k < solution2.size(); k++) {
-                                    GPVehiclePolicy policy = (GPVehiclePolicy) solution2.getPolicy(k);
-                                    programSize[k] = policy.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
-                                    numUniqueTerminalsVec[k] = policy.getGPTree().child.numNodes(gatherer);
-                                }
-
-
-                                for (int k = 0; k < solution2.size(); k++) {
-                                    writer.write(i + "," + j + "," + k + "," +
-                                            programSize[k] + "," + numUniqueTerminalsVec[k] + "," +
-                                            fitnessString(result, j, fitnessType) + result.getTimeAtGen(j));
-                                    writer.newLine();
-                                }
-                            }
-
-                            // write the test results of the best individual, shown as gen = -1
-                            solution2 = (EnsemblePolicy) result.getBestSolution();
-                            programSize = new int[solution2.size()];
-                            numUniqueTerminalsVec = new int[solution2.size()];
-
-                            for (int k = 0; k < solution2.size(); k++) {
-                                GPVehiclePolicy policy = (GPVehiclePolicy) solution2.getPolicy(k);
-                                programSize[k] = policy.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
-                                numUniqueTerminalsVec[k] = policy.getGPTree().child.numNodes(gatherer);
-                            }
-
-                            for (int k = 0; k < solution2.size(); k++) {
-                                writer.write(i + ",-1," + k + "," +
-                                        programSize[k] + "," + numUniqueTerminalsVec[k] + "," +
-                                        fitnessString(result, -1, fitnessType) + "0");
-                                writer.newLine();
-                            }
-                            break;
                         default:
                             System.err.println("Unknown solution type: " + solutionType.toString());
                             System.exit(1);

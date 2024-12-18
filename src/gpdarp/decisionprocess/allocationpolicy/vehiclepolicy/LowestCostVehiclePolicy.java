@@ -3,11 +3,7 @@ package gpdarp.decisionprocess.allocationpolicy.vehiclepolicy;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.VehiclePolicy;
-import gpdarp.decisionprocess.TieBreaker;
-import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
-import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.representation.route.Route;
 
 import java.util.Map;
@@ -19,13 +15,9 @@ import java.util.Map;
  * @author gphhucarp, William Huang
  */
 public class LowestCostVehiclePolicy extends VehiclePolicy {
-    public LowestCostVehiclePolicy(PoolFilter poolFilter, TieBreaker tieBreaker) {
-        super(poolFilter, tieBreaker);
-        name = "\"LC\"";
-    }
-
     public LowestCostVehiclePolicy() {
-        this(new FeasiblePoolFilter(), new SimpleTieBreaker());
+        super();
+        name = "\"LowestCostVehiclePolicy\"";
     }
 
     @Override

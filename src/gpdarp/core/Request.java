@@ -87,13 +87,14 @@ public class Request implements Allocatable {
     public void finalise() { vehicle.getRequests().remove(this); }
 
     /**
-     * Natural comparator that prefers the request with the received time.
+     * Compare the request to another request on the basis of their id number.
+     * This is a quite meaningless natural comparator, because other more meaningful comparisons are made explicitly
+     * whenever necessary.
      *
-     * @param o the other request to which this request is being compared against.
-     *
-     * @return this request's priority value.
+     * @param o the other request.
+     * @return priority of this request in comparison to the other request.
      */
-    public int compareTo(Request o) { return tRec - o.getTRec(); }
+    public int compareTo(Request o) { return id - o.getId(); }
 
     @Override
     public String toString() {

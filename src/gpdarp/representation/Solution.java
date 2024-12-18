@@ -14,7 +14,8 @@ import java.util.List;
 
 public class Solution {
     private List<Route> routes;
-    private double penalty;
+    private double travelTimeRate;
+    private double latenessPenalty;
 
     public Solution(List<Route> routes) {
         this.routes = Route.listClone(routes);
@@ -27,16 +28,15 @@ public class Solution {
     public List<Route> getRoutes() {
         return routes;
     }
-    public Route getRoute(int index) {
-        return routes.get(index);
-    }
-    public double getPenalty() { return penalty; }
+    public double getTravelTimeRate() { return travelTimeRate; }
+    public double getLatenessPenalty() { return latenessPenalty; }
 
     // Setters
     public void setRoutes(List<Route> routes) {
         this.routes = Route.listClone(routes);
     }
-    public void setPenalty(double penalty) { this.penalty = penalty; }
+    public void setTravelTimeRate(double travelTimeRate) { this.travelTimeRate = travelTimeRate; }
+    public void setLatenessPenalty(double latenessPenalty) { this.latenessPenalty = latenessPenalty; }
 
     /**
      * Reset this solution by resetting each route.
@@ -52,7 +52,7 @@ public class Solution {
      */
     public double totalCost() {
         return routes.stream()
-                .map(r -> r.getLength() + penalty * r.calculatePenalty())
+                .map(r -> r.getLength() / travelTimeRate + latenessPenalty * r.calculatePenalty())
                 .reduce(0.0, Double::sum);
     }
 
@@ -63,7 +63,7 @@ public class Solution {
      */
     public double maxRouteCost() {
         return routes.stream()
-                .map(r -> r.getLength() + penalty * r.calculatePenalty())
+                .map(r -> r.getLength() / travelTimeRate + latenessPenalty * r.calculatePenalty())
                 .max(Double::compare)
                 .orElse(0.0);
     }

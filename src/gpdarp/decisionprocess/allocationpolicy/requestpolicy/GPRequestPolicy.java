@@ -4,26 +4,25 @@ import ec.gp.GPTree;
 import gpdarp.core.WaitingRequest;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.decisionprocess.RequestPolicy;
-import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.representation.route.Route;
 import gputils.DoubleData;
 
 import java.util.Map;
 
+/**
+ * A GP-evolved request allocation policy.
+ *
+ * @author William Huang
+ */
 public class GPRequestPolicy extends RequestPolicy {
     private GPTree gpTree;
 
-    public GPRequestPolicy(PoolFilter poolFilter, GPTree gpTree) {
-        super(poolFilter);
+    public GPRequestPolicy(GPTree gpTree) {
+        super();
         name = "\"GPRequestPolicy\"";
         this.gpTree = gpTree;
-    }
-
-    public GPRequestPolicy(GPTree gpTree) {
-        this(new FeasiblePoolFilter(), gpTree);
     }
 
     public GPTree getGPTree() {

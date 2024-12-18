@@ -4,9 +4,7 @@ import ec.gp.GPTree;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.decisionprocess.VehiclePolicy;
-import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.representation.route.Route;
 import gputils.DoubleData;
@@ -21,14 +19,10 @@ import java.util.Map;
 public class GPVehiclePolicy extends VehiclePolicy {
     private GPTree gpTree;
 
-    public GPVehiclePolicy(PoolFilter poolFilter, GPTree gpTree) {
-        super(poolFilter);
+    public GPVehiclePolicy(GPTree gpTree) {
+        super();
         name = "\"GPVehiclePolicy\"";
         this.gpTree = gpTree;
-    }
-
-    public GPVehiclePolicy(GPTree gpTree) {
-        this(new FeasiblePoolFilter(), gpTree);
     }
 
     public GPTree getGPTree() {

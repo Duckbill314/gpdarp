@@ -4,11 +4,7 @@ import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.VehiclePolicy;
-import gpdarp.decisionprocess.TieBreaker;
-import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
-import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.representation.route.Route;
 
 import java.util.Map;
@@ -21,13 +17,9 @@ import java.util.Map;
  * @author gphhucarp, William Huang
  */
 public class NearestVehiclePolicy extends VehiclePolicy {
-    public NearestVehiclePolicy(PoolFilter poolFilter, TieBreaker tieBreaker) {
-        super(poolFilter, tieBreaker);
-        name = "\"NV\"";
-    }
-
     public NearestVehiclePolicy() {
-        this(new FeasiblePoolFilter(), new SimpleTieBreaker());
+        super();
+        name = "\"NearestVehiclePolicy\"";
     }
 
     @Override
