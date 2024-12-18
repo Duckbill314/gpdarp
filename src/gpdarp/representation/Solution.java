@@ -16,10 +16,13 @@ public class Solution {
     private List<Route> routes;
     private double travelTimeRate;
     private double latenessPenalty;
+    private boolean feasibility;
 
     public Solution(List<Route> routes) {
         this.routes = Route.listClone(routes);
+        this.feasibility = false;
     }
+
     public Solution() {
         this(new ArrayList<>());
     }
@@ -30,6 +33,7 @@ public class Solution {
     }
     public double getTravelTimeRate() { return travelTimeRate; }
     public double getLatenessPenalty() { return latenessPenalty; }
+    public boolean isFeasible() { return feasibility; }
 
     // Setters
     public void setRoutes(List<Route> routes) {
@@ -37,12 +41,14 @@ public class Solution {
     }
     public void setTravelTimeRate(double travelTimeRate) { this.travelTimeRate = travelTimeRate; }
     public void setLatenessPenalty(double latenessPenalty) { this.latenessPenalty = latenessPenalty; }
+    public void setFeasibility(boolean feasibility) { this.feasibility = feasibility; }
 
     /**
      * Reset this solution by resetting each route.
      */
     public void reset() {
         routes.forEach(Route::reset);
+        feasibility = false;
     }
 
     /**
@@ -85,5 +91,11 @@ public class Solution {
     public String toString() { return String.format("Routes: %s", routes); }
 
     @Override
-    public Solution clone() { return new Solution(Route.listClone(routes)); }
+    public Solution clone() {
+        Solution clone = new Solution(Route.listClone(routes));
+        clone.travelTimeRate = travelTimeRate;
+        clone.latenessPenalty = latenessPenalty;
+        clone.feasibility = feasibility;
+        return clone;
+    }
 }

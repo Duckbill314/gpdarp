@@ -1,6 +1,5 @@
 package gpdarp.core;
 
-import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.representation.route.Route;
 
 import java.util.*;
@@ -20,134 +19,48 @@ import java.util.*;
 public class Vehicle implements Allocatable {
     private final int id;
     private final int capacity;
-    private int demand;
     private final double chargeMax;
     private double chargeState;
     private final double chargeFillRate;
     private final double chargeDepletionRate;
     private final int serveTime;
     private Node currPos;
-    private Arc currArc;
-    private List<Request> requests;
-    private Route historicalRoute;
-    private Route plannedRoute;
+    private Route route;
     private double priority;
 
-    public Vehicle(int id, int capacity, int demand, double chargeMax, double chargeState, double chargeFillRate,
-                   double chargeDepletionRate, int serveTime, Node currPos, Arc currArc, List<Request> requests,
-                   Route historicalRoute, Route plannedRoute, double priority) {
+    public Vehicle(int id, int capacity, double chargeMax, double chargeState, double chargeFillRate,
+                   double chargeDepletionRate, int serveTime, Node currPos,
+                   Route route, double priority) {
         this.id = id;
         this.capacity = capacity;
-        this.demand = demand;
         this.chargeMax = chargeMax;
         this.chargeState = chargeState;
         this.chargeFillRate = chargeFillRate;
         this.chargeDepletionRate = chargeDepletionRate;
         this.serveTime = serveTime;
         this.currPos = currPos;
-        this.currArc = currArc;
-        this.requests = requests;
-        this.historicalRoute = historicalRoute;
-        this.plannedRoute = plannedRoute;
+        this.route = route;
         this.priority = priority;
-    }
-
-    // Initialisation constructor
-    public Vehicle(int id, int capacity, double chargeMax, double chargeState, double chargeFillRate,
-                   double chargeDepletionRate, int serveTime, Node currPos) {
-        this(id, capacity, 0, chargeMax, chargeState, chargeFillRate, chargeDepletionRate, serveTime,
-                currPos, null, new ArrayList<Request>(), new Route(), new Route(), 0.0);
     }
 
     // Getters
     public int getId() { return id; }
     public int getCapacity() { return capacity; }
-    public int getDemand() { return demand; }
     public double getChargeMax() { return chargeMax; }
     public double getChargeState() { return chargeState; }
     public double getChargeFillRate() { return chargeFillRate; }
     public double getChargeDepletionRate() { return chargeDepletionRate; }
     public int getServeTime() { return serveTime; }
     public Node getCurrPos() { return currPos; }
-    public Arc getCurrArc() { return this.currArc; }
-    public List<Request> getRequests() { return requests; }
-    public Route getHistoricalRoute() { return historicalRoute; }
-    public Route getPlannedRoute() { return plannedRoute; }
+    public Route getRoute() { return route; }
     public double getPriority() { return priority; }
-    public int getRemainingCapacity() { return capacity - demand; }
-    public boolean isMoving() { return (currArc != null); }
+    public boolean isBusy() { return currPos != null; }
 
     // Setters
-    public void setDemand(int demand) { this.demand = demand; }
     public void setChargeState(double chargeState) { this.chargeState = chargeState; }
     public void setCurrPos(Node currPos) { this.currPos = currPos; }
-    public void setCurrArc(Arc currArc) { this.currArc = currArc; }
-    public void setRequests(List<Request> requests) { this.requests = requests; }
-    public void setHistoricalRoute(Route historicalRoute) { this.historicalRoute = historicalRoute; }
-    public void setPlannedRoute(Route plannedRoute) { this.plannedRoute = plannedRoute; }
+    public void setRoute(Route route) { this.route = route; }
     public void setPriority(double priority) { this.priority = priority; }
-
-    /**
-     * Helper method for ensuring the relationship between a request and its assigned vehicle is
-     * established properly.
-     *
-     * @param request the request to allocate to this vehicle.
-     */
-    public void allocate(Request request) {
-        request.setVehicle(this);
-        requests.add(request);
-    }
-
-    /**
-     * Helper method for ensuring that the vehicle's route and the ETA of nodes along the route are
-     * properly updated.
-     *
-     * @param state the current state.
-     * @param plannedRoute the optimal route.
-     */
-    public void updateRoute(DecisionProcessState state, Route plannedRoute) {
-        plannedRoute.updateEtas(state, this);
-        setPlannedRoute(plannedRoute);
-    }
-
-    /**
-     * Helper method that updates a vehicle's current arc with the next arc in its planned route.
-     *
-     * @return the next destination node (for the purpose of invoking a new event).
-     */
-    public Node updateArcFromPlannedRoute() {
-        Arc currArc = getPlannedRoute().pop();
-        setCurrArc(currArc);
-        if (currArc == null) {
-            return null;
-        }
-        return currArc.to();
-    }
-
-    /**
-     * Helper method for handling pickup events.
-     *
-     * @param node the node at which the event occurs.
-     */
-    public void pickup(Node node) {
-        node.visit();
-        demand += node.getRequest().getDemand();
-        deplete(currArc.length());
-        historicalRoute.push(currArc);
-    }
-
-    /**
-     * Helper method for handling dropoff events.
-     *
-     * @param node the node at which the event occurs.
-     */
-    public void dropoff(Node node) {
-        node.visit();
-        node.getRequest().finalise();
-        demand -= node.getRequest().getDemand();
-        deplete(currArc.length());
-        historicalRoute.push(currArc);
-    }
 
     /**
      * Helper method for handling charging events.
@@ -160,20 +73,19 @@ public class Vehicle implements Allocatable {
      * @param request the selected charging "request".
      */
     public void charge(Instance instance, WaitingRequest request) {
-        Node currPos = request.getPickup();
         Station station = (Station) request.getDropoff();
         Arc toStation = new Arc(currPos, station);
 
         int distanceToStation = toStation.length();
         int travelTime = instance.calculateTravelTime(distanceToStation);
         deplete(distanceToStation);
-        historicalRoute.push(toStation);
+        route.push(toStation);
 
         int chargeTime = estimateFillTime();
         fill(chargeTime);
 
-        int nextAvailableTime = currPos.getEta() + travelTime + chargeTime;
-        station.setEta(nextAvailableTime);
+        int nextAvailableTime = currPos.getTime() + travelTime + chargeTime;
+        station.setTime(nextAvailableTime);
         setCurrPos(station);
     }
 
@@ -229,9 +141,8 @@ public class Vehicle implements Allocatable {
 
     @Override
     public Vehicle clone() {
-        return new Vehicle(id, capacity, demand, chargeMax, chargeState, chargeFillRate, chargeDepletionRate,
-                serveTime, currPos.clone(), currArc.clone(), Request.listClone(requests),
-                historicalRoute.clone(), plannedRoute.clone(), priority);
+        return new Vehicle(id, capacity, chargeMax, chargeState, chargeFillRate, chargeDepletionRate,
+                serveTime, currPos.clone(), route.clone(), priority);
     }
 
     /**

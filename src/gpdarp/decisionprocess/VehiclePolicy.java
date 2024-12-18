@@ -3,14 +3,9 @@ package gpdarp.decisionprocess;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
-import gpdarp.decisionprocess.tiebreaker.RandomTieBreaker;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
-import gpdarp.representation.VehiclePool;
-import gpdarp.representation.route.Route;
-import org.apache.commons.math3.random.RandomDataGenerator;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 /**
  * A vehicle allocation policy makes a decision on which vehicle should serve a request.
@@ -69,18 +64,15 @@ public abstract class VehiclePolicy {
      * @param state   the decision process state.
      * @param request the request to be served.
      *
-     * @return the allocated vehicle and corresponding optimal route.
+     * @return the allocated vehicle.
      */
-    public Map.Entry<Vehicle, Route> next(DecisionProcessState state, Request request) {
-        VehiclePool vehiclePool = poolFilter.filterVehicles(state, request);
-        Set<Map.Entry<Vehicle, Route>> poolSet = vehiclePool.entrySet();
+    public Vehicle next(DecisionProcessState state, Request request) {
+        List<Vehicle> pool = poolFilter.filterVehicles(state, request);
 
-        poolSet.forEach(e -> e.getKey().setPriority(priority(e, state, request)));
+        pool.forEach(vehicle -> vehicle.setPriority(priority(vehicle, state, request)));
 
-        return poolSet.stream()
-                .min((e1, e2) -> {
-                    Vehicle v1 = e1.getKey();
-                    Vehicle v2 = e2.getKey();
+        return pool.stream()
+                .min((v1, v2) -> {
                     if (Double.compare(v1.getPriority(), v2.getPriority()) == 0) {
                         return tieBreaker.breakTie(v1, v2);
                     }
@@ -90,13 +82,13 @@ public abstract class VehiclePolicy {
     }
 
     /**
-     * Calculate the priority of a candidate vehicle (and its route) for a request given a state.
+     * Calculate the priority of a candidate vehicle for a request given a state.
      *
-     * @param candidate the candidate vehicle + route.
+     * @param candidate the candidate vehicle.
      * @param state     the decision process state.
      * @param request   the request to be allocated.
      *
      * @return the priority of the candidate vehicle.
      */
-    public abstract double priority(Map.Entry<Vehicle, Route> candidate, DecisionProcessState state, Request request);
+    public abstract double priority(Vehicle candidate, DecisionProcessState state, Request request);
 }

@@ -18,18 +18,18 @@ import java.util.Map;
 public class CalcPriorityProblem<T1 extends Allocatable, T2 extends Allocatable>
         extends Problem implements SimpleProblemForm {
 
-    private Map.Entry<T1, Route> candidate;
+    private T1 candidate;
     private DecisionProcessState state;
     private T2 control;
 
-    public CalcPriorityProblem(Map.Entry<T1, Route> candidate, DecisionProcessState state, T2 control) {
+    public CalcPriorityProblem(T1 candidate, DecisionProcessState state, T2 control) {
         this.candidate = candidate;
         this.state = state;
         this.control = control;
     }
 
     // Getters
-    public Map.Entry<T1, Route> getCandidate() { return candidate; }
+    public T1 getCandidate() { return candidate; }
     public DecisionProcessState getState() { return state; }
     public T2 getControl() { return control; }
 

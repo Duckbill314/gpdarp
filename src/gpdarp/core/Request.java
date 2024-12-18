@@ -23,8 +23,7 @@ public class Request implements Allocatable {
     private final int tEarly;
     private final int tLate;
     private final int tMax;
-    private int demand;
-    private Vehicle vehicle;
+    private final int demand;
     private double priority;
 
     public Request(int id, int tRec, Node pickup, Node dropoff, int tEarly, int tLate, int tMax, int demand) {
@@ -36,7 +35,6 @@ public class Request implements Allocatable {
         this.tLate = tLate;
         this.tMax = tMax;
         this.demand = demand;
-        this.vehicle = null;
         this.priority = 0;
         pickup.setRequest(this);
         pickup.setType(Node.NodeType.PICKUP);
@@ -52,12 +50,10 @@ public class Request implements Allocatable {
     public int getTEarly() { return tEarly; }
     public int getTLate() { return tLate; }
     public int getTMax() { return tMax; }
-    public Vehicle getVehicle() { return vehicle; }
     public double getPriority() { return priority; }
     public int getDemand() { return demand; }
 
     // Setters
-    public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
     public void setPriority(double priority) { this.priority = priority; }
 
     /**
@@ -70,21 +66,16 @@ public class Request implements Allocatable {
     }
 
     /**
-     * Calculated the estimated or actual ride time based on the times the pickup and dropoff points are visited.
+     * Calculated the ride time based on the times the pickup and dropoff points are visited.
      *
      * @return the ride time.
      */
     public int calcRideTime() {
-        if (pickup.getEta() == -1 || dropoff.getEta() == -1) {
+        if (pickup.getTime() == -1 || dropoff.getTime() == -1) {
             return -1;
         }
-        return dropoff.getEta() - pickup.getEta();
+        return dropoff.getTime() - pickup.getTime();
     }
-
-    /**
-     * Once a request has been fulfilled, it should remove itself from its associated vehicle's list of requests.
-     */
-    public void finalise() { vehicle.getRequests().remove(this); }
 
     /**
      * Compare the request to another request on the basis of their id number.

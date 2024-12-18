@@ -23,15 +23,7 @@ public class NearestVehiclePolicy extends VehiclePolicy {
     }
 
     @Override
-    public double priority(Map.Entry<Vehicle, Route> candidate, DecisionProcessState state, Request request) {
-        Node pos;
-        Vehicle vehicle = candidate.getKey();
-        if (!vehicle.isMoving()) {
-            pos = vehicle.getCurrPos();
-        }
-        else {
-            pos = vehicle.getCurrArc().to();
-        }
-        return pos.calcDist(request.getPickup());
+    public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
+        return candidate.getCurrPos().calcDist(request.getPickup());
     }
 }

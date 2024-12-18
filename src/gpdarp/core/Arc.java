@@ -1,5 +1,7 @@
 package gpdarp.core;
 
+import gpdarp.decisionprocess.DecisionProcessState;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,36 @@ public record Arc(Node from, Node to, int length) implements Comparable<Arc> {
 
     @Override
     public Arc clone() { return new Arc(from.clone(), to.clone()); }
+
+    /**
+     * Updates the estimated arrival times for the nodes in the arc.
+     *
+     * @param state the state of the decision process.
+     * @param vehicle the vehicle associated with the route.
+     */
+    public void updateEtas(DecisionProcessState state, Vehicle vehicle) {
+        Instance instance = state.getInstance();
+
+        int startTime;
+        int pickupTime;
+        int serveTime;
+
+        switch (from.getType()) {
+            case IDLE -> {
+                startTime = from.getTime();
+                to.setTime(startTime + instance.calculateTravelTime(length));
+            }
+            case PICKUP -> {
+                startTime = from.getTime();
+                pickupTime = from.getRequest().getTEarly();
+                if (startTime < pickupTime) {
+                    startTime = pickupTime;
+                }
+                serveTime = vehicle.getServeTime();
+                to.setTime(startTime + serveTime + instance.calculateTravelTime(length));
+            }
+        }
+    }
 
     /**
      * Utility method for creating deep clones of ArrayLists of Arcs.

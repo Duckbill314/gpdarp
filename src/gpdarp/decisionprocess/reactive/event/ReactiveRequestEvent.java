@@ -27,11 +27,9 @@ public class ReactiveRequestEvent extends DecisionProcessEvent {
         Vehicle vehicle = vehicleAllocation(decisionProcess, request);
 
         if (vehicle != null) {
-            if (!vehicle.isMoving()) {
-                vehicle.setCurrPos(null);
-                Node destination = vehicle.updateArcFromPlannedRoute();
-                decisionProcess.addEvent(new ReactivePickupEvent(destination.getEta(), destination, vehicle));
-            }
+            vehicle.setCurrPos(null);
+            Node destination = vehicle.updateArcFromPlannedRoute();
+            decisionProcess.addEvent(new ReactivePickupEvent(destination.getTime(), destination, vehicle));
         }
     }
 }

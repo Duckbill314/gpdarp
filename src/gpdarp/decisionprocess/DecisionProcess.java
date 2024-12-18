@@ -99,6 +99,9 @@ public abstract class DecisionProcess {
             event.trigger(this);
             state.updateSolution();
         }
+        if (waitingList.isEmpty()) {
+            state.getSolution().setFeasibility(true);
+        }
     }
 
     /**

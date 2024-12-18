@@ -1,7 +1,6 @@
 package gpdarp.decisionprocess;
 
 import gpdarp.core.*;
-import gpdarp.representation.VehiclePool;
 import gpdarp.representation.Solution;
 import gpdarp.representation.route.Route;
 
@@ -46,7 +45,7 @@ public class DecisionProcessState {
      */
     public void updateSolution() {
         List<Route> routes = new ArrayList<>();
-        instance.getVehicles().forEach(v -> routes.add(v.getHistoricalRoute()));
+        instance.getVehicles().forEach(v -> routes.add(v.getRoute()));
         solution.setRoutes(routes);
     }
 

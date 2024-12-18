@@ -1,5 +1,7 @@
 package gpdarp.core;
 
+import gpdarp.representation.route.Route;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -120,7 +122,7 @@ public final class Instance {
             // Aggregating vehicle information to construct the objects
             for (int i = 0; i < numVehicles; i++) {
                 vehicles.add(new Vehicle(i + 1, capacity, chargeMax, chargeStates.get(i), chargeFillRate,
-                        chargeDepletionRate, serveTime, vehicleNodes.get(i)));
+                        chargeDepletionRate, serveTime, vehicleNodes.get(i), new Route(), 0.0));
             }
 
             reader.readLine(); // line 13: "Requests: id t_arr u_x u_y v_x v_y t_start t_end d_max"

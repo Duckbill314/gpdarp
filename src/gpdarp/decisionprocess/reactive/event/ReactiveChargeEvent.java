@@ -29,7 +29,7 @@ public class ReactiveChargeEvent extends DecisionProcessEvent {
 
         if (destination != null) {
             vehicle.setCurrPos(null);
-            decisionProcess.addEvent(new ReactivePickupEvent(destination.getEta(), destination, vehicle));
+            decisionProcess.addEvent(new ReactivePickupEvent(destination.getTime(), destination, vehicle));
         }
     }
 }

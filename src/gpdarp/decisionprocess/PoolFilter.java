@@ -3,8 +3,6 @@ package gpdarp.decisionprocess;
 import gpdarp.core.WaitingRequest;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
-import gpdarp.representation.RequestPool;
-import gpdarp.representation.VehiclePool;
 
 import java.util.List;
 
@@ -17,23 +15,24 @@ import java.util.List;
  */
 public abstract class PoolFilter {
     /**
-     * Given a state and a request to be fulfilled, filter for the optimal route of each vehicle.
+     * Given a state and a request to be fulfilled, filter for the vehicles that can feasibly serve the request.
      *
      * @param state the decision process state.
      * @param request the request to be fulfilled.
      *
-     * @return the filtered pool, containing potentially multiple vehicles, but at most one route per vehicle.
+     * @return the filtered pool.
      */
-    public abstract VehiclePool filterVehicles(DecisionProcessState state, Request request);
+    public abstract List<Vehicle> filterVehicles(DecisionProcessState state, Request request);
 
     /**
-     * Given a vehicle and a list of requests, filter for the feasible requests.
+     * Given a state, a vehicle, and a list of requests, filter for the requests that the vehicle can feasibly serve.
      *
      * @param vehicle the vehicle that is attempting to accept a request from the waiting list.
      * @param state the decision process state.
      * @param requests the waiting list of requests.
      *
-     * @return the filtered pool, containing potentially multiple routes for the one vehicle.
+     * @return the filtered pool.
      */
-    public abstract RequestPool filterRequests(Vehicle vehicle, DecisionProcessState state, List<WaitingRequest> requests);
+    public abstract List<WaitingRequest> filterRequests(Vehicle vehicle, DecisionProcessState state,
+                                                 List<WaitingRequest> requests);
 }

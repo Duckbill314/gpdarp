@@ -45,18 +45,13 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      */
     public Vehicle vehicleAllocation(DecisionProcess decisionProcess, Request request) {
         DecisionProcessState state = decisionProcess.getState();
-        Map.Entry<Vehicle, Route> allocation = decisionProcess.getVehiclePolicy().next(state, request);
+        Vehicle allocation = decisionProcess.getVehiclePolicy().next(state, request);
 
         if (allocation == null) {
             decisionProcess.addWaiting(new WaitingRequest(request));
             return null;
         }
-
-        Vehicle vehicle = allocation.getKey();
-        Route route = allocation.getValue();
-        vehicle.allocate(request);
-        vehicle.updateRoute(state, route);
-        return vehicle;
+        return allocation;
     }
 
     /**
@@ -64,35 +59,18 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param vehicle         the vehicle to which a request is to be allocated.
-     * @param waitingPoint    the point and time at which the vehicle will be after finishing its current task.
-     * @param includeStations whether to also consider returning to a charging station.
+     * @param waitingPoint    the point and time at which the vehicle will be idle.
      *
      * @return the request allocation.
      */
-    public WaitingRequest requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint,
-                                            boolean includeStations) {
-
+    public WaitingRequest requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint) {
         DecisionProcessState state = decisionProcess.getState();
-        List<WaitingRequest> waitingList = new ArrayList<>(decisionProcess.getWaitingList());
-
-        if (includeStations) {
-            Station station = state.getInstance().findClosestStation(waitingPoint).clone();
-            waitingList.add(new WaitingRequest(waitingPoint.getEta(), waitingPoint, station));
-        }
-        Map.Entry<WaitingRequest, Route> allocation = decisionProcess.getRequestPolicy()
-                .next(vehicle, state, waitingList);
+        List<WaitingRequest> waitingList = decisionProcess.getWaitingList();
+        WaitingRequest allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
 
         if (allocation == null) {
             return null;
         }
-
-        WaitingRequest request = allocation.getKey();
-        if (request.getType() == WaitingRequest.RequestType.REQUEST) {
-            Route route = allocation.getValue();
-            vehicle.allocate(request);
-            vehicle.updateRoute(state, route);
-            decisionProcess.removeWaiting(request);
-        }
-        return request;
+        return allocation;
     }
 }

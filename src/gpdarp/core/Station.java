@@ -12,6 +12,7 @@ import java.util.List;
 public class Station extends Node {
     public Station(int x, int y) {
         super(x, y);
+        setType(NodeType.STATION);
     }
 
     @Override
@@ -33,7 +34,5 @@ public class Station extends Node {
     }
 
     @Override
-    public Station clone() {
-        return (Station) super.clone();
-    }
+    public Station clone() { return (Station) super.clone(); }
 }

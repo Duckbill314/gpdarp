@@ -4,7 +4,6 @@ import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.core.Instance;
-import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.LowestCostVehiclePolicy;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import util.Timer;
 
