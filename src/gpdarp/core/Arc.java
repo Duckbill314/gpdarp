@@ -1,7 +1,5 @@
 package gpdarp.core;
 
-import gpdarp.decisionprocess.DecisionProcessState;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +7,7 @@ import java.util.List;
  * An arc is a directed edge between two nodes. It has:
  *  - (from, to) nodes,
  *  - length.
+ *  Arcs are the building blocks of routes, representing movement of vehicles to different locations.
  *
  * @author William Huang
  */
@@ -32,12 +31,10 @@ public record Arc(Node from, Node to, int length) implements Comparable<Arc> {
     /**
      * Updates the estimated arrival times for the nodes in the arc.
      *
-     * @param state the state of the decision process.
+     * @param instance the instance of the problem.
      * @param vehicle the vehicle associated with the route.
      */
-    public void updateEtas(DecisionProcessState state, Vehicle vehicle) {
-        Instance instance = state.getInstance();
-
+    public void updateEtas(Instance instance, Vehicle vehicle) {
         int startTime;
         int pickupTime;
         int serveTime;
@@ -63,7 +60,6 @@ public record Arc(Node from, Node to, int length) implements Comparable<Arc> {
      * Utility method for creating deep clones of ArrayLists of Arcs.
      *
      * @param arcs the list of arcs to be cloned.
-     *
      * @return the cloned list.
      */
     public static List<Arc> listClone(List<Arc> arcs) {

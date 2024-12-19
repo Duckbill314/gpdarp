@@ -19,7 +19,6 @@ public abstract class PoolFilter {
      *
      * @param state the decision process state.
      * @param request the request to be fulfilled.
-     *
      * @return the filtered pool.
      */
     public abstract List<Vehicle> filterVehicles(DecisionProcessState state, Request request);
@@ -30,7 +29,6 @@ public abstract class PoolFilter {
      * @param vehicle the vehicle that is attempting to accept a request from the waiting list.
      * @param state the decision process state.
      * @param requests the waiting list of requests.
-     *
      * @return the filtered pool.
      */
     public abstract List<WaitingRequest> filterRequests(Vehicle vehicle, DecisionProcessState state,

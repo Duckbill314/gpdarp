@@ -1,5 +1,12 @@
 package gpdarp.core;
 
+/**
+ * A waiting request is a request from the waiting list that a vehicle may choose to accept before going idle.
+ * In some cases, the vehicle may choose to go to charge instead.
+ * These two options need to be comparable in some sense, so they exist under this specialised class.
+ *
+ * @author William Huang
+ */
 public class WaitingRequest extends Request {
     private RequestType type;
 

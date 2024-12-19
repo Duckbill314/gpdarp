@@ -15,7 +15,6 @@ public abstract class TieBreaker {
      *
      * @param v1 vehicle 1.
      * @param v2 vehicle 2.
-     *
      * @return the priority of v1 against v2.
      */
     public abstract int breakTie(Vehicle v1, Vehicle v2);
@@ -25,7 +24,6 @@ public abstract class TieBreaker {
      *
      * @param r1 request 1.
      * @param r2 request 2.
-     *
      * @return the priority of r1 against r2.
      */
     public abstract int breakTie(Request r1, Request r2);

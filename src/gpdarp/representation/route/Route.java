@@ -68,7 +68,6 @@ public class Route {
      * Utility method for creating deep clones of ArrayLists of Routes.
      *
      * @param routes the list of routes to be cloned.
-     *
      * @return the cloned list.
      */
     public static List<Route> listClone(List<Route> routes) {
@@ -78,8 +77,6 @@ public class Route {
         }
         return clonedRoutes;
     }
-
-    public boolean isEmpty() { return arcs.isEmpty(); }
 
     @Override
     public String toString() {

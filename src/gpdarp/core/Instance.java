@@ -157,7 +157,6 @@ public final class Instance {
      * Find the closest station from any reference point.
      *
      * @param pos the node of the reference point.
-     *
      * @return the closest station.
      */
     public Station findClosestStation(Node pos) {
@@ -170,7 +169,6 @@ public final class Instance {
      * Helper method that converts distance into travel time.
      *
      * @param distance the given distance.
-     *
      * @return the calculated travel time.
      */
     public int calculateTravelTime(int distance) { return (int) Math.ceil(distance / travelTimeRate); }

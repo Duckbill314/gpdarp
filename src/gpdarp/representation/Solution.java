@@ -76,6 +76,7 @@ public class Solution {
 
     /**
      * Return the value of an objective, NaN if the objective cannot be calculated.
+     *
      * @param objective the objective.
      * @return the objective value of the solution.
      */

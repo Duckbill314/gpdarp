@@ -14,7 +14,8 @@ import java.util.PriorityQueue;
  *  - A decision process state: the state of the vehicles and the environment,
  *  - An event queue: the events to happen,
  *  - A waiting list: the list of requests that were not accepted,
- *  - An allocation policy: for allocating requests to vehicles.
+ *  - A vehicle allocation policy: for selecting a vehicle to allocate a request to,
+ *  - A request allocation policy: for selecting a request to allocate to a vehicle.
  *
  * @author gphhucarp, William Huang
  */
@@ -78,7 +79,6 @@ public abstract class DecisionProcess {
      * @param instance the given instance.
      * @param vehiclePolicy the vehicle allocation policy.
      * @param requestPolicy the request allocation policy.
-     *
      * @return the initial reactive decision process.
      */
     public static ReactiveDecisionProcess initReactive(Instance instance,

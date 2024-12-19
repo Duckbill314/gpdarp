@@ -4,10 +4,8 @@ import gpdarp.core.WaitingRequest;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
-import gpdarp.representation.route.Route;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * A request allocation policy makes a decision on which request a vehicle should serve.
@@ -66,8 +64,7 @@ public abstract class RequestPolicy {
      * @param vehicle the vehicle to accept a request.
      * @param state the decision process state.
      * @param requests the waiting list of requests.
-     *
-     * @return the allocated request and corresponding optimal route.
+     * @return the request to allocate to the vehicle.
      */
     public WaitingRequest next(Vehicle vehicle, DecisionProcessState state, List<WaitingRequest> requests) {
         List<WaitingRequest> pool = poolFilter.filterRequests(vehicle, state, requests);
@@ -75,6 +72,7 @@ public abstract class RequestPolicy {
         pool.forEach(request -> request.setPriority(priority(request, state, vehicle)));
 
         return pool.stream()
+                .filter(r -> r.getPriority() <= 0)
                 .min((r1, r2) -> {
                     if (Double.compare(r1.getPriority(), r2.getPriority()) == 0) {
                         return tieBreaker.breakTie(r1, r2);
@@ -85,12 +83,11 @@ public abstract class RequestPolicy {
     }
 
     /**
-     * Calculate the priority of a candidate request given a state.
+     * Calculate the priority of a candidate request for a vehicle given a state.
      *
      * @param candidate the candidate request.
      * @param state     the decision process state.
      * @param vehicle   the vehicle to be allocated to.
-     *
      * @return the priority of the candidate request.
      */
     public abstract double priority(WaitingRequest candidate, DecisionProcessState state, Vehicle vehicle);

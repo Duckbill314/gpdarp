@@ -22,7 +22,6 @@ public class Station extends Node {
      * Utility method for creating deep clones of ArrayLists of Stations.
      *
      * @param stations the list of stations to be cloned.
-     *
      * @return the cloned list.
      */
     public static List<Station> listClone(List<Station> stations) {

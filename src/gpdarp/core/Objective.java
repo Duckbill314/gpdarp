@@ -40,6 +40,7 @@ public enum Objective {
 
     /**
      * The reference vehicle allocation policy for calculating the reference objective.
+     *
      * @return the reference policy.
      */
     public static VehiclePolicy refVehiclePolicy() {
@@ -49,6 +50,7 @@ public enum Objective {
 
     /**
      * The reference request allocation policy for calculating the reference objective.
+     *
      * @return the reference policy.
      */
     public static RequestPolicy refRequestPolicy() {

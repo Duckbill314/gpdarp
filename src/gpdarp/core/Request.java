@@ -10,8 +10,7 @@ import java.util.List;
  * - the pickup and dropoff destinations,
  * - the earliest and latest possible time the customer wishes to be picked up,
  * - the maximum ride time.
- * In addition, it also has a pseudo-flag for checking whether the request has been fulfilled,
- * and a temporary priority value for the purpose of vehicle allocation.
+ * In addition, it also has a temporary priority value for the purpose of vehicle allocation.
  *
  * @author William Huang
  */
@@ -57,27 +56,6 @@ public class Request implements Allocatable {
     public void setPriority(double priority) { this.priority = priority; }
 
     /**
-     * A request is fulfilled if both its pickup and dropoff nodes have been visited.
-     *
-     * @return the fulfillment status.
-     */
-    public boolean isFulfilled() {
-        return pickup.isVisited() && dropoff.isVisited();
-    }
-
-    /**
-     * Calculated the ride time based on the times the pickup and dropoff points are visited.
-     *
-     * @return the ride time.
-     */
-    public int calcRideTime() {
-        if (pickup.getTime() == -1 || dropoff.getTime() == -1) {
-            return -1;
-        }
-        return dropoff.getTime() - pickup.getTime();
-    }
-
-    /**
      * Compare the request to another request on the basis of their id number.
      * This is a quite meaningless natural comparator, because other more meaningful comparisons are made explicitly
      * whenever necessary.
@@ -89,8 +67,7 @@ public class Request implements Allocatable {
 
     @Override
     public String toString() {
-        return String.format("Request %d from %s to %s, received at time %f, %s",
-                id, pickup, dropoff, tRec, (isFulfilled()) ? "fulfilled" : "not fulfilled");
+        return String.format("Request %d from %s to %s, received at time %d", id, pickup, dropoff, tRec);
     }
 
     @Override

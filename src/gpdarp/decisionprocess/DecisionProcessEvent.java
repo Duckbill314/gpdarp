@@ -1,11 +1,9 @@
 package gpdarp.decisionprocess;
 
 import gpdarp.core.*;
-import gpdarp.representation.route.Route;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * An abstract decision process event.
@@ -40,7 +38,6 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param request the request to be allocated.
-     *
      * @return the vehicle to which the request is allocated.
      */
     public Vehicle vehicleAllocation(DecisionProcess decisionProcess, Request request) {
@@ -60,17 +57,20 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      * @param decisionProcess the decision process that invoked this event.
      * @param vehicle         the vehicle to which a request is to be allocated.
      * @param waitingPoint    the point and time at which the vehicle will be idle.
-     *
-     * @return the request allocation.
+     * @return the request to allocate to the vehicle.
      */
-    public WaitingRequest requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint) {
-        DecisionProcessState state = decisionProcess.getState();
-        List<WaitingRequest> waitingList = decisionProcess.getWaitingList();
-        WaitingRequest allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
+    public WaitingRequest requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint,
+                                            boolean includeCharge) {
 
-        if (allocation == null) {
-            return null;
+        DecisionProcessState state = decisionProcess.getState();
+        List<WaitingRequest> waitingList = new ArrayList<>(decisionProcess.getWaitingList());
+
+        if (includeCharge) {
+            Instance instance = state.getInstance();
+            Node station = instance.findClosestStation(waitingPoint);
+            waitingList.add(new WaitingRequest(waitingPoint.getTime(), waitingPoint, station));
         }
-        return allocation;
+
+        return decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
     }
 }

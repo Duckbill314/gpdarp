@@ -6,10 +6,7 @@ import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.gp.CalcPriorityProblem;
-import gpdarp.representation.route.Route;
 import gputils.DoubleData;
-
-import java.util.Map;
 
 /**
  * A GP-evolved request allocation policy.
@@ -25,10 +22,12 @@ public class GPRequestPolicy extends RequestPolicy {
         this.gpTree = gpTree;
     }
 
+    // Getters
     public GPTree getGPTree() {
         return gpTree;
     }
 
+    // Setters
     public void setGPTree(GPTree gpTree) {
         this.gpTree = gpTree;
     }

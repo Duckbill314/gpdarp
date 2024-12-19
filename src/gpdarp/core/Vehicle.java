@@ -6,12 +6,11 @@ import java.util.*;
 
 /**
  * A vehicle is a defined construct with a set of important properties, including:
- * - capacity and demand,
+ * - capacity,
  * - battery charging information,
- * - the latest known idle position (implies that requests are not being served),
- * - the current arc (implies that requests are being served),
- * - requests that have been allocated to the vehicle,
- * - full route history and future planned route.
+ * - service time for request pickup and dropoff,
+ * - the latest known idle position (implies that the vehicle is not busy, and available to accept a request),
+ * - full route history.
  * It also has a temporary priority value for the purpose of request allocation.
  *
  * @author William Huang
@@ -54,7 +53,7 @@ public class Vehicle implements Allocatable {
     public Node getCurrPos() { return currPos; }
     public Route getRoute() { return route; }
     public double getPriority() { return priority; }
-    public boolean isBusy() { return currPos != null; }
+    public boolean isBusy() { return currPos == null; }
 
     // Setters
     public void setChargeState(double chargeState) { this.chargeState = chargeState; }
@@ -65,28 +64,60 @@ public class Vehicle implements Allocatable {
     /**
      * Helper method for handling charging events.
      * Because a vehicle cannot serve requests while it is on the way to a charging station or while it is
-     * charging, the "dead" time can be accumulated to calculate the next available time.
-     * A vehicle can still accept requests during the "dead" time, but route calculation will begin no earlier than
-     * the next available time.
+     * charging, the time taken for each can be summed to calculate the next available time,
+     * which occurs after the vehicle has finished charging.
      *
      * @param instance the instance of the problem.
      * @param request the selected charging "request".
+     * @return the point of the next available time and position.
      */
-    public void charge(Instance instance, WaitingRequest request) {
-        Station station = (Station) request.getDropoff();
-        Arc toStation = new Arc(currPos, station);
+    public Node charge(Instance instance, WaitingRequest request) {
+        setCurrPos(null);
 
-        int distanceToStation = toStation.length();
-        int travelTime = instance.calculateTravelTime(distanceToStation);
-        deplete(distanceToStation);
+        Node startPoint = request.getPickup();
+        Station station = (Station) request.getDropoff();
+
+        Arc toStation = new Arc(startPoint, station);
+        toStation.updateEtas(instance, this);
+        deplete(toStation.length());
         route.push(toStation);
 
         int chargeTime = estimateFillTime();
         fill(chargeTime);
 
-        int nextAvailableTime = currPos.getTime() + travelTime + chargeTime;
-        station.setTime(nextAvailableTime);
-        setCurrPos(station);
+        int nextIdleTime = station.getTime() + chargeTime;
+        return station.idleClone(nextIdleTime);
+    }
+
+    /**
+     * Helper method for handling request service events.
+     * Because a vehicle cannot accept a new request while it is serving its current one, the time taken for each of
+     * pickup and dropoff can be summed to calculate the next available time,
+     * which occurs after the vehicle has finished servicing the dropoff.
+     *
+     * @param instance the instance of the problem.
+     * @param request the selected charging "request".
+     * @param startPoint the idle point that the vehicle begins the service at.
+     * @return the point of the next available time and position.
+     */
+    public Node serveRequest(Instance instance, Request request, Node startPoint) {
+        setCurrPos(null);
+
+        Node pickup = request.getPickup();
+        Node dropoff = request.getDropoff();
+
+        Arc toPickup = new Arc(startPoint, pickup);
+        toPickup.updateEtas(instance, this);
+        deplete(toPickup.length());
+        route.push(toPickup);
+
+        Arc toDropoff = new Arc(pickup, dropoff);
+        toDropoff.updateEtas(instance, this);
+        deplete(toDropoff.length());
+        route.push(toDropoff);
+
+        int nextIdleTime = dropoff.getTime() + getServeTime();
+        return dropoff.idleClone(nextIdleTime);
     }
 
     /**
@@ -131,7 +162,6 @@ public class Vehicle implements Allocatable {
      * Always check using this method before actually depleting!
      *
      * @param length the length travelled.
-     *
      * @return the resulting charge state.
      */
     public double estimateDepletion(int length) { return chargeState - chargeDepletionRate * length; }
@@ -149,7 +179,6 @@ public class Vehicle implements Allocatable {
      * Utility method for creating deep clones of ArrayLists of Vehicles.
      *
      * @param vehicles the list of vehicles to be cloned.
-     *
      * @return the cloned list.
      */
     public static List<Vehicle> listClone(List<Vehicle> vehicles) {

@@ -1,13 +1,9 @@
 package gpdarp.decisionprocess.allocationpolicy.vehiclepolicy;
 
-import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.representation.route.Route;
-
-import java.util.Map;
 
 /**
  * The nearest vehicle policy selects the vehicle whose current position (if it is stationary) or whose current

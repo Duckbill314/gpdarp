@@ -3,14 +3,12 @@ package gpdarp.decisionprocess.poolfilter;
 import gpdarp.core.*;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
-import gpdarp.representation.route.Route;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Filters for the candidate vehicles and their optimal route from the pool by selecting only the ones that are
- * expected to be feasible. Feasibility is accounted for during route calculation.
+ * Filters for the candidate vehicles/requests by selecting only the ones that are expected to be feasible.
  *
  * @author William Huang
  */
@@ -54,7 +52,6 @@ public class FeasiblePoolFilter extends PoolFilter {
      *
      * @param vehicle the vehicle servicing the request.
      * @param request the request to be served.
-     *
      * @return whether violation occurred.
      */
     public boolean demandConstraintViolation(Vehicle vehicle, Request request) {
@@ -68,7 +65,6 @@ public class FeasiblePoolFilter extends PoolFilter {
      * @param instance the problem instance.
      * @param vehicle the vehicle servicing the request.
      * @param request the request to be served.
-     *
      * @return whether violation occurred.
      */
     public boolean chargeConstraintViolation(Instance instance, Vehicle vehicle, Request request) {

@@ -3,7 +3,6 @@ package gpdarp.decisionprocess.tiebreaker;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.TieBreaker;
-import gpdarp.representation.route.Route;
 
 /**
  * A simple tiebreaker between two vehicles uses the natural comparator.

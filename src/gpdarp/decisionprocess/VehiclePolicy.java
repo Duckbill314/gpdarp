@@ -63,8 +63,7 @@ public abstract class VehiclePolicy {
      *
      * @param state   the decision process state.
      * @param request the request to be served.
-     *
-     * @return the allocated vehicle.
+     * @return the vehicle to allocate the request to.
      */
     public Vehicle next(DecisionProcessState state, Request request) {
         List<Vehicle> pool = poolFilter.filterVehicles(state, request);
@@ -87,7 +86,6 @@ public abstract class VehiclePolicy {
      * @param candidate the candidate vehicle.
      * @param state     the decision process state.
      * @param request   the request to be allocated.
-     *
      * @return the priority of the candidate vehicle.
      */
     public abstract double priority(Vehicle candidate, DecisionProcessState state, Request request);
