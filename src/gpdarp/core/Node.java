@@ -54,10 +54,20 @@ public class Node {
         return (int) Math.ceil(Math.sqrt(Math.pow((o.getX() - x), 2) + Math.pow((o.getY() - y), 2))); }
 
     @Override
-    public String toString() { return String.format("(%d, %d)", x, y); }
+    public String toString() {
+        String type = "";
+        switch (this.type) {
+            case PICKUP -> type = "pickup";
+            case DROPOFF -> type = "dropoff";
+            case STATION -> type = "station";
+        }
+        return String.format("%s(%d, %d)", type, x, y);
+    }
 
     @Override
-    public Node clone() { return new Node(x, y, time, type, request.clone()); }
+    public Node clone() {
+        return new Node(x, y, time, type, request);
+    }
 
     /**
      * Helper method specifically for making idle nodes at updated times for a specific position.

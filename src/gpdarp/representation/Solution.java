@@ -16,11 +16,11 @@ public class Solution {
     private List<Route> routes;
     private double travelTimeRate;
     private double latenessPenalty;
-    private boolean feasibility;
+    private boolean feasible;
 
     public Solution(List<Route> routes) {
         this.routes = Route.listClone(routes);
-        this.feasibility = false;
+        this.feasible = false;
     }
 
     public Solution() {
@@ -33,7 +33,7 @@ public class Solution {
     }
     public double getTravelTimeRate() { return travelTimeRate; }
     public double getLatenessPenalty() { return latenessPenalty; }
-    public boolean isFeasible() { return feasibility; }
+    public boolean isFeasible() { return feasible; }
 
     // Setters
     public void setRoutes(List<Route> routes) {
@@ -41,14 +41,14 @@ public class Solution {
     }
     public void setTravelTimeRate(double travelTimeRate) { this.travelTimeRate = travelTimeRate; }
     public void setLatenessPenalty(double latenessPenalty) { this.latenessPenalty = latenessPenalty; }
-    public void setFeasibility(boolean feasibility) { this.feasibility = feasibility; }
+    public void setFeasible(boolean feasible) { this.feasible = feasible; }
 
     /**
      * Reset this solution by resetting each route.
      */
     public void reset() {
         routes.forEach(Route::reset);
-        feasibility = false;
+        feasible = false;
     }
 
     /**
@@ -57,6 +57,9 @@ public class Solution {
      * @return the total cost.
      */
     public double totalCost() {
+        if (!feasible) {
+            return Double.POSITIVE_INFINITY;
+        }
         return routes.stream()
                 .map(r -> r.getLength() / travelTimeRate + latenessPenalty * r.calculatePenalty())
                 .reduce(0.0, Double::sum);
@@ -68,6 +71,9 @@ public class Solution {
      * @return the maximal route cost.
      */
     public double maxRouteCost() {
+        if (!feasible) {
+            return Double.POSITIVE_INFINITY;
+        }
         return routes.stream()
                 .map(r -> r.getLength() / travelTimeRate + latenessPenalty * r.calculatePenalty())
                 .max(Double::compare)
@@ -89,14 +95,20 @@ public class Solution {
     }
 
     @Override
-    public String toString() { return String.format("Routes: %s", routes); }
+    public String toString() {
+        String str = "\nRoutes: \n";
+        for (Route route : routes) {
+            str += String.format("%s\n", route);
+        }
+        return str;
+    }
 
     @Override
     public Solution clone() {
         Solution clone = new Solution(Route.listClone(routes));
         clone.travelTimeRate = travelTimeRate;
         clone.latenessPenalty = latenessPenalty;
-        clone.feasibility = feasibility;
+        clone.feasible = feasible;
         return clone;
     }
 }

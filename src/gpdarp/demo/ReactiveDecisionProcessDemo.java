@@ -4,49 +4,54 @@ import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.core.Instance;
+import gpdarp.decisionprocess.allocationpolicy.requestpolicy.NearestRequestPolicy;
+import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.NearestVehiclePolicy;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import util.Timer;
 
 import java.io.File;
-// TODO: modify here and try it out for yourself!
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 /**
  * A demo for a reactive decision process.
- * First, an instances is read from a data file, e.g. data/gdb/gdb23.dat.
- * Then, given a routing policy
- * Created by gphhucarp on 29/08/17.
+ * First, an instances is read from a data file, e.g. data/training/1.txt.
+ * Then, given a vehicle allocation policy and a request allocation policy, the decision process is constructed
+ * and executed.
+ *
+ * @author gphhucarp, William Huang
  */
 public class ReactiveDecisionProcessDemo {
 
     public static void main(String[] args) {
-        long seed = 0;
-        double demULevel = 0.3;
-        double costULevel = 0.2;
-
+        Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
+        System.out.println(root.toString());
         // read an instance from a data file
-        Instance instance = Instance.readFromFile(new File("")); // TODO: declare data file
+        Instance instance = Instance.readFromFile(new File(root.toString() + "/src/data/sample.txt"));
+        Instance original = Instance.readFromFile(new File(root.toString() + "/src/data/sample.txt"));
+        instance.setOriginalCopy(original);
 
         // specify a vehicle allocation policy
-        VehiclePolicy vehiclePolicy = null; // TODO: declare policy
-        RequestPolicy requestPolicy = null; // TODO: declare policy
+        VehiclePolicy vehiclePolicy = new NearestVehiclePolicy();
+        RequestPolicy requestPolicy = new NearestRequestPolicy();
 
         // initialise a reactive decision process
         ReactiveDecisionProcess rdp = DecisionProcess.initReactive(instance, vehiclePolicy, requestPolicy);
 
         // run the decision process
-        // these should give the same results
         long start = Timer.getCpuTime();
         rdp.run();
         long end = Timer.getCpuTime();
         double duration = (end - start) / 1000000;
 
         System.out.println(rdp.getState().getSolution().toString());
+        System.out.println("Cost:");
         System.out.println(rdp.getState().getSolution().totalCost());
-        System.out.println("elapsed " + duration + " ms.");
+        System.out.println("elapsed " + duration + " ms. \n");
 
         // rerun the decision process for a number of times.
         // the instance and routing policy do not change,
         // so all the reruns will give the same results.
-        int maxReruns = 10;
+        int maxReruns = 2;
         for (int rerun = 0; rerun < maxReruns; rerun++) {
             // before rerunning, need to reset the decision process
             rdp.reset();
@@ -56,8 +61,11 @@ public class ReactiveDecisionProcessDemo {
             duration = (end - start) / 1000000;
 
             System.out.println(rdp.getState().getSolution().toString());
+            System.out.println("Cost:");
             System.out.println(rdp.getState().getSolution().totalCost());
-            System.out.println("elapsed " + duration + " ms.");
+            System.out.println("elapsed " + duration + " ms. \n");
         }
+
+
     }
 }

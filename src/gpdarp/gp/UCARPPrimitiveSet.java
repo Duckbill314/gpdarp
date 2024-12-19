@@ -1,7 +1,7 @@
 package gpdarp.gp;
 
 import gputils.function.*;
-import gpdarp.gp.terminal.feature.*;
+//import gpdarp.gp.terminal.feature.*;
 import gputils.terminal.PrimitiveSet;
 
 /**

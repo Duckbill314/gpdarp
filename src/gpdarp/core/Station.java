@@ -15,9 +15,6 @@ public class Station extends Node {
         setType(NodeType.STATION);
     }
 
-    @Override
-    public String toString() { return String.format("Station at %s", super.toString()); }
-
     /**
      * Utility method for creating deep clones of ArrayLists of Stations.
      *
@@ -33,5 +30,5 @@ public class Station extends Node {
     }
 
     @Override
-    public Station clone() { return (Station) super.clone(); }
+    public Station clone() { return new Station(getX(), getY()); }
 }

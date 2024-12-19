@@ -12,9 +12,11 @@ import java.util.List;
  * @author gphhucarp, William Huang
  */
 public abstract class DecisionProcessEvent implements Comparable<DecisionProcessEvent> {
+    protected String name;
     protected int time;
 
-    public DecisionProcessEvent(int time) {
+    public DecisionProcessEvent(String name, int time) {
+        this.name = name;
         this.time = time;
     }
 
@@ -32,6 +34,9 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
 
     @Override
     public int compareTo(DecisionProcessEvent o) { return Integer.compare(time, o.time); }
+
+    @Override
+    public String toString() { return String.format("%s at time %d", name, time); }
 
     /**
      * Helper method for handling vehicle allocation.

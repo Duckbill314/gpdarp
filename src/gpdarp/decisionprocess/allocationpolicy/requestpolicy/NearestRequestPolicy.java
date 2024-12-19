@@ -13,8 +13,8 @@ import gpdarp.decisionprocess.RequestPolicy;
  * @author gphhucarp, William Huang
  */
 public class NearestRequestPolicy extends RequestPolicy {
-    // A priority threshold must be set so that the allocator has the option of choosing no action
-    private static final double THRESHOLD = 200;
+    // A threshold is required to allow for no option to be selected.
+    private static final double MAX_RANGE = Math.ceil(Math.sqrt(Math.pow(2000, 2) + Math.pow(2000, 2)));
 
     public NearestRequestPolicy() {
         super();
@@ -29,6 +29,6 @@ public class NearestRequestPolicy extends RequestPolicy {
 
             case CHARGE -> priority = vehicle.getCurrPos().calcDist(candidate.getDropoff());
         }
-        return priority - THRESHOLD;
+        return priority - MAX_RANGE/state.getInstance().getNumVehicles();
     }
 }

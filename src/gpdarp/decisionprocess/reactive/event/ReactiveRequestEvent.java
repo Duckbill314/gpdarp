@@ -19,7 +19,7 @@ public class ReactiveRequestEvent extends DecisionProcessEvent {
     Request request;
 
     public ReactiveRequestEvent(int time, Request request) {
-        super(time);
+        super("ReactiveRequestEvent", time);
         this.request = request;
     }
 

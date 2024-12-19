@@ -1,8 +1,10 @@
 package gpdarp.decisionprocess;
 
+import gpdarp.core.Request;
 import gpdarp.core.WaitingRequest;
 import gpdarp.core.Instance;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
+import gpdarp.decisionprocess.reactive.event.ReactiveRequestEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +87,9 @@ public abstract class DecisionProcess {
                                                        VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy) {
         DecisionProcessState state = new DecisionProcessState(instance);
         PriorityQueue<DecisionProcessEvent> eventQueue = new PriorityQueue<>();
+        for (Request request : instance.getRequests()) {
+            eventQueue.add(new ReactiveRequestEvent(0, request));
+        }
         List<WaitingRequest> waitingList = new ArrayList<>();
         return new ReactiveDecisionProcess(state, eventQueue, waitingList, vehiclePolicy, requestPolicy);
     }
@@ -95,12 +100,13 @@ public abstract class DecisionProcess {
     public void run() {
         while (!eventQueue.isEmpty()) {
             DecisionProcessEvent event = eventQueue.poll();
+            System.out.println(event);
             state.setTime(event.getTime());
             event.trigger(this);
             state.updateSolution();
         }
         if (waitingList.isEmpty()) {
-            state.getSolution().setFeasibility(true);
+            state.getSolution().setFeasible(true);
         }
     }
 

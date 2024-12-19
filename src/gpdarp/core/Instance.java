@@ -25,7 +25,7 @@ public final class Instance {
     private double latenessPenalty;
 
     // Pseudo-singleton
-    private final Instance originalCopy;
+    private Instance originalCopy;
 
     public Instance(String name, List<Vehicle> vehicles, List<Station> stations, List<Request> requests,
                     double timeHorizon, double travelTimeRate, double latenessPenalty) {
@@ -36,8 +36,6 @@ public final class Instance {
         this.timeHorizon = timeHorizon;
         this.travelTimeRate = travelTimeRate;
         this.latenessPenalty = latenessPenalty;
-
-        this.originalCopy = this.clone();
     }
 
     // Getters
@@ -51,6 +49,9 @@ public final class Instance {
     public int getNumVehicles() { return vehicles.size(); }
     public int getNumStations() { return stations.size(); }
     public int getNumRequests() { return requests.size(); }
+
+    // Setters
+    public void setOriginalCopy(Instance originalCopy) { this.originalCopy = originalCopy; }
 
     /**
      * Parse a data file to initialise an Instance.
@@ -181,7 +182,7 @@ public final class Instance {
 
     @Override
     public Instance clone() {
-        return new Instance(
+        Instance clone = new Instance(
                 name,
                 Vehicle.listClone(vehicles),
                 Station.listClone(stations),
@@ -189,6 +190,8 @@ public final class Instance {
                 timeHorizon,
                 travelTimeRate,
                 latenessPenalty);
+        clone.setOriginalCopy(originalCopy);
+        return clone;
     }
 
     /**

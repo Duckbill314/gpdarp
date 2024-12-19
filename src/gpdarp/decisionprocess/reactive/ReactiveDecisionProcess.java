@@ -3,6 +3,7 @@ package gpdarp.decisionprocess.reactive;
 import gpdarp.core.WaitingRequest;
 import gpdarp.core.Request;
 import gpdarp.decisionprocess.*;
+import gpdarp.decisionprocess.reactive.event.ReactiveRequestEvent;
 
 import java.util.List;
 import java.util.PriorityQueue;
@@ -28,6 +29,10 @@ public class ReactiveDecisionProcess extends DecisionProcess {
     public void reset() {
         state.reset();
         eventQueue.clear();
+        for (Request request : state.getInstance().getRequests()) {
+            eventQueue.add(new ReactiveRequestEvent(0, request));
+        }
+        waitingList.clear();
     }
 
     @Override

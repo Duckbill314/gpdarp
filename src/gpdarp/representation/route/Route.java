@@ -86,7 +86,7 @@ public class Route {
         StringBuilder str = new StringBuilder();
         str.append(arcs.getFirst().from());
         for (Arc arc : arcs) {
-            str.append(arc.to());
+            str.append(String.format(", %s", arc.to()));
         }
         return str.toString();
     }

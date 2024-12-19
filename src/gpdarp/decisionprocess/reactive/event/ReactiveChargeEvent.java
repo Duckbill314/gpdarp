@@ -19,7 +19,7 @@ public class ReactiveChargeEvent extends DecisionProcessEvent {
     Vehicle vehicle;
 
     public ReactiveChargeEvent(int time, Node node, Vehicle vehicle) {
-        super(time);
+        super("ReactiveChargeEvent", time);
         this.node = node;
         this.vehicle = vehicle;
     }
