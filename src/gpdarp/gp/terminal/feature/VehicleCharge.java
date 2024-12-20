@@ -4,6 +4,11 @@ import gpdarp.core.Vehicle;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
 
+/**
+ * Returns the current battery charge state of the vehicle.
+ *
+ * @author William Huang
+ */
 public class VehicleCharge extends FeatureGPNode {
     public VehicleCharge() {
         super();

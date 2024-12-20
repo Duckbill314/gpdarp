@@ -2,6 +2,8 @@ package gpdarp.core;
 
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
+import gpdarp.decisionprocess.allocationpolicy.requestpolicy.NearestRequestPolicy;
+import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.NearestVehiclePolicy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,8 +46,7 @@ public enum Objective {
      * @return the reference policy.
      */
     public static VehiclePolicy refVehiclePolicy() {
-        // TODO: set the desired policy
-        return null;
+        return new NearestVehiclePolicy();
     }
 
     /**
@@ -54,7 +55,6 @@ public enum Objective {
      * @return the reference policy.
      */
     public static RequestPolicy refRequestPolicy() {
-        // TODO: set the desired policy
-        return null;
+        return new NearestRequestPolicy();
     }
 }

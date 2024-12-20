@@ -5,6 +5,13 @@ import gpdarp.core.Vehicle;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
 
+/**
+ * Returns the distance between the vehicle's current position and the request's pickup point.
+ * For charging requests, instead returns the distance between the vehicle's current position and the
+ * specified charging station.
+ *
+ * @author William Huang
+ */
 public class DistanceToPickup extends FeatureGPNode {
     public DistanceToPickup() {
         super();

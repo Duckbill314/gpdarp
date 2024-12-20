@@ -43,6 +43,7 @@ public class Request {
         dropoff.setType(Node.NodeType.DROPOFF);
     }
 
+    // Constructor for charging requests
     public Request(int time, Node pos, Node station) {
         this(-1, time, pos, station, 0, (int) Double.POSITIVE_INFINITY, (int) Double.POSITIVE_INFINITY, 0);
         this.type = RequestType.CHARGE;
@@ -101,10 +102,10 @@ public class Request {
      * @param requests the list of requests to be cloned.
      * @return the cloned list.
      */
-    public static <T extends Request> List<T> listClone(List<T> requests) {
-        List<T> clonedRequests = new ArrayList<>();
+    public static List<Request> listClone(List<Request> requests) {
+        List<Request> clonedRequests = new ArrayList<>();
         for (Request request : requests) {
-            clonedRequests.add((T) request.clone());
+            clonedRequests.add(request.clone());
         }
         return clonedRequests;
     }

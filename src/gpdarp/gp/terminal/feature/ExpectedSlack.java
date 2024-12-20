@@ -9,14 +9,17 @@ import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
 
 /**
- * Returns the current distance between the vehicle and the nearest charging station.
+ * Returns the expected slack for serving the request.
+ * It is a measure of urgency of a request.
  *
  * @author William Huang
  */
-public class CurrentDistanceFromStation extends FeatureGPNode {
-    public CurrentDistanceFromStation() {
+public class ExpectedSlack extends FeatureGPNode {
+    private static final double LIMIT = 1000;
+
+    public ExpectedSlack() {
         super();
-        name = "CDFS";
+        name = "SLCK";
     }
 
     @Override
@@ -27,14 +30,14 @@ public class CurrentDistanceFromStation extends FeatureGPNode {
         Instance instance = state.getInstance();
         Node currPos = vehicle.getCurrPos();
 
-        double value = 0;
-
-        switch (request.getType()) {
-            case REQUEST -> value = currPos.calcDist(instance.findClosestStation(currPos));
-
-            case CHARGE -> value = currPos.calcDist(request.getDropoff());
+        if (request.getType() == Request.RequestType.CHARGE) {
+            return LIMIT;
         }
 
-        return value;
+        int tMax = request.getTMax();
+        int tCurr = state.getTime();
+        int travelTime = instance.calculateTravelTime(currPos.calcDist(request.getPickup()));
+
+        return tMax - tCurr - travelTime;
     }
 }

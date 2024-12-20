@@ -7,6 +7,12 @@ import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
 
+/**
+ * Returns the distance between the vehicle and the nearest charging station at the point that the vehicle will be
+ * after serving the request. Of course, for charging requests, this value will be 0.
+ *
+ * @author William Huang
+ */
 public class FutureDistanceFromStation extends FeatureGPNode {
     public FutureDistanceFromStation() {
         super();

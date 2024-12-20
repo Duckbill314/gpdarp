@@ -4,6 +4,11 @@ import gpdarp.core.Vehicle;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
 
+/**
+ * Returns the capacity of the vehicle.
+ *
+ * @author William Huang
+ */
 public class VehicleCapacity extends FeatureGPNode {
     public VehicleCapacity() {
         super();
