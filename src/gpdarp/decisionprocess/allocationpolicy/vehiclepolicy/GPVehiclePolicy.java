@@ -34,7 +34,7 @@ public class GPVehiclePolicy extends VehiclePolicy {
 
     @Override
     public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
-        CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, state, request);
+        CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, request, state);
         DoubleData tmp = new DoubleData();
         gpTree.child.eval(null, 0, tmp, null, null, calcPrioProb);
 

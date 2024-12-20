@@ -50,7 +50,7 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
         Vehicle allocation = decisionProcess.getVehiclePolicy().next(state, request);
 
         if (allocation == null) {
-            decisionProcess.addWaiting(new WaitingRequest(request));
+            decisionProcess.addWaiting(request.clone());
             return null;
         }
         return allocation;
@@ -64,16 +64,16 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      * @param waitingPoint    the point and time at which the vehicle will be idle.
      * @return the request to allocate to the vehicle.
      */
-    public WaitingRequest requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint,
-                                            boolean includeCharge) {
+    public Request requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint,
+                                     boolean includeCharge) {
 
         DecisionProcessState state = decisionProcess.getState();
-        List<WaitingRequest> waitingList = new ArrayList<>(decisionProcess.getWaitingList());
+        List<Request> waitingList = new ArrayList<>(decisionProcess.getWaitingList());
 
         if (includeCharge) {
             Instance instance = state.getInstance();
             Node station = instance.findClosestStation(waitingPoint);
-            waitingList.add(new WaitingRequest(waitingPoint.getTime(), waitingPoint, station));
+            waitingList.add(new Request(waitingPoint.getTime(), waitingPoint, station));
         }
 
         return decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);

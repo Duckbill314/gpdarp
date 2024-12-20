@@ -13,6 +13,8 @@ import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,8 +96,11 @@ public abstract class EvaluationModel {
 
         instanceSamples = new ArrayList<>();
         for (int i = 0; i < numInstances; i++) {
-            File file = new File(String.format("data/darp/%s/%d.txt", dataset, i+1));
+            Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
+            File file = new File(root + String.format("/src/data/%s/%d.txt", dataset, i+1));
             Instance instance = Instance.readFromFile(file);
+            Instance original = Instance.readFromFile(file);
+            instance.setOriginalCopy(original);
             instanceSamples.add(instance);
         }
 

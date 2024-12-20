@@ -1,7 +1,7 @@
 package gpdarp.decisionprocess.allocationpolicy.requestpolicy;
 
+import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
-import gpdarp.core.WaitingRequest;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.RequestPolicy;
 
@@ -22,7 +22,7 @@ public class NearestRequestPolicy extends RequestPolicy {
     }
 
     @Override
-    public double priority(WaitingRequest candidate, DecisionProcessState state, Vehicle vehicle) {
+    public double priority(Request candidate, DecisionProcessState state, Vehicle vehicle) {
         double priority = 0;
         switch (candidate.getType()) {
             case REQUEST -> priority = vehicle.getCurrPos().calcDist(candidate.getPickup());

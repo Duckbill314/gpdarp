@@ -1,6 +1,5 @@
 package gpdarp.decisionprocess;
 
-import gpdarp.core.WaitingRequest;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 
@@ -31,6 +30,5 @@ public abstract class PoolFilter {
      * @param requests the waiting list of requests.
      * @return the filtered pool.
      */
-    public abstract List<WaitingRequest> filterRequests(Vehicle vehicle, DecisionProcessState state,
-                                                 List<WaitingRequest> requests);
+    public abstract List<Request> filterRequests(Vehicle vehicle, DecisionProcessState state, List<Request> requests);
 }

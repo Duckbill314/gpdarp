@@ -12,7 +12,7 @@ import gputils.DoubleData;
 /**
  * A feature GP node will be used as a terminal of GP.
  *
- * Created by gphhucarp on 30/08/17.
+ * @author gphhucarp
  */
 public abstract class FeatureGPNode extends GPNode {
     protected String name;

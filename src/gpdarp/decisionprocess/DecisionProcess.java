@@ -1,7 +1,6 @@
 package gpdarp.decisionprocess;
 
 import gpdarp.core.Request;
-import gpdarp.core.WaitingRequest;
 import gpdarp.core.Instance;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import gpdarp.decisionprocess.reactive.event.ReactiveRequestEvent;
@@ -24,13 +23,13 @@ import java.util.PriorityQueue;
 public abstract class DecisionProcess {
     protected DecisionProcessState state;
     protected PriorityQueue<DecisionProcessEvent> eventQueue;
-    protected List<WaitingRequest> waitingList;
+    protected List<Request> waitingList;
     protected VehiclePolicy vehiclePolicy;
     protected RequestPolicy requestPolicy;
 
     public DecisionProcess(DecisionProcessState state,
                            PriorityQueue<DecisionProcessEvent> eventQueue,
-                           List<WaitingRequest> waitingList,
+                           List<Request> waitingList,
                            VehiclePolicy vehiclePolicy,
                            RequestPolicy requestPolicy) {
         this.state = state;
@@ -47,7 +46,7 @@ public abstract class DecisionProcess {
     public PriorityQueue<DecisionProcessEvent> getEventQueue() {
         return eventQueue;
     }
-    public List<WaitingRequest> getWaitingList() { return waitingList; }
+    public List<Request> getWaitingList() { return waitingList; }
     public VehiclePolicy getVehiclePolicy() {
         return vehiclePolicy;
     }
@@ -65,14 +64,14 @@ public abstract class DecisionProcess {
      *
      * @param request the request to be added.
      */
-    public void addWaiting(WaitingRequest request) { waitingList.add(request); }
+    public void addWaiting(Request request) { waitingList.add(request); }
 
     /**
      * Remove a request from the waiting list.
      *
      * @param request the request to be removed.
      */
-    public void removeWaiting(WaitingRequest request) { waitingList.remove(request); }
+    public void removeWaiting(Request request) { waitingList.remove(request); }
 
     /**
      * Initialise a reactive decision process from an instance,
@@ -90,7 +89,7 @@ public abstract class DecisionProcess {
         for (Request request : instance.getRequests()) {
             eventQueue.add(new ReactiveRequestEvent(request.getTRec(), request));
         }
-        List<WaitingRequest> waitingList = new ArrayList<>();
+        List<Request> waitingList = new ArrayList<>();
         return new ReactiveDecisionProcess(state, eventQueue, waitingList, vehiclePolicy, requestPolicy);
     }
 

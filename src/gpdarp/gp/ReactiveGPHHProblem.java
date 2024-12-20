@@ -8,6 +8,7 @@ import ec.simple.SimpleProblemForm;
 import ec.util.Parameter;
 import gpdarp.core.Objective;
 import gpdarp.decisionprocess.TieBreaker;
+import gpdarp.decisionprocess.allocationpolicy.requestpolicy.GPRequestPolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
 import gpdarp.decisionprocess.PoolFilter;
 import gpdarp.gp.evaluation.EvaluationModel;
@@ -15,9 +16,11 @@ import gpdarp.gp.evaluation.EvaluationModel;
 import java.util.List;
 
 /**
- * A reactive GPHH problem to evaluate a reactive routing policy during the GPHH.
- * The evaluationg model is a reactive evaluation model.
- * It also includes a pool filter specifying how to filter out the pool of candidate tasks.
+ * A reactive GPHH problem to evaluate a pair of reactive routing policies during the GPHH.
+ * The evaluation model is a reactive evaluation model.
+ * It also includes a pool filter and tiebreaker.
+ *
+ * @author gphhucarp, William Huang
  */
 
 public class ReactiveGPHHProblem extends GPProblem implements SimpleProblemForm {
@@ -68,16 +71,10 @@ public class ReactiveGPHHProblem extends GPProblem implements SimpleProblemForm 
     }
 
     @Override
-    public void evaluate(EvolutionState state,
-                         Individual indi,
-                         int subpopulation,
-                         int threadnum) {
-        GPVehiclePolicy policy =
-                new GPVehiclePolicy(((GPIndividual)indi).trees[0]);
-
-        // the evaluation model is reactive, so no plan is specified.
-        evaluationModel.evaluate(policy, null, indi.fitness, state);
-
+    public void evaluate(EvolutionState state, Individual indi, int subpopulation, int threadnum) {
+        GPVehiclePolicy vehiclePolicy = new GPVehiclePolicy(((GPIndividual)indi).trees[0]);
+        GPRequestPolicy requestPolicy = new GPRequestPolicy(((GPIndividual)indi).trees[1]);
+        evaluationModel.evaluate(vehiclePolicy, requestPolicy, indi.fitness, state);
         indi.evaluated = true;
     }
 }

@@ -26,13 +26,12 @@ public class FeasiblePoolFilter extends PoolFilter {
     }
 
     @Override
-    public List<WaitingRequest> filterRequests(Vehicle vehicle, DecisionProcessState state,
-                                               List<WaitingRequest> requests) {
+    public List<Request> filterRequests(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
 
         Instance instance = state.getInstance();
-        List<WaitingRequest> pool = new ArrayList<>();
+        List<Request> pool = new ArrayList<>();
 
-        for (WaitingRequest request : requests) {
+        for (Request request : requests) {
             switch (request.getType()) {
                 case CHARGE -> pool.add(request);
 

@@ -15,7 +15,7 @@ import java.util.*;
  *
  * @author William Huang
  */
-public class Vehicle implements Allocatable {
+public class Vehicle {
     private final int id;
     private final int capacity;
     private final double chargeMax;
@@ -71,7 +71,7 @@ public class Vehicle implements Allocatable {
      * @param request the selected charging "request".
      * @return the point of the next available time and position.
      */
-    public Node charge(Instance instance, WaitingRequest request) {
+    public Node charge(Instance instance, Request request) {
         setCurrPos(null);
 
         Node startPoint = request.getPickup();

@@ -1,7 +1,7 @@
 package gpdarp.decisionprocess.allocationpolicy.requestpolicy;
 
 import ec.gp.GPTree;
-import gpdarp.core.WaitingRequest;
+import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.RequestPolicy;
@@ -33,8 +33,8 @@ public class GPRequestPolicy extends RequestPolicy {
     }
 
     @Override
-    public double priority(WaitingRequest candidate, DecisionProcessState state, Vehicle vehicle) {
-        CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(candidate, state, vehicle);
+    public double priority(Request candidate, DecisionProcessState state, Vehicle vehicle) {
+        CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(vehicle, candidate, state);
         DoubleData tmp = new DoubleData();
         gpTree.child.eval(null, 0, tmp, null, null, calcPrioProb);
 

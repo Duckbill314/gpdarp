@@ -1,7 +1,7 @@
 package gpdarp.decisionprocess.reactive.event;
 
-import gpdarp.core.WaitingRequest;
 import gpdarp.core.Node;
+import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
@@ -28,7 +28,7 @@ public class ReactiveServiceEvent extends DecisionProcessEvent {
     public void trigger(DecisionProcess decisionProcess) {
         vehicle.setCurrPos(node);
         DecisionProcessState state = decisionProcess.getState();
-        WaitingRequest request = requestAllocation(decisionProcess, vehicle, node, true);
+        Request request = requestAllocation(decisionProcess, vehicle, node, true);
 
         if (request != null) {
             switch (request.getType()) {

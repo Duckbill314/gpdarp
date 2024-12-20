@@ -23,11 +23,11 @@ import java.nio.file.Path;
 public class ReactiveDecisionProcessDemo {
 
     public static void main(String[] args) {
-        Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
-        System.out.println(root.toString());
         // read an instance from a data file
-        Instance instance = Instance.readFromFile(new File(root.toString() + "/src/data/sample.txt"));
-        Instance original = Instance.readFromFile(new File(root.toString() + "/src/data/sample.txt"));
+        Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
+        File file = new File(root + "/src/data/sample.txt");
+        Instance instance = Instance.readFromFile(file);
+        Instance original = Instance.readFromFile(file);
         instance.setOriginalCopy(original);
 
         // specify a vehicle allocation policy

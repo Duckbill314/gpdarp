@@ -10,11 +10,11 @@ import java.util.List;
  * - the pickup and dropoff destinations,
  * - the earliest and latest possible time the customer wishes to be picked up,
  * - the maximum ride time.
- * In addition, it also has a temporary priority value for the purpose of vehicle allocation.
+ * In addition, it also has a type identifier and a temporary priority value for the purpose of vehicle allocation.
  *
  * @author William Huang
  */
-public class Request implements Allocatable {
+public class Request {
     private final int id;
     private final int tRec;
     private final Node pickup;
@@ -23,6 +23,7 @@ public class Request implements Allocatable {
     private final int tLate;
     private final int tMax;
     private final int demand;
+    private RequestType type;
     private double priority;
 
     public Request(int id, int tRec, Node pickup, Node dropoff, int tEarly, int tLate, int tMax, int demand) {
@@ -34,11 +35,17 @@ public class Request implements Allocatable {
         this.tLate = tLate;
         this.tMax = tMax;
         this.demand = demand;
+        this.type = RequestType.REQUEST;
         this.priority = 0;
         pickup.setRequest(this);
         pickup.setType(Node.NodeType.PICKUP);
         dropoff.setRequest(this);
         dropoff.setType(Node.NodeType.DROPOFF);
+    }
+
+    public Request(int time, Node pos, Node station) {
+        this(-1, time, pos, station, 0, (int) Double.POSITIVE_INFINITY, (int) Double.POSITIVE_INFINITY, 0);
+        this.type = RequestType.CHARGE;
     }
 
     // Getters
@@ -49,11 +56,21 @@ public class Request implements Allocatable {
     public int getTEarly() { return tEarly; }
     public int getTLate() { return tLate; }
     public int getTMax() { return tMax; }
-    public double getPriority() { return priority; }
     public int getDemand() { return demand; }
+    public RequestType getType() { return type; }
+    public double getPriority() { return priority; }
 
     // Setters
+    public void setType(RequestType type) { this.type = type; }
     public void setPriority(double priority) { this.priority = priority; }
+
+    /**
+     * Request types are responsible for handling behaviour during reactive events.
+     */
+    public enum RequestType {
+        REQUEST,
+        CHARGE
+    }
 
     /**
      * Compare the request to another request on the basis of their id number.
@@ -72,7 +89,10 @@ public class Request implements Allocatable {
 
     @Override
     public Request clone() {
-        return new Request(id, tRec, pickup.clone(), dropoff.clone(), tEarly, tLate, tMax, demand);
+        Request clone = new Request(id, tRec, pickup.clone(), dropoff.clone(), tEarly, tLate, tMax, demand);
+        clone.setPriority(priority);
+        clone.setType(type);
+        return clone;
     }
 
     /**

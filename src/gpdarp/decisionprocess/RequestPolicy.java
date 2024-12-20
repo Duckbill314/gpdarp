@@ -1,6 +1,6 @@
 package gpdarp.decisionprocess;
 
-import gpdarp.core.WaitingRequest;
+import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
@@ -66,8 +66,8 @@ public abstract class RequestPolicy {
      * @param requests the waiting list of requests.
      * @return the request to allocate to the vehicle.
      */
-    public WaitingRequest next(Vehicle vehicle, DecisionProcessState state, List<WaitingRequest> requests) {
-        List<WaitingRequest> pool = poolFilter.filterRequests(vehicle, state, requests);
+    public Request next(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
+        List<Request> pool = poolFilter.filterRequests(vehicle, state, requests);
 
         pool.forEach(request -> request.setPriority(priority(request, state, vehicle)));
 
@@ -90,5 +90,5 @@ public abstract class RequestPolicy {
      * @param vehicle   the vehicle to be allocated to.
      * @return the priority of the candidate request.
      */
-    public abstract double priority(WaitingRequest candidate, DecisionProcessState state, Vehicle vehicle);
+    public abstract double priority(Request candidate, DecisionProcessState state, Vehicle vehicle);
 }
