@@ -88,7 +88,7 @@ public abstract class DecisionProcess {
         DecisionProcessState state = new DecisionProcessState(instance);
         PriorityQueue<DecisionProcessEvent> eventQueue = new PriorityQueue<>();
         for (Request request : instance.getRequests()) {
-            eventQueue.add(new ReactiveRequestEvent(0, request));
+            eventQueue.add(new ReactiveRequestEvent(request.getTRec(), request));
         }
         List<WaitingRequest> waitingList = new ArrayList<>();
         return new ReactiveDecisionProcess(state, eventQueue, waitingList, vehiclePolicy, requestPolicy);

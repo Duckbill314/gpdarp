@@ -145,7 +145,7 @@ public final class Instance {
                 requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax, 1));
                 line = reader.readLine();
             }
-            return new Instance(file.getName(), vehicles, stations, requests, timeHorizon, travelTimeRate,
+            return new Instance(file.getName(), vehicles, stations, requests, timeHorizon, 1000 * travelTimeRate,
                     latenessPenalty);
 
         } catch (IOException e) {

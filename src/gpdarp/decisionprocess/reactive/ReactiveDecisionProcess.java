@@ -30,7 +30,7 @@ public class ReactiveDecisionProcess extends DecisionProcess {
         state.reset();
         eventQueue.clear();
         for (Request request : state.getInstance().getRequests()) {
-            eventQueue.add(new ReactiveRequestEvent(0, request));
+            eventQueue.add(new ReactiveRequestEvent(request.getTRec(), request));
         }
         waitingList.clear();
     }
