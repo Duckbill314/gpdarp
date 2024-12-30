@@ -4,6 +4,8 @@ import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
+import gpdarp.representation.route.Route;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -63,15 +65,20 @@ public abstract class VehiclePolicy {
      *
      * @param state   the decision process state.
      * @param request the request to be served.
-     * @return the vehicle to allocate the request to.
+     * @return the allocated vehicle and corresponding optimal route.
      */
-    public Vehicle next(DecisionProcessState state, Request request) {
-        List<Vehicle> pool = poolFilter.filterVehicles(state, request);
+    public Pair<Vehicle, Route> next(DecisionProcessState state, Request request) {
+        List<Pair<Vehicle, Route>> vehiclePool = poolFilter.filterVehicles(state, request);
 
-        pool.forEach(vehicle -> vehicle.setPriority(priority(vehicle, state, request)));
+        vehiclePool.forEach(pair -> {
+            Vehicle vehicle = pair.getKey();
+            vehicle.setPriority(priority(vehicle, state, request));
+        });
 
-        return pool.stream()
-                .min((v1, v2) -> {
+        return vehiclePool.stream()
+                .min((e1, e2) -> {
+                    Vehicle v1 = e1.getKey();
+                    Vehicle v2 = e2.getKey();
                     if (Double.compare(v1.getPriority(), v2.getPriority()) == 0) {
                         return tieBreaker.breakTie(v1, v2);
                     }

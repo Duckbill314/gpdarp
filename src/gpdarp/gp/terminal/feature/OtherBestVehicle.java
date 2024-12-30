@@ -7,6 +7,8 @@ import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
+import gpdarp.representation.route.Route;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -31,12 +33,14 @@ public class OtherBestVehicle extends FeatureGPNode {
         Instance instance = state.getInstance();
         FeasiblePoolFilter poolFilter = new FeasiblePoolFilter();
 
-        List<Vehicle> pool = poolFilter.filterVehicles(state, request);
-        pool.remove(vehicle);
+        List<Pair<Vehicle, Route>> pool = poolFilter.filterVehicles(state, request);
+        pool.removeIf(e -> e.getKey() == vehicle);
 
-        return pool.stream()
+        return 0;
+
+        /*return pool.stream()
                 .map(v -> instance.calculateTravelTime(v.getCurrPos().calcDist(request.getPickup())))
                 .min(Double::compare)
-                .orElse((int) LIMIT);
+                .orElse((int) LIMIT);*/
     }
 }

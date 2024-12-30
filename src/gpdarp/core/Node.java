@@ -3,7 +3,7 @@ package gpdarp.core;
 /**
  * A Node represents a position on a 2D grid. It contains the following information:
  * - x and y co-ordinates,
- * - estimated time of arrival,
+ * - estimated time of arrival and departure,
  * - the type of node (pickup, dropoff, idle, or station),
  * - the request that the node belongs to (if it is not an idle or station node).
  *
@@ -12,35 +12,40 @@ package gpdarp.core;
 public class Node {
     private int x;
     private int y;
-    private int time;
+    private boolean visited;
+    private int arrivalTime;
+    private int departureTime;
     private NodeType type;
     private Request request;
 
-    public Node(int x, int y, int time, NodeType type, Request request) {
+    public Node(int x, int y, boolean visited, int arrivalTime, int departureTime, NodeType type, Request request) {
         this.x = x;
         this.y = y;
-        this.time = time;
+        this.visited = visited;
+        this.arrivalTime = arrivalTime;
+        this.departureTime = departureTime;
         this.type = type;
         this.request = request;
     }
 
     // Initialisation constructor
-    public Node(int x, int y) { this(x, y, 0, NodeType.IDLE, null); }
+    public Node(int x, int y) { this(x, y, false, -1, -1, NodeType.IDLE, null); }
 
     // Getters
     public int getX() { return x; }
     public int getY() { return y; }
-
-    public int getTime() { return time; }
+    public boolean isVisited() { return visited; }
+    public int getArrivalTime() { return arrivalTime; }
+    public int getDepartureTime() { return departureTime; }
     public NodeType getType() { return type; }
     public Request getRequest() { return request; }
 
     // Setters
     public void setX(int x) { this.x = x; }
     public void setY(int y) { this.y = y; }
-    public void visit() {
-    }
-    public void setTime(int time) { this.time = time; }
+    public void visit() { visited = true; }
+    public void setArrivalTime(int arrivalTime) { this.arrivalTime = arrivalTime; }
+    public void setDepartureTime(int departureTime) { this.departureTime = departureTime; }
     public void setType(NodeType type) { this.type = type; }
     public void setRequest(Request request) { this.request = request; }
 
@@ -59,6 +64,7 @@ public class Node {
         switch (this.type) {
             case PICKUP -> type = "pickup";
             case DROPOFF -> type = "dropoff";
+            case IDLE -> type = "idle";
             case STATION -> type = "station";
         }
         return String.format("%s(%d, %d)", type, x, y);
@@ -66,7 +72,7 @@ public class Node {
 
     @Override
     public Node clone() {
-        return new Node(x, y, time, type, request);
+        return new Node(x, y, visited, arrivalTime, departureTime, type, request);
     }
 
     /**
@@ -75,7 +81,7 @@ public class Node {
      * @param time the updated time.
      * @return the idle node for a certain location and time.
      */
-    public Node idleClone(int time) { return new Node(x, y, time, NodeType.IDLE, null); }
+    public Node idleClone(int time) { return new Node(x, y, visited, time, -1, NodeType.IDLE, null); }
 
     /**
      * Node types are responsible for different reactive events.

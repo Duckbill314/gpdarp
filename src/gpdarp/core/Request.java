@@ -23,6 +23,7 @@ public class Request {
     private final int tLate;
     private final int tMax;
     private final int demand;
+    private Vehicle vehicle;
     private RequestType type;
     private double priority;
 
@@ -35,6 +36,7 @@ public class Request {
         this.tLate = tLate;
         this.tMax = tMax;
         this.demand = demand;
+        this.vehicle = null;
         this.type = RequestType.REQUEST;
         this.priority = 0;
         pickup.setRequest(this);
@@ -45,8 +47,17 @@ public class Request {
 
     // Constructor for charging requests
     public Request(int time, Node pos, Node station) {
-        this(-1, time, pos, station, 0, (int) Double.POSITIVE_INFINITY, (int) Double.POSITIVE_INFINITY, 0);
+        this.id = -1;
+        this.tRec = time;
+        this.pickup = pos;
+        this.dropoff = station;
+        this.tEarly = 0;
+        this.tLate = (int) Double.POSITIVE_INFINITY;
+        this.tMax = (int) Double.POSITIVE_INFINITY;
+        this.demand = 0;
+        this.vehicle = null;
         this.type = RequestType.CHARGE;
+        this.priority = 0;
     }
 
     // Getters
@@ -58,10 +69,12 @@ public class Request {
     public int getTLate() { return tLate; }
     public int getTMax() { return tMax; }
     public int getDemand() { return demand; }
+    public Vehicle getVehicle() { return vehicle; }
     public RequestType getType() { return type; }
     public double getPriority() { return priority; }
 
     // Setters
+    public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
     public void setType(RequestType type) { this.type = type; }
     public void setPriority(double priority) { this.priority = priority; }
 
@@ -72,6 +85,23 @@ public class Request {
         REQUEST,
         CHARGE
     }
+
+    /**
+     * Calculated the estimated or actual ride time based on the times the pickup and dropoff points are visited.
+     *
+     * @return the ride time.
+     */
+    public int calcRideTime() {
+        if (pickup.getDepartureTime() == -1 || dropoff.getArrivalTime() == -1) {
+            return -1;
+        }
+        return dropoff.getArrivalTime() - pickup.getDepartureTime();
+    }
+
+    /**
+     * Once a request has been fulfilled, it should remove itself from its associated vehicle's list of requests.
+     */
+    public void finalise() { vehicle.getRequests().remove(this); }
 
     /**
      * Compare the request to another request on the basis of their id number.

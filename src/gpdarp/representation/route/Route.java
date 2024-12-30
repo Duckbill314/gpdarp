@@ -1,6 +1,7 @@
 package gpdarp.representation.route;
 
 import gpdarp.core.*;
+import gpdarp.decisionprocess.DecisionProcessState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,86 @@ public class Route {
 
     // Manipulators
     public void push(Arc arc) { arcs.add(arc); }
+    public Arc pop() {
+        if (arcs.isEmpty()) {
+            return null;
+        }
+        return arcs.removeFirst();
+    }
+
+    /**
+     * Build a route from a list of nodes by converting the node list to an arc list.
+     * Used for dynamic route recalculation.
+     *
+     * @param nodeList the list of nodes.
+     * @return the corresponding route.
+     */
+    public static Route buildFromNodeList(List<Node> nodeList) {
+        List<Arc> arcList = new ArrayList<>();
+        for (int i = 0; i < nodeList.size()-1; i++) {
+            arcList.add(new Arc(nodeList.get(i), nodeList.get(i+1)));
+        }
+        return new Route(arcList);
+    }
+
+    /**
+     * Updates the estimated arrival times for all nodes in the route.
+     * If the vehicle is moving:
+     * - the route is set to begin from the current arc's destination,
+     * - at that node's pre-established estimated arrival time,
+     * - with each arc being deterministic from the one before it,
+     * - and including serve costs and wait times explicitly.
+     * If the vehicle is stationary:
+     * - the route is set to begin from the current position,
+     * - at either the current state's time or the vehicle's next available time (whichever comes later),
+     * - and there will be an additional arc present to begin the chain,
+     * - that includes the serve cost implicitly, i.e., pending availability.
+     *
+     * @param state the state of the decision process.
+     * @param vehicle the vehicle associated with the route.
+     */
+    public void updateTimes(DecisionProcessState state, Vehicle vehicle) {
+        Instance instance = state.getInstance();
+
+        Arc arc;
+        int arrivalTime;
+        int departureTime;
+        int pickupTime;
+        int serveTime;
+        int i = 0;
+
+        if (!vehicle.isMoving()) {
+            arc = arcs.get(i);
+            Node from = arc.from();
+            Node to = arc.to();
+            departureTime = Math.max(state.getTime(), vehicle.getCurrPos().getArrivalTime());
+            from.setDepartureTime(departureTime);
+            to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));
+            i++;
+        }
+
+        while (i < arcs.size()) {
+            arc = arcs.get(i);
+            Node from = arc.from();
+            Node to = arc.to();
+
+            arrivalTime = from.getArrivalTime();
+
+            if (from.getType() == Node.NodeType.PICKUP) {
+                pickupTime = from.getRequest().getTEarly();
+                if (arrivalTime < pickupTime) {
+                    arrivalTime = pickupTime;
+                }
+            }
+
+            serveTime = vehicle.getServeTime();
+            departureTime = arrivalTime + serveTime;
+
+            from.setDepartureTime(departureTime);
+            to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));
+            i++;
+        }
+    }
 
     /**
      * The penalty is the sum of all the time that a vehicle was late to pick up a request.
@@ -40,8 +121,19 @@ public class Route {
         return arcs.stream()
                 .map(Arc::from)
                 .filter(n -> n.getType() == Node.NodeType.PICKUP)
-                .map(n -> n.getTime() - n.getRequest().getTLate())
+                .map(n -> n.getArrivalTime() - n.getRequest().getTLate())
                 .filter(t -> t > 0)
+                .reduce(0, Integer::sum);
+    }
+
+    /**
+     * Calculate the total time taken to drive along the route.
+     *
+     * @return the total time.
+     */
+    public int getTime() {
+        return arcs.stream()
+                .map(a -> a.to().getArrivalTime() - a.from().getDepartureTime())
                 .reduce(0, Integer::sum);
     }
 
@@ -78,16 +170,20 @@ public class Route {
         return clonedRoutes;
     }
 
+    public boolean isEmpty() { return arcs.isEmpty(); }
+
     @Override
     public String toString() {
-        if (arcs.isEmpty()) {
+        if (isEmpty()) {
             return "Empty route";
         }
         StringBuilder str = new StringBuilder();
+        str.append("{");
         str.append(arcs.getFirst().from());
         for (Arc arc : arcs) {
             str.append(String.format(", %s", arc.to()));
         }
+        str.append("}");
         return str.toString();
     }
 }

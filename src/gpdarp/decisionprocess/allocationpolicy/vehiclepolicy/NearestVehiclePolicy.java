@@ -1,5 +1,6 @@
 package gpdarp.decisionprocess.allocationpolicy.vehiclepolicy;
 
+import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.VehiclePolicy;
@@ -20,6 +21,13 @@ public class NearestVehiclePolicy extends VehiclePolicy {
 
     @Override
     public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
-        return candidate.getCurrPos().calcDist(request.getPickup());
+        Node pos;
+        if (!candidate.isMoving()) {
+            pos = candidate.getCurrPos();
+        }
+        else {
+            pos = candidate.getCurrArc().to();
+        }
+        return pos.calcDist(request.getPickup());
     }
 }

@@ -34,11 +34,11 @@ public class ExpectedPenalty extends FeatureGPNode {
         Node dropoff = request.getDropoff();
 
         Arc toPickup = new Arc(currPos, pickup);
-        toPickup.updateEtas(instance, vehicle);
+        //toPickup.updateTimes(instance, vehicle);
         route.push(toPickup);
 
         Arc toDropoff = new Arc(pickup, dropoff);
-        toDropoff.updateEtas(instance, vehicle);
+        //toDropoff.updateTimes(instance, vehicle);
         route.push(toDropoff);
 
         return instance.getLatenessPenalty() * route.calculatePenalty();

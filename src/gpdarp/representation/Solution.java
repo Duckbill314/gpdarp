@@ -61,7 +61,7 @@ public class Solution {
             return Double.POSITIVE_INFINITY;
         }
         return routes.stream()
-                .map(r -> r.getLength() / travelTimeRate + latenessPenalty * r.calculatePenalty())
+                .map(r -> r.getTime() + latenessPenalty * r.calculatePenalty())
                 .reduce(0.0, Double::sum);
     }
 
@@ -75,7 +75,7 @@ public class Solution {
             return Double.POSITIVE_INFINITY;
         }
         return routes.stream()
-                .map(r -> r.getLength() / travelTimeRate + latenessPenalty * r.calculatePenalty())
+                .map(r -> r.getTime() + latenessPenalty * r.calculatePenalty())
                 .max(Double::compare)
                 .orElse(0.0);
     }

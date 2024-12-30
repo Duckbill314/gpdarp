@@ -1,6 +1,8 @@
 package gpdarp.decisionprocess;
 
 import gpdarp.core.*;
+import gpdarp.representation.route.Route;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,13 +49,18 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      */
     public Vehicle vehicleAllocation(DecisionProcess decisionProcess, Request request) {
         DecisionProcessState state = decisionProcess.getState();
-        Vehicle allocation = decisionProcess.getVehiclePolicy().next(state, request);
+        Pair<Vehicle, Route> allocation = decisionProcess.getVehiclePolicy().next(state, request);
 
         if (allocation == null) {
             decisionProcess.addWaiting(request.clone());
             return null;
         }
-        return allocation;
+
+        Vehicle vehicle = allocation.getKey();
+        Route route = allocation.getValue();
+        vehicle.allocate(request);
+        vehicle.updateRoute(state, route);
+        return vehicle;
     }
 
     /**
@@ -61,8 +68,9 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param vehicle         the vehicle to which a request is to be allocated.
-     * @param waitingPoint    the point and time at which the vehicle will be idle.
-     * @return the request to allocate to the vehicle.
+     * @param waitingPoint    the point and time at which the vehicle will be after finishing its current task.
+     * @param includeCharge   whether to also consider returning to a charging station.
+     * @return the request allocation.
      */
     public Request requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint,
                                      boolean includeCharge) {
@@ -73,9 +81,22 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
         if (includeCharge) {
             Instance instance = state.getInstance();
             Node station = instance.findClosestStation(waitingPoint);
-            waitingList.add(new Request(waitingPoint.getTime(), waitingPoint, station));
+            waitingList.add(new Request(waitingPoint.getArrivalTime(), waitingPoint, station));
+        }
+        Pair<Request, Route> allocation = decisionProcess.getRequestPolicy()
+                .next(vehicle, state, waitingList);
+
+        if (allocation == null) {
+            return null;
         }
 
-        return decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
+        Request request = allocation.getKey();
+        if (request.getType() == Request.RequestType.REQUEST) {
+            Route route = allocation.getValue();
+            vehicle.allocate(request);
+            vehicle.updateRoute(state, route);
+            decisionProcess.removeWaiting(request);
+        }
+        return request;
     }
 }

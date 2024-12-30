@@ -45,7 +45,7 @@ public class DecisionProcessState {
      */
     public void updateSolution() {
         List<Route> routes = new ArrayList<>();
-        instance.getVehicles().forEach(v -> routes.add(v.getRoute()));
+        instance.getVehicles().forEach(v -> routes.add(v.getHistoricalRoute()));
         solution.setRoutes(routes);
     }
 

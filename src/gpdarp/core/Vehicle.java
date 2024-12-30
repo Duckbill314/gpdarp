@@ -1,16 +1,18 @@
 package gpdarp.core;
 
+import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.representation.route.Route;
 
 import java.util.*;
 
 /**
  * A vehicle is a defined construct with a set of important properties, including:
- * - capacity,
+ * - capacity and demand,
  * - battery charging information,
- * - service time for request pickup and dropoff,
- * - the latest known idle position (implies that the vehicle is not busy, and available to accept a request),
- * - full route history.
+ * - the latest known idle position (implies that requests are not being served),
+ * - the current arc (implies that requests are being served),
+ * - requests that have been allocated to the vehicle,
+ * - full route history and future planned route.
  * It also has a temporary priority value for the purpose of request allocation.
  *
  * @author William Huang
@@ -18,106 +20,161 @@ import java.util.*;
 public class Vehicle {
     private final int id;
     private final int capacity;
+    private int demand;
     private final double chargeMax;
     private double chargeState;
     private final double chargeFillRate;
     private final double chargeDepletionRate;
     private final int serveTime;
     private Node currPos;
-    private Route route;
+    private Arc currArc;
+    private List<Request> requests;
+    private Route historicalRoute;
+    private Route plannedRoute;
     private double priority;
 
-    public Vehicle(int id, int capacity, double chargeMax, double chargeState, double chargeFillRate,
-                   double chargeDepletionRate, int serveTime, Node currPos,
-                   Route route, double priority) {
+    public Vehicle(int id, int capacity, int demand, double chargeMax, double chargeState, double chargeFillRate,
+                   double chargeDepletionRate, int serveTime, Node currPos, Arc currArc, List<Request> requests,
+                   Route historicalRoute, Route plannedRoute, double priority) {
         this.id = id;
         this.capacity = capacity;
+        this.demand = demand;
         this.chargeMax = chargeMax;
         this.chargeState = chargeState;
         this.chargeFillRate = chargeFillRate;
         this.chargeDepletionRate = chargeDepletionRate;
         this.serveTime = serveTime;
         this.currPos = currPos;
-        this.route = route;
+        this.currArc = currArc;
+        this.requests = requests;
+        this.historicalRoute = historicalRoute;
+        this.plannedRoute = plannedRoute;
         this.priority = priority;
+    }
+
+    // Initialisation constructor
+    public Vehicle(int id, int capacity, double chargeMax, double chargeState, double chargeFillRate,
+                   double chargeDepletionRate, int serveTime, Node currPos) {
+        this(id, capacity, 0, chargeMax, chargeState, chargeFillRate, chargeDepletionRate, serveTime,
+                currPos, null, new ArrayList<Request>(), new Route(), new Route(), 0.0);
     }
 
     // Getters
     public int getId() { return id; }
     public int getCapacity() { return capacity; }
+    public int getDemand() { return demand; }
     public double getChargeMax() { return chargeMax; }
     public double getChargeState() { return chargeState; }
     public double getChargeFillRate() { return chargeFillRate; }
     public double getChargeDepletionRate() { return chargeDepletionRate; }
     public int getServeTime() { return serveTime; }
     public Node getCurrPos() { return currPos; }
-    public Route getRoute() { return route; }
+    public Arc getCurrArc() { return this.currArc; }
+    public List<Request> getRequests() { return requests; }
+    public Route getHistoricalRoute() { return historicalRoute; }
+    public Route getPlannedRoute() { return plannedRoute; }
     public double getPriority() { return priority; }
-    public boolean isBusy() { return currPos == null; }
+    public int getRemainingCapacity() { return capacity - demand; }
+    public boolean isMoving() { return (currArc != null); }
 
     // Setters
+    public void setDemand(int demand) { this.demand = demand; }
     public void setChargeState(double chargeState) { this.chargeState = chargeState; }
     public void setCurrPos(Node currPos) { this.currPos = currPos; }
-    public void setRoute(Route route) { this.route = route; }
+    public void setCurrArc(Arc currArc) { this.currArc = currArc; }
+    public void setRequests(List<Request> requests) { this.requests = requests; }
+    public void setHistoricalRoute(Route historicalRoute) { this.historicalRoute = historicalRoute; }
+    public void setPlannedRoute(Route plannedRoute) { this.plannedRoute = plannedRoute; }
     public void setPriority(double priority) { this.priority = priority; }
+
+    /**
+     * Helper method for ensuring the relationship between a request and its assigned vehicle is
+     * established properly.
+     *
+     * @param request the request to allocate to this vehicle.
+     */
+    public void allocate(Request request) {
+        request.setVehicle(this);
+        requests.add(request);
+    }
+
+    /**
+     * Helper method for ensuring that the vehicle's route and the ETA of nodes along the route are
+     * properly updated.
+     *
+     * @param state the current state.
+     * @param plannedRoute the optimal route.
+     */
+    public void updateRoute(DecisionProcessState state, Route plannedRoute) {
+        plannedRoute.updateTimes(state, this);
+        setPlannedRoute(plannedRoute);
+    }
+
+    /**
+     * Helper method that updates a vehicle's current arc with the next arc in its planned route.
+     *
+     * @return the next destination node (for the purpose of invoking a new event).
+     */
+    public Node updateArcFromPlannedRoute() {
+        Arc currArc = getPlannedRoute().pop();
+        setCurrArc(currArc);
+        if (currArc == null) {
+            return null;
+        }
+        return currArc.to();
+    }
+
+    /**
+     * Helper method for handling pickup events.
+     *
+     * @param node the node at which the event occurs.
+     */
+    public void pickup(Node node) {
+        node.visit();
+        demand += node.getRequest().getDemand();
+        deplete(currArc.length());
+        historicalRoute.push(currArc);
+    }
+
+    /**
+     * Helper method for handling dropoff events.
+     *
+     * @param node the node at which the event occurs.
+     */
+    public void dropoff(Node node) {
+        node.visit();
+        node.getRequest().finalise();
+        demand -= node.getRequest().getDemand();
+        deplete(currArc.length());
+        historicalRoute.push(currArc);
+    }
 
     /**
      * Helper method for handling charging events.
      * Because a vehicle cannot serve requests while it is on the way to a charging station or while it is
-     * charging, the time taken for each can be summed to calculate the next available time,
-     * which occurs after the vehicle has finished charging.
+     * charging, the "dead" time can be accumulated to calculate the next available time.
+     * A vehicle can still accept requests during the "dead" time, but route calculation will begin no earlier than
+     * the next available time.
      *
      * @param instance the instance of the problem.
      * @param request the selected charging "request".
-     * @return the point of the next available time and position.
      */
-    public Node charge(Instance instance, Request request) {
-        setCurrPos(null);
-
+    public void charge(Instance instance, Request request) {
         Node startPoint = request.getPickup();
         Station station = (Station) request.getDropoff();
-
         Arc toStation = new Arc(startPoint, station);
-        toStation.updateEtas(instance, this);
-        deplete(toStation.length());
-        route.push(toStation);
+
+        int distanceToStation = toStation.length();
+        int travelTime = instance.calculateTravelTime(distanceToStation);
+        deplete(distanceToStation);
+        historicalRoute.push(toStation);
 
         int chargeTime = estimateFillTime();
         fill(chargeTime);
 
-        int nextIdleTime = station.getTime() + chargeTime;
-        return station.idleClone(nextIdleTime);
-    }
-
-    /**
-     * Helper method for handling request service events.
-     * Because a vehicle cannot accept a new request while it is serving its current one, the time taken for each of
-     * pickup and dropoff can be summed to calculate the next available time,
-     * which occurs after the vehicle has finished servicing the dropoff.
-     *
-     * @param instance the instance of the problem.
-     * @param request the selected charging "request".
-     * @param startPoint the idle point that the vehicle begins the service at.
-     * @return the point of the next available time and position.
-     */
-    public Node serveRequest(Instance instance, Request request, Node startPoint) {
-        setCurrPos(null);
-
-        Node pickup = request.getPickup();
-        Node dropoff = request.getDropoff();
-
-        Arc toPickup = new Arc(startPoint, pickup);
-        toPickup.updateEtas(instance, this);
-        deplete(toPickup.length());
-        route.push(toPickup);
-
-        Arc toDropoff = new Arc(pickup, dropoff);
-        toDropoff.updateEtas(instance, this);
-        deplete(toDropoff.length());
-        route.push(toDropoff);
-
-        int nextIdleTime = dropoff.getTime() + getServeTime();
-        return dropoff.idleClone(nextIdleTime);
+        int nextAvailableTime = currPos.getArrivalTime() + travelTime + chargeTime;
+        station.setArrivalTime(nextAvailableTime);
+        setCurrPos(station);
     }
 
     /**
@@ -171,8 +228,11 @@ public class Vehicle {
 
     @Override
     public Vehicle clone() {
-        return new Vehicle(id, capacity, chargeMax, chargeState, chargeFillRate, chargeDepletionRate,
-                serveTime, currPos.clone(), route.clone(), priority);
+        Node clonedPos = currPos != null ? currPos.clone() : null;
+        Arc clonedArc = currArc != null ? currArc.clone() : null;
+        return new Vehicle(id, capacity, demand, chargeMax, chargeState, chargeFillRate, chargeDepletionRate,
+                serveTime, clonedPos, clonedArc, Request.listClone(requests),
+                historicalRoute.clone(), plannedRoute.clone(), priority);
     }
 
     /**

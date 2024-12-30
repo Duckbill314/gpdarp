@@ -5,7 +5,7 @@ import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.TieBreaker;
 
 /**
- * A simple tiebreaker between two vehicles uses the natural comparator.
+ * A simple tiebreaker between two candidates uses the natural comparator.
  *
  * @author gphhucarp, William Huang
  */

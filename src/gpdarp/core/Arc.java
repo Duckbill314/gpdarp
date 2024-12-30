@@ -19,7 +19,7 @@ public record Arc(Node from, Node to, int length) implements Comparable<Arc> {
 
     @Override
     public String toString() {
-        return String.format("(%s, %s): sc = %d", from, to, length);
+        return String.format("(%s, %s): length = %d", from, to, length);
     }
 
     @Override
@@ -27,34 +27,6 @@ public record Arc(Node from, Node to, int length) implements Comparable<Arc> {
 
     @Override
     public Arc clone() { return new Arc(from.clone(), to.clone()); }
-
-    /**
-     * Updates the estimated arrival times for the nodes in the arc.
-     *
-     * @param instance the instance of the problem.
-     * @param vehicle the vehicle associated with the route.
-     */
-    public void updateEtas(Instance instance, Vehicle vehicle) {
-        int startTime;
-        int pickupTime;
-        int serveTime;
-
-        switch (from.getType()) {
-            case IDLE -> {
-                startTime = from.getTime();
-                to.setTime(startTime + instance.calculateTravelTime(length));
-            }
-            case PICKUP -> {
-                startTime = from.getTime();
-                pickupTime = from.getRequest().getTEarly();
-                if (startTime < pickupTime) {
-                    startTime = pickupTime;
-                }
-                serveTime = vehicle.getServeTime();
-                to.setTime(startTime + serveTime + instance.calculateTravelTime(length));
-            }
-        }
-    }
 
     /**
      * Utility method for creating deep clones of ArrayLists of Arcs.

@@ -123,7 +123,7 @@ public final class Instance {
             // Aggregating vehicle information to construct the objects
             for (int i = 0; i < numVehicles; i++) {
                 vehicles.add(new Vehicle(i + 1, capacity, chargeMax, chargeStates.get(i), chargeFillRate,
-                        chargeDepletionRate, serveTime, vehicleNodes.get(i), new Route(), 0.0));
+                        chargeDepletionRate, serveTime, vehicleNodes.get(i)));
             }
 
             reader.readLine(); // line 13: "Requests: id t_arr u_x u_y v_x v_y t_start t_end d_max"
@@ -145,7 +145,8 @@ public final class Instance {
                 requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax, 1));
                 line = reader.readLine();
             }
-            return new Instance(file.getName(), vehicles, stations, requests, timeHorizon, 1000 * travelTimeRate,
+            // TODO: distance travel rate
+            return new Instance(file.getName(), vehicles, stations, requests, timeHorizon, 10000 * travelTimeRate,
                     latenessPenalty);
 
         } catch (IOException e) {
