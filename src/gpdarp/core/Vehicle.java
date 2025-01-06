@@ -166,6 +166,7 @@ public class Vehicle {
 
         int distanceToStation = toStation.length();
         int travelTime = instance.calculateTravelTime(distanceToStation);
+        station.setArrivalTime(startPoint.getDepartureTime() + travelTime);
         deplete(distanceToStation);
         historicalRoute.push(toStation);
 

@@ -84,8 +84,8 @@ public class Node {
      * @param time the updated time.
      * @return the idle node for a certain location and time.
      */
-    public Node idleClone(int time) {
-        return new Node(x, y, true, time, -1, NodeType.IDLE, null);
+    public Node idleClone(int arrivalTime, int departureTime) {
+        return new Node(x, y, true, arrivalTime, departureTime, NodeType.IDLE, null);
     }
 
     /**

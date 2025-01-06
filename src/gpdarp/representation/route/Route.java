@@ -116,6 +116,9 @@ public class Route {
             arc = arcs.get(i);
             Node from = arc.from();
             Node to = arc.to();
+            if (vehicle.getCurrPos().getArrivalTime() > state.getTime()) {
+                System.out.println(vehicle.getCurrPos());
+            }
             departureTime = Math.max(state.getTime(), vehicle.getCurrPos().getArrivalTime());
             from.setDepartureTime(departureTime);
             to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));

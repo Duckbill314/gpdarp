@@ -28,7 +28,8 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        Node waitingPoint = node.idleClone(time + vehicle.getServeTime());
+        int waitingPointTime = time + vehicle.getServeTime();
+        Node waitingPoint = node.idleClone(waitingPointTime, waitingPointTime);
 
         boolean includeStations = vehicle.getPlannedRoute().isEmpty();
         Request request = requestAllocation(decisionProcess, vehicle, waitingPoint, includeStations);
