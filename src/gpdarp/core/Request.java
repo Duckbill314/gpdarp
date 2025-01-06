@@ -17,8 +17,8 @@ import java.util.List;
 public class Request {
     private final int id;
     private final int tRec;
-    private final Node pickup;
-    private final Node dropoff;
+    private Node pickup;
+    private Node dropoff;
     private final int tEarly;
     private final int tLate;
     private final int tMax;
@@ -74,6 +74,8 @@ public class Request {
     public double getPriority() { return priority; }
 
     // Setters
+    public void setPickup(Node pickup) { this.pickup = pickup; }
+    public void setDropoff(Node dropoff) { this.dropoff = dropoff; }
     public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
     public void setType(RequestType type) { this.type = type; }
     public void setPriority(double priority) { this.priority = priority; }
@@ -115,7 +117,12 @@ public class Request {
 
     @Override
     public String toString() {
-        return String.format("Request %d from %s to %s, received at time %d", id, pickup, dropoff, tRec);
+        return String.format("Request %d from %s to %s, received at time %d\n", id, pickup, dropoff, tRec) +
+                "------------------------------------------------------------------------------------------\n" +
+                String.format("Pickup time window: [%d, %d]\n", tEarly, tLate) +
+                String.format("Pickup and dropoff arrival times: [%d, %d]\n",
+                        pickup.getArrivalTime(), dropoff.getArrivalTime()) +
+                String.format("Time taken/maximum allowable time: %d/%d\n", calcRideTime(), tMax);
     }
 
     @Override

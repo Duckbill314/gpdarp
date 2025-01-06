@@ -77,6 +77,7 @@ public abstract class RequestPolicy {
         });
 
         return requestPool.stream()
+                .filter(e -> e.getKey().getPriority() <= 0)
                 .min((e1, e2) -> {
                     Request r1 = e1.getKey();
                     Request r2 = e2.getKey();

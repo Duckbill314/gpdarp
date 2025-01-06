@@ -60,9 +60,21 @@ public class Solution {
         if (!feasible) {
             return Double.POSITIVE_INFINITY;
         }
-        return routes.stream()
-                .map(r -> r.getTime() + latenessPenalty * r.calculatePenalty())
+
+        double time = routes.stream()
+                .map(r -> (double) r.getTime())
                 .reduce(0.0, Double::sum);
+
+        double penalty = routes.stream()
+                .map(r -> latenessPenalty * r.calculatePenalty())
+                .reduce(0.0, Double::sum);
+
+        double cost = time + penalty;
+
+        System.out.printf("Total time/penalty: %.1f/%.1f%n", time, penalty);
+        System.out.printf("Total cost: %.1f%n", cost);
+
+        return cost;
     }
 
     /**
@@ -74,10 +86,27 @@ public class Solution {
         if (!feasible) {
             return Double.POSITIVE_INFINITY;
         }
-        return routes.stream()
-                .map(r -> r.getTime() + latenessPenalty * r.calculatePenalty())
-                .max(Double::compare)
-                .orElse(0.0);
+
+        Route route = routes.stream()
+                .max((r1, r2) -> {
+                    double cost1 = r1.getTime() + latenessPenalty * r1.calculatePenalty();
+                    double cost2 = r2.getTime() + latenessPenalty * r2.calculatePenalty();
+                    return Double.compare(cost1, cost2);
+                })
+                .orElse(null);
+
+        if (route == null) {
+            return Double.POSITIVE_INFINITY;
+        }
+
+        double time = route.getTime();
+        double penalty = latenessPenalty * route.calculatePenalty();
+        double cost = time + penalty;
+
+        System.out.printf("Highest cost route's time/penalty: %.1f/%.1f%n", time, penalty);
+        System.out.printf("Highest cost route's cost: %.1f%n", cost);
+
+        return cost;
     }
 
     /**

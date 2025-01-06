@@ -76,6 +76,7 @@ public abstract class VehiclePolicy {
         });
 
         return vehiclePool.stream()
+                .filter(e -> e.getKey().getPriority() <= 0)
                 .min((e1, e2) -> {
                     Vehicle v1 = e1.getKey();
                     Vehicle v2 = e2.getKey();

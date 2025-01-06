@@ -3,6 +3,7 @@ package gpdarp.decisionprocess.poolfilter;
 import gpdarp.core.*;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.PoolFilter;
+import gpdarp.representation.route.EphemeralRoute;
 import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -92,6 +93,8 @@ public class FeasiblePoolFilter extends PoolFilter {
      * @return the route with the lowest cost.
      */
     public Route recalculate(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
+        List<Request> originalRequests = Request.listClone(requests);
+
         List<List<Node>> candidates = new ArrayList<>();
         recursiveAdd(candidates, new ArrayList<Node>(), requests);
 
@@ -103,14 +106,18 @@ public class FeasiblePoolFilter extends PoolFilter {
         }
 
         List<Route> routes = new ArrayList<>();
-        candidates.forEach(c -> {
-            Route route = Route.buildFromNodeList(c);
-            route.updateTimes(state, vehicle);
-            if (!timeConstraintViolation(requests) && !demandConstraintViolation(vehicle, route) &&
-                    !chargeConstraintViolation(state.getInstance(), vehicle, route)) {
+
+        candidates.forEach(candidate -> {
+            Route route = Route.buildFromNodeList(candidate, originalRequests);
+            EphemeralRoute ephemeralRoute = route.getEphemeralRoute();
+            ephemeralRoute.updateTimes(state, vehicle);
+            if (!timeConstraintViolation(ephemeralRoute.getRequestClones()) &&
+                    !demandConstraintViolation(vehicle, ephemeralRoute) &&
+                    !chargeConstraintViolation(state.getInstance(), vehicle, ephemeralRoute)) {
                 routes.add(route);
             }
         });
+
         return routes.stream()
                 .min(Comparator.comparing(Route::getTime))
                 .orElse(null);

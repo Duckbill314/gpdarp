@@ -14,6 +14,9 @@ import gpdarp.decisionprocess.DecisionProcessState;
  * @author gphhucarp, William Huang
  */
 public class NearestVehiclePolicy extends VehiclePolicy {
+    // A threshold is required to allow for no option to be selected.
+    private static final double MAX_RANGE = Math.ceil(Math.sqrt(Math.pow(2000, 2) + Math.pow(2000, 2)));
+
     public NearestVehiclePolicy() {
         super();
         name = "\"NearestVehiclePolicy\"";
@@ -28,6 +31,7 @@ public class NearestVehiclePolicy extends VehiclePolicy {
         else {
             pos = candidate.getCurrArc().to();
         }
-        return pos.calcDist(request.getPickup());
+        double priority = pos.calcDist(request.getPickup());
+        return priority - MAX_RANGE/state.getInstance().getNumVehicles();
     }
 }

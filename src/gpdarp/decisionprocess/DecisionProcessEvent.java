@@ -52,7 +52,7 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
         Pair<Vehicle, Route> allocation = decisionProcess.getVehiclePolicy().next(state, request);
 
         if (allocation == null) {
-            decisionProcess.addWaiting(request.clone());
+            decisionProcess.addWaiting(request);
             return null;
         }
 

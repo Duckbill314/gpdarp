@@ -1,5 +1,6 @@
 package gpdarp.demo;
 
+import gpdarp.core.Request;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
@@ -41,11 +42,13 @@ public class ReactiveDecisionProcessDemo {
         long start = Timer.getCpuTime();
         rdp.run();
         long end = Timer.getCpuTime();
-        double duration = (end - start) / 1000000;
+        double duration = (double) (end - start) / 1000000;
 
         System.out.println(rdp.getState().getSolution().toString());
-        System.out.println("Cost:");
-        System.out.println(rdp.getState().getSolution().totalCost());
+        for (Request request : rdp.getState().getInstance().getRequests()) {
+            System.out.println(request);
+        }
+        rdp.getState().getSolution().totalCost();
         System.out.println("elapsed " + duration + " ms. \n");
 
         // rerun the decision process for a number of times.
@@ -58,11 +61,13 @@ public class ReactiveDecisionProcessDemo {
             start = Timer.getCpuTime();
             rdp.run();
             end = Timer.getCpuTime();
-            duration = (end - start) / 1000000;
+            duration = (double) (end - start) / 1000000;
 
             System.out.println(rdp.getState().getSolution().toString());
-            System.out.println("Cost:");
-            System.out.println(rdp.getState().getSolution().totalCost());
+            for (Request request : rdp.getState().getInstance().getRequests()) {
+                System.out.println(request);
+            }
+            rdp.getState().getSolution().totalCost();
             System.out.println("elapsed " + duration + " ms. \n");
         }
 

@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class Route {
     private List<Arc> arcs;
+    private EphemeralRoute ephemeralRoute;
 
     public Route(List<Arc> arcs) { this.arcs = arcs; }
 
@@ -23,11 +24,13 @@ public class Route {
 
     // Getters
     public List<Arc> getArcs() { return arcs; }
+    public EphemeralRoute getEphemeralRoute() { return ephemeralRoute; }
     public Node getStartpoint() { return arcs.getFirst().from(); }
     public Node getEndpoint() { return arcs.getLast().to(); }
 
     // Setters
     public void setArcs(List<Arc> arcs) { this.arcs = arcs; }
+    public void setEphemeralRoute(EphemeralRoute ephemeralRoute) { this.ephemeralRoute = ephemeralRoute; }
 
     // Manipulators
     public void push(Arc arc) { arcs.add(arc); }
@@ -42,15 +45,45 @@ public class Route {
      * Build a route from a list of nodes by converting the node list to an arc list.
      * Used for dynamic route recalculation.
      *
-     * @param nodeList the list of nodes.
+     * @param nodes the list of nodes.
+     * @param requests a list of the requests associated with the node list.
      * @return the corresponding route.
      */
-    public static Route buildFromNodeList(List<Node> nodeList) {
-        List<Arc> arcList = new ArrayList<>();
-        for (int i = 0; i < nodeList.size()-1; i++) {
-            arcList.add(new Arc(nodeList.get(i), nodeList.get(i+1)));
+    public static Route buildFromNodeList(List<Node> nodes, List<Request> requests) {
+        List<Node> clonedNodes = Node.listClone(nodes);
+        List<Request> clonedRequests = Request.listClone(requests);
+
+        clonedNodes.stream()
+                .filter(node -> node.getRequest() != null)
+                .forEach(node -> {
+                    Request clonedRequest = clonedRequests.stream()
+                            .filter(r -> r.getId() == node.getRequest().getId())
+                            .findFirst()
+                            .orElse(null);
+
+                    if (clonedRequest != null) {
+                        node.setRequest(clonedRequest);
+                        switch (node.getType()) {
+                            case PICKUP -> clonedRequest.setPickup(node);
+
+                            case DROPOFF -> clonedRequest.setDropoff(node);
+                        }
+                    }
+                });
+
+        List<Arc> arcs = new ArrayList<>();
+        List<Arc> clonedArcs = new ArrayList<>();
+
+        for (int i = 0; i < nodes.size()-1; i++) {
+            arcs.add(new Arc(nodes.get(i), nodes.get(i+1)));
+            clonedArcs.add(new Arc(clonedNodes.get(i), clonedNodes.get(i+1)));
         }
-        return new Route(arcList);
+
+        Route route = new Route(arcs);
+        EphemeralRoute ephemeralClone = new EphemeralRoute(clonedArcs, clonedRequests);
+        route.setEphemeralRoute(ephemeralClone);
+
+        return route;
     }
 
     /**

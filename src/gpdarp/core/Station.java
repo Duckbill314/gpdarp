@@ -15,20 +15,6 @@ public class Station extends Node {
         setType(NodeType.STATION);
     }
 
-    /**
-     * Utility method for creating deep clones of ArrayLists of Stations.
-     *
-     * @param stations the list of stations to be cloned.
-     * @return the cloned list.
-     */
-    public static List<Station> listClone(List<Station> stations) {
-        List<Station> clonedStations = new ArrayList<>();
-        for (Station station : stations) {
-            clonedStations.add((Station) station.clone());
-        }
-        return clonedStations;
-    }
-
     @Override
     public Station clone() { return new Station(getX(), getY()); }
 }

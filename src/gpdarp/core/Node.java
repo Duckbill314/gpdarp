@@ -1,5 +1,8 @@
 package gpdarp.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A Node represents a position on a 2D grid. It contains the following information:
  * - x and y co-ordinates,
@@ -81,7 +84,9 @@ public class Node {
      * @param time the updated time.
      * @return the idle node for a certain location and time.
      */
-    public Node idleClone(int time) { return new Node(x, y, visited, time, -1, NodeType.IDLE, null); }
+    public Node idleClone(int time) {
+        return new Node(x, y, true, time, -1, NodeType.IDLE, null);
+    }
 
     /**
      * Node types are responsible for different reactive events.
@@ -91,5 +96,19 @@ public class Node {
         DROPOFF,
         IDLE,
         STATION
+    }
+
+    /**
+     * Utility method for creating deep clones of ArrayLists of Nodes.
+     *
+     * @param nodes the list of nodes to be cloned.
+     * @return the cloned list.
+     */
+    public static <T extends Node> List<T> listClone(List<T> nodes) {
+        List<T> clonedNodes = new ArrayList<>();
+        for (T node : nodes) {
+            clonedNodes.add((T) node.clone());
+        }
+        return clonedNodes;
     }
 }

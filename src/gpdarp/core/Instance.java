@@ -186,7 +186,7 @@ public final class Instance {
         Instance clone = new Instance(
                 name,
                 Vehicle.listClone(vehicles),
-                Station.listClone(stations),
+                Node.listClone(stations),
                 Request.listClone(requests),
                 timeHorizon,
                 travelTimeRate,
@@ -200,7 +200,7 @@ public final class Instance {
      */
     public void reset() {
         this.vehicles = Vehicle.listClone(originalCopy.vehicles);
-        this.stations = Station.listClone(originalCopy.stations);
+        this.stations = Node.listClone(originalCopy.stations);
         this.requests = Request.listClone(originalCopy.requests);
         this.timeHorizon = originalCopy.timeHorizon;
         this.travelTimeRate = originalCopy.travelTimeRate;
