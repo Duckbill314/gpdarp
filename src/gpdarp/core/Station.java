@@ -1,8 +1,5 @@
 package gpdarp.core;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The only circumstance in which a position is fixed and reused is if it is the position of a recharging station.
  * This class emphasises the importance of these positions, giving a point of reference for charging tasks.

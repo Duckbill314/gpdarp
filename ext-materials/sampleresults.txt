@@ -11,153 +11,453 @@ ReactiveRequestEvent at time 110
 ReactiveRequestEvent at time 136
 ReactiveRequestEvent at time 150
 ReactiveDropoffEvent at time 181
+ReactivePickupEvent at time 193
 ReactiveDropoffEvent at time 221
-ReactivePickupEvent at time 234
+ReactivePickupEvent at time 228
 ReactiveDropoffEvent at time 256
 ReactiveRequestEvent at time 266
-ReactivePickupEvent at time 270
-ReactivePickupEvent at time 272
+ReactiveDropoffEvent at time 268
+ReactivePickupEvent at time 273
 ReactiveRequestEvent at time 276
-ReactivePickupEvent at time 278
-ReactiveDropoffEvent at time 282
-ReactiveDropoffEvent at time 299
-ReactiveDropoffEvent at time 302
+ReactivePickupEvent at time 283
+ReactivePickupEvent at time 284
+ReactiveDropoffEvent at time 290
 ReactiveRequestEvent at time 304
+ReactiveDropoffEvent at time 304
+ReactiveDropoffEvent at time 306
 ReactiveRequestEvent at time 306
 ReactivePickupEvent at time 318
 ReactiveRequestEvent at time 325
+ReactivePickupEvent at time 326
+ReactiveDropoffEvent at time 329
+ReactivePickupEvent at time 341
 ReactiveRequestEvent at time 343
+ReactiveDropoffEvent at time 350
+ReactivePickupEvent at time 360
 ReactiveRequestEvent at time 377
-ReactiveChargeEvent at time 393
-ReactiveDropoffEvent at time 393
-ReactivePickupEvent at time 397
 ReactiveRequestEvent at time 401
 ReactiveRequestEvent at time 406
 ReactiveRequestEvent at time 406
+ReactiveDropoffEvent at time 412
+ReactivePickupEvent at time 417
+ReactiveDropoffEvent at time 430
 ReactiveRequestEvent at time 439
-ReactivePickupEvent at time 454
-ReactivePickupEvent at time 461
-ReactiveDropoffEvent at time 476
+ReactivePickupEvent at time 439
+ReactiveDropoffEvent at time 479
 ReactiveRequestEvent at time 480
-ReactiveDropoffEvent at time 484
-ReactivePickupEvent at time 489
-ReactivePickupEvent at time 494
-ReactiveDropoffEvent at time 502
+ReactivePickupEvent at time 488
 ReactiveRequestEvent at time 508
-ReactiveDropoffEvent at time 509
-ReactivePickupEvent at time 520
+ReactiveDropoffEvent at time 526
 ReactiveRequestEvent at time 531
 ReactiveRequestEvent at time 541
-ReactivePickupEvent at time 549
-ReactiveDropoffEvent at time 564
-ReactiveDropoffEvent at time 571
-ReactivePickupEvent at time 607
+ReactivePickupEvent at time 547
+ReactiveDropoffEvent at time 596
+ReactivePickupEvent at time 603
+ReactivePickupEvent at time 612
 ReactiveRequestEvent at time 614
-ReactiveDropoffEvent at time 641
+ReactiveDropoffEvent at time 616
+ReactiveDropoffEvent at time 625
+ReactivePickupEvent at time 632
+ReactiveDropoffEvent at time 640
+ReactivePickupEvent at time 642
+ReactivePickupEvent at time 653
 ReactiveRequestEvent at time 656
-ReactiveDropoffEvent at time 668
-ReactivePickupEvent at time 670
-ReactivePickupEvent at time 682
-ReactiveDropoffEvent at time 691
-ReactivePickupEvent at time 693
-ReactivePickupEvent at time 703
-ReactiveDropoffEvent at time 706
-ReactiveDropoffEvent at time 714
-ReactivePickupEvent at time 716
-ReactiveDropoffEvent at time 720
-ReactivePickupEvent at time 737
-ReactiveDropoffEvent at time 751
-ReactivePickupEvent at time 766
+ReactiveDropoffEvent at time 672
+ReactiveDropoffEvent at time 676
+ReactiveDropoffEvent at time 687
+ReactivePickupEvent at time 694
+ReactivePickupEvent at time 704
+ReactiveDropoffEvent at time 718
+ReactiveDropoffEvent at time 725
+ReactivePickupEvent at time 730
+ReactiveDropoffEvent at time 731
 ReactiveRequestEvent at time 768
-ReactiveDropoffEvent at time 768
 ReactiveRequestEvent at time 772
-ReactiveDropoffEvent at time 783
 ReactiveRequestEvent at time 801
 ReactiveRequestEvent at time 814
 ReactiveRequestEvent at time 819
 ReactiveRequestEvent at time 826
-ReactivePickupEvent at time 841
-ReactiveDropoffEvent at time 848
-ReactivePickupEvent at time 863
 ReactiveRequestEvent at time 864
 ReactiveRequestEvent at time 891
-ReactiveDropoffEvent at time 895
-ReactivePickupEvent at time 908
 ReactiveRequestEvent at time 962
+ReactiveChargeEvent at time 980
+ReactivePickupEvent at time 985
+ReactivePickupEvent at time 993
+ReactiveDropoffEvent at time 997
 ReactiveRequestEvent at time 998
-ReactiveDropoffEvent at time 1015
-ReactivePickupEvent at time 1026
+ReactivePickupEvent at time 1003
+ReactiveDropoffEvent at time 1012
+ReactivePickupEvent at time 1025
+ReactivePickupEvent at time 1029
 ReactiveRequestEvent at time 1031
-ReactiveDropoffEvent at time 1037
-ReactivePickupEvent at time 1042
-ReactiveDropoffEvent at time 1052
-ReactivePickupEvent at time 1058
+ReactiveDropoffEvent at time 1033
+ReactiveChargeEvent at time 1036
+ReactiveDropoffEvent at time 1042
+ReactivePickupEvent at time 1048
+ReactiveDropoffEvent at time 1054
+ReactivePickupEvent at time 1057
+ReactiveDropoffEvent at time 1067
+ReactiveDropoffEvent at time 1072
 ReactiveRequestEvent at time 1073
-ReactiveDropoffEvent at time 1073
 ReactiveRequestEvent at time 1074
-ReactiveChargeEvent at time 1075
+ReactivePickupEvent at time 1075
 ReactiveRequestEvent at time 1082
-ReactivePickupEvent at time 1094
-ReactivePickupEvent at time 1102
+ReactivePickupEvent at time 1083
+ReactivePickupEvent at time 1088
+ReactiveDropoffEvent at time 1089
+ReactiveDropoffEvent at time 1099
 ReactiveRequestEvent at time 1103
-ReactivePickupEvent at time 1105
-ReactiveDropoffEvent at time 1106
-ReactivePickupEvent at time 1112
-ReactiveDropoffEvent at time 1121
-ReactiveDropoffEvent at time 1137
-ReactiveDropoffEvent at time 1138
-ReactivePickupEvent at time 1141
-ReactivePickupEvent at time 1143
-ReactiveDropoffEvent at time 1146
+ReactivePickupEvent at time 1103
+ReactiveDropoffEvent at time 1112
+ReactiveDropoffEvent at time 1122
+ReactivePickupEvent at time 1128
+ReactivePickupEvent at time 1128
 ReactiveRequestEvent at time 1158
-ReactiveDropoffEvent at time 1170
-ReactivePickupEvent at time 1180
+ReactiveDropoffEvent at time 1183
+ReactivePickupEvent at time 1188
 ReactiveDropoffEvent at time 1206
+ReactivePickupEvent at time 1219
 ReactiveRequestEvent at time 1221
-ReactivePickupEvent at time 1227
+ReactivePickupEvent at time 1231
 ReactiveRequestEvent at time 1234
 ReactiveRequestEvent at time 1241
-ReactiveDropoffEvent at time 1242
 ReactiveRequestEvent at time 1244
-ReactivePickupEvent at time 1262
+ReactiveDropoffEvent at time 1244
+ReactiveDropoffEvent at time 1257
+ReactivePickupEvent at time 1270
 ReactiveRequestEvent at time 1276
-ReactiveDropoffEvent at time 1278
-ReactivePickupEvent at time 1282
 ReactiveRequestEvent at time 1315
 ReactiveRequestEvent at time 1321
-ReactiveDropoffEvent at time 1326
+ReactiveDropoffEvent at time 1323
 ReactiveRequestEvent at time 1330
-ReactivePickupEvent at time 1343
-ReactiveDropoffEvent at time 1356
-ReactivePickupEvent at time 1365
 ReactiveRequestEvent at time 1388
-ReactiveDropoffEvent at time 1392
-ReactivePickupEvent at time 1398
-ReactivePickupEvent at time 1405
-ReactivePickupEvent at time 1420
-ReactiveDropoffEvent at time 1428
-ReactiveDropoffEvent at time 1434
-ReactiveDropoffEvent at time 1442
-ReactiveChargeEvent at time 1452
-ReactivePickupEvent at time 1453
-ReactivePickupEvent at time 1463
-ReactivePickupEvent at time 1465
-ReactiveDropoffEvent at time 1467
-ReactiveDropoffEvent at time 1472
-ReactiveDropoffEvent at time 1482
-ReactivePickupEvent at time 1497
-ReactiveDropoffEvent at time 1506
+ReactivePickupEvent at time 1433
+ReactiveDropoffEvent at time 1441
+ReactiveDropoffEvent at time 1457
+ReactivePickupEvent at time 1461
+ReactivePickupEvent at time 1468
+ReactiveDropoffEvent at time 1476
+ReactiveDropoffEvent at time 1491
+ReactiveChargeEvent at time 1507
 ReactivePickupEvent at time 1509
-ReactiveDropoffEvent at time 1526
-ReactivePickupEvent at time 1531
-ReactiveDropoffEvent at time 1543
-ReactiveChargeEvent at time 1643
-ReactiveChargeEvent at time 1768
+ReactivePickupEvent at time 1515
+ReactivePickupEvent at time 1520
+ReactiveDropoffEvent at time 1522
+ReactivePickupEvent at time 1525
+ReactiveDropoffEvent at time 1529
+ReactiveChargeEvent at time 35
+ReactiveDropoffEvent at time 1535
+ReactivePickupEvent at time 1539
+ReactivePickupEvent at time 1550
+ReactiveDropoffEvent at time 1555
+ReactiveDropoffEvent at time 1560
+ReactiveDropoffEvent at time 1575
+ReactiveChargeEvent at time 1882
+Request 1 from pickup(236, -836) to dropoff(607, 835), received at time 6
+------------------------------------------------------------------------------------------
+Pickup time window: [163, 178]
+Pickup and dropoff arrival times: [11, 181]
+Time taken/maximum allowable time: 18/30
+
+Request 2 from pickup(-768, 662) to dropoff(-256, 241), received at time 6
+------------------------------------------------------------------------------------------
+Pickup time window: [55, 70]
+Pickup and dropoff arrival times: [8, 62]
+Time taken/maximum allowable time: 7/30
+
+Request 3 from pickup(-665, 959) to dropoff(-256, -659), received at time 42
+------------------------------------------------------------------------------------------
+Pickup time window: [204, 219]
+Pickup and dropoff arrival times: [71, 221]
+Time taken/maximum allowable time: 17/30
+
+Request 4 from pickup(944, -529) to dropoff(-116, 549), received at time 50
+------------------------------------------------------------------------------------------
+Pickup time window: [159, 174]
+Pickup and dropoff arrival times: [273, 290]
+Time taken/maximum allowable time: 17/30
+
+Request 5 from pickup(828, -324) to dropoff(-690, -740), received at time 66
+------------------------------------------------------------------------------------------
+Pickup time window: [240, 255]
+Pickup and dropoff arrival times: [193, 256]
+Time taken/maximum allowable time: 16/30
+
+Request 6 from pickup(332, -446) to dropoff(919, 549), received at time 110
+------------------------------------------------------------------------------------------
+Pickup time window: [256, 271]
+Pickup and dropoff arrival times: [228, 268]
+Time taken/maximum allowable time: 12/30
+
+Request 7 from pickup(494, 274) to dropoff(-842, -574), received at time 136
+------------------------------------------------------------------------------------------
+Pickup time window: [196, 211]
+Pickup and dropoff arrival times: [283, 304]
+Time taken/maximum allowable time: 21/30
+
+Request 8 from pickup(965, -972) to dropoff(-982, -119), received at time 150
+------------------------------------------------------------------------------------------
+Pickup time window: [206, 221]
+Pickup and dropoff arrival times: [284, 306]
+Time taken/maximum allowable time: 22/30
+
+Request 9 from pickup(737, 776) to dropoff(-999, -792), received at time 266
+------------------------------------------------------------------------------------------
+Pickup time window: [278, 293]
+Pickup and dropoff arrival times: [326, 350]
+Time taken/maximum allowable time: 24/30
+
+Request 10 from pickup(-309, 630) to dropoff(296, -170), received at time 276
+------------------------------------------------------------------------------------------
+Pickup time window: [317, 332]
+Pickup and dropoff arrival times: [318, 329]
+Time taken/maximum allowable time: 11/30
+
+Request 11 from pickup(-395, -64) to dropoff(677, -319), received at time 304
+------------------------------------------------------------------------------------------
+Pickup time window: [400, 415]
+Pickup and dropoff arrival times: [360, 412]
+Time taken/maximum allowable time: 12/30
+
+Request 12 from pickup(364, 816) to dropoff(-549, 515), received at time 306
+------------------------------------------------------------------------------------------
+Pickup time window: [479, 494]
+Pickup and dropoff arrival times: [694, 718]
+Time taken/maximum allowable time: 24/30
+
+Request 13 from pickup(-834, -400) to dropoff(-869, -103), received at time 325
+------------------------------------------------------------------------------------------
+Pickup time window: [427, 442]
+Pickup and dropoff arrival times: [341, 430]
+Time taken/maximum allowable time: 3/30
+
+Request 14 from pickup(661, -115) to dropoff(-609, -150), received at time 343
+------------------------------------------------------------------------------------------
+Pickup time window: [441, 456]
+Pickup and dropoff arrival times: [704, 725]
+Time taken/maximum allowable time: 21/30
+
+Request 15 from pickup(280, -384) to dropoff(-261, 959), received at time 377
+------------------------------------------------------------------------------------------
+Pickup time window: [511, 526]
+Pickup and dropoff arrival times: [417, 526]
+Time taken/maximum allowable time: 15/30
+
+Request 16 from pickup(476, -929) to dropoff(718, 655), received at time 401
+------------------------------------------------------------------------------------------
+Pickup time window: [579, 594]
+Pickup and dropoff arrival times: [547, 596]
+Time taken/maximum allowable time: 17/30
+
+Request 17 from pickup(-374, 576) to dropoff(213, -921), received at time 406
+------------------------------------------------------------------------------------------
+Pickup time window: [462, 477]
+Pickup and dropoff arrival times: [439, 479]
+Time taken/maximum allowable time: 17/30
+
+Request 18 from pickup(627, -35) to dropoff(-281, -933), received at time 406
+------------------------------------------------------------------------------------------
+Pickup time window: [535, 550]
+Pickup and dropoff arrival times: [603, 616]
+Time taken/maximum allowable time: 13/30
+
+Request 19 from pickup(-71, -153) to dropoff(621, 695), received at time 439
+------------------------------------------------------------------------------------------
+Pickup time window: [603, 618]
+Pickup and dropoff arrival times: [488, 625]
+Time taken/maximum allowable time: 22/30
+
+Request 20 from pickup(-620, 515) to dropoff(290, -719), received at time 480
+------------------------------------------------------------------------------------------
+Pickup time window: [507, 522]
+Pickup and dropoff arrival times: [612, 640]
+Time taken/maximum allowable time: 28/30
+
+Request 21 from pickup(480, 431) to dropoff(-876, -365), received at time 508
+------------------------------------------------------------------------------------------
+Pickup time window: [652, 667]
+Pickup and dropoff arrival times: [653, 676]
+Time taken/maximum allowable time: 23/30
+
+Request 22 from pickup(-947, -472) to dropoff(-954, -489), received at time 531
+------------------------------------------------------------------------------------------
+Pickup time window: [690, 705]
+Pickup and dropoff arrival times: [730, 731]
+Time taken/maximum allowable time: 1/30
+
+Request 23 from pickup(-659, 581) to dropoff(989, 933), received at time 541
+------------------------------------------------------------------------------------------
+Pickup time window: [670, 685]
+Pickup and dropoff arrival times: [632, 687]
+Time taken/maximum allowable time: 17/30
+
+Request 24 from pickup(351, -610) to dropoff(-967, -715), received at time 614
+------------------------------------------------------------------------------------------
+Pickup time window: [640, 655]
+Pickup and dropoff arrival times: [642, 672]
+Time taken/maximum allowable time: 30/30
+
+Request 25 from pickup(-206, 709) to dropoff(45, 991), received at time 656
+------------------------------------------------------------------------------------------
+Pickup time window: [764, 779]
+Pickup and dropoff arrival times: [1029, 1054]
+Time taken/maximum allowable time: 25/30
+
+Request 26 from pickup(235, 330) to dropoff(763, 19), received at time 768
+------------------------------------------------------------------------------------------
+Pickup time window: [814, 829]
+Pickup and dropoff arrival times: [1048, 1072]
+Time taken/maximum allowable time: 24/30
+
+Request 27 from pickup(-885, -760) to dropoff(711, -255), received at time 772
+------------------------------------------------------------------------------------------
+Pickup time window: [921, 936]
+Pickup and dropoff arrival times: [985, 1012]
+Time taken/maximum allowable time: 27/30
+
+Request 28 from pickup(-600, 401) to dropoff(353, 161), received at time 801
+------------------------------------------------------------------------------------------
+Pickup time window: [888, 903]
+Pickup and dropoff arrival times: [1057, 1067]
+Time taken/maximum allowable time: 10/30
+
+Request 29 from pickup(-493, 707) to dropoff(-811, -258), received at time 814
+------------------------------------------------------------------------------------------
+Pickup time window: [884, 899]
+Pickup and dropoff arrival times: [1539, 1560]
+Time taken/maximum allowable time: 21/30
+
+Request 30 from pickup(229, 893) to dropoff(-530, -281), received at time 819
+------------------------------------------------------------------------------------------
+Pickup time window: [915, 930]
+Pickup and dropoff arrival times: [1083, 1099]
+Time taken/maximum allowable time: 16/30
+
+Request 31 from pickup(-475, -140) to dropoff(-279, -474), received at time 826
+------------------------------------------------------------------------------------------
+Pickup time window: [951, 966]
+Pickup and dropoff arrival times: [993, 997]
+Time taken/maximum allowable time: 4/30
+
+Request 32 from pickup(-159, 751) to dropoff(716, -92), received at time 864
+------------------------------------------------------------------------------------------
+Pickup time window: [1002, 1017]
+Pickup and dropoff arrival times: [1088, 1112]
+Time taken/maximum allowable time: 24/30
+
+Request 33 from pickup(-55, 39) to dropoff(-542, 777), received at time 891
+------------------------------------------------------------------------------------------
+Pickup time window: [977, 992]
+Pickup and dropoff arrival times: [1003, 1033]
+Time taken/maximum allowable time: 30/30
+
+Request 34 from pickup(168, 818) to dropoff(-472, -21), received at time 962
+------------------------------------------------------------------------------------------
+Pickup time window: [962, 977]
+Pickup and dropoff arrival times: [1025, 1042]
+Time taken/maximum allowable time: 17/30
+
+Request 35 from pickup(934, -806) to dropoff(591, 474), received at time 998
+------------------------------------------------------------------------------------------
+Pickup time window: [1035, 1050]
+Pickup and dropoff arrival times: [1075, 1089]
+Time taken/maximum allowable time: 14/30
+
+Request 36 from pickup(242, -862) to dropoff(-576, -924), received at time 1031
+------------------------------------------------------------------------------------------
+Pickup time window: [1113, 1128]
+Pickup and dropoff arrival times: [1103, 1122]
+Time taken/maximum allowable time: 9/30
+
+Request 37 from pickup(-53, -878) to dropoff(881, 165), received at time 1073
+------------------------------------------------------------------------------------------
+Pickup time window: [1168, 1183]
+Pickup and dropoff arrival times: [1128, 1183]
+Time taken/maximum allowable time: 15/30
+
+Request 38 from pickup(-854, -176) to dropoff(924, 880), received at time 1074
+------------------------------------------------------------------------------------------
+Pickup time window: [1185, 1200]
+Pickup and dropoff arrival times: [1128, 1206]
+Time taken/maximum allowable time: 21/30
+
+Request 39 from pickup(-367, 963) to dropoff(0, 214), received at time 1082
+------------------------------------------------------------------------------------------
+Pickup time window: [1161, 1176]
+Pickup and dropoff arrival times: [1219, 1244]
+Time taken/maximum allowable time: 25/30
+
+Request 40 from pickup(592, 389) to dropoff(-838, -752), received at time 1103
+------------------------------------------------------------------------------------------
+Pickup time window: [1237, 1252]
+Pickup and dropoff arrival times: [1231, 1257]
+Time taken/maximum allowable time: 20/30
+
+Request 41 from pickup(425, -8) to dropoff(832, -898), received at time 1158
+------------------------------------------------------------------------------------------
+Pickup time window: [1313, 1328]
+Pickup and dropoff arrival times: [1188, 1323]
+Time taken/maximum allowable time: 10/30
+
+Request 42 from pickup(-798, -886) to dropoff(-806, 638), received at time 1221
+------------------------------------------------------------------------------------------
+Pickup time window: [1221, 1236]
+Pickup and dropoff arrival times: [1433, 1457]
+Time taken/maximum allowable time: 24/30
+
+Request 43 from pickup(489, -53) to dropoff(-630, 102), received at time 1234
+------------------------------------------------------------------------------------------
+Pickup time window: [1349, 1364]
+Pickup and dropoff arrival times: [1525, 1555]
+Time taken/maximum allowable time: 30/30
+
+Request 44 from pickup(320, -172) to dropoff(-78, -746), received at time 1241
+------------------------------------------------------------------------------------------
+Pickup time window: [1419, 1434]
+Pickup and dropoff arrival times: [1270, 1441]
+Time taken/maximum allowable time: 22/30
+
+Request 45 from pickup(-749, 335) to dropoff(491, 934), received at time 1244
+------------------------------------------------------------------------------------------
+Pickup time window: [1312, 1327]
+Pickup and dropoff arrival times: [1461, 1476]
+Time taken/maximum allowable time: 15/30
+
+Request 46 from pickup(-291, 836) to dropoff(712, -466), received at time 1276
+------------------------------------------------------------------------------------------
+Pickup time window: [1341, 1356]
+Pickup and dropoff arrival times: [1468, 1491]
+Time taken/maximum allowable time: 23/30
+
+Request 47 from pickup(-407, -69) to dropoff(-122, 728), received at time 1315
+------------------------------------------------------------------------------------------
+Pickup time window: [1363, 1378]
+Pickup and dropoff arrival times: [1515, 1535]
+Time taken/maximum allowable time: 20/30
+
+Request 48 from pickup(-611, -299) to dropoff(632, -86), received at time 1321
+------------------------------------------------------------------------------------------
+Pickup time window: [1334, 1349]
+Pickup and dropoff arrival times: [1550, 1575]
+Time taken/maximum allowable time: 25/30
+
+Request 49 from pickup(726, -964) to dropoff(877, -98), received at time 1330
+------------------------------------------------------------------------------------------
+Pickup time window: [1383, 1398]
+Pickup and dropoff arrival times: [1520, 1529]
+Time taken/maximum allowable time: 9/30
+
+Request 50 from pickup(-958, 31) to dropoff(199, -26), received at time 1388
+------------------------------------------------------------------------------------------
+Pickup time window: [1390, 1405]
+Pickup and dropoff arrival times: [1509, 1522]
+Time taken/maximum allowable time: 13/30
+
 
 Routes:
-{idle(-914, 564), pickup(-768, 662), dropoff(-256, 241), pickup(-665, 959), dropoff(-256, -659), pickup(965, -972), dropoff(-982, -119), pickup(332, -446), dropoff(919, 549), station(500, 500), pickup(364, 816), pickup(661, -115), dropoff(-609, -150), dropoff(-549, 515), pickup(480, 431), dropoff(-876, -365), pickup(-947, -472), dropoff(-954, -489), pickup(-659, 581), dropoff(989, 933), pickup(351, -610), dropoff(-967, -715), pickup(476, -929), dropoff(718, 655), pickup(235, 330), dropoff(763, 19), pickup(-493, 707), dropoff(-811, -258), pickup(-159, 751), dropoff(716, -92), pickup(168, 818), dropoff(-472, -21), pickup(-600, 401), dropoff(353, 161), pickup(280, -384), dropoff(-261, 959), pickup(242, -862), dropoff(-576, -924), pickup(-834, -400), dropoff(-869, -103), station(-500, -500), pickup(425, -8), pickup(320, -172), dropoff(-78, -746), dropoff(832, -898), pickup(-407, -69), dropoff(-122, 728), pickup(-291, 836), dropoff(712, -466), pickup(489, -53), dropoff(-630, 102), station(-500, -500)}
-{idle(-238, -828), pickup(236, -836), dropoff(607, 835), pickup(494, 274), pickup(737, 776), dropoff(-842, -574), dropoff(-999, -792), pickup(-309, 630), dropoff(296, -170), pickup(-395, -64), pickup(-374, 576), dropoff(677, -319), dropoff(213, -921), pickup(627, -35), pickup(-620, 515), dropoff(-281, -933), dropoff(290, -719), pickup(828, -324), dropoff(-690, -740), pickup(-71, -153), pickup(944, -529), dropoff(621, 695), dropoff(-116, 549), pickup(-206, 709), dropoff(45, 991), station(500, 500), pickup(-885, -760), pickup(-475, -140), dropoff(-279, -474), pickup(-55, 39), dropoff(711, -255), dropoff(-542, 777), pickup(-367, 963), dropoff(0, 214), pickup(-854, -176), dropoff(924, 880), pickup(-53, -878), dropoff(881, 165), pickup(-798, -886), dropoff(-806, 638), pickup(-749, 335), dropoff(491, 934), pickup(-611, -299), dropoff(632, -86), pickup(726, -964), dropoff(877, -98), pickup(592, 389), pickup(229, 893), pickup(-958, 31), dropoff(-838, -752), dropoff(-530, -281), dropoff(199, -26), pickup(934, -806), dropoff(591, 474), station(500, 500)}
+{idle(-914, 564), pickup(-768, 662), dropoff(-256, 241), pickup(-665, 959), dropoff(-256, -659), pickup(332, -446), dropoff(919, 549), pickup(965, -972), dropoff(-982, -119), pickup(737, 776), dropoff(-999, -792), pickup(-395, -64), dropoff(677, -319), pickup(280, -384), dropoff(-261, 959), pickup(476, -929), dropoff(718, 655), pickup(627, -35), dropoff(-281, -933), pickup(-659, 581), dropoff(989, 933), pickup(364, 816), pickup(661, -115), dropoff(-549, 515), dropoff(-609, -150), pickup(-947, -472), dropoff(-954, -489), station(-500, -500), pickup(235, 330), pickup(-600, 401), dropoff(353, 161), dropoff(763, 19), pickup(229, 893), pickup(-159, 751), dropoff(-530, -281), dropoff(716, -92), pickup(-854, -176), dropoff(924, 880), pickup(-367, 963), pickup(592, 389), dropoff(0, 214), dropoff(-838, -752), pickup(320, -172), pickup(-798, -886), dropoff(-78, -746), dropoff(-806, 638), pickup(-749, 335), pickup(-291, 836), dropoff(491, 934), dropoff(712, -466), pickup(-958, 31), pickup(-407, -69), dropoff(199, -26), pickup(489, -53), dropoff(-122, 728), pickup(-493, 707), pickup(-611, -299), dropoff(-630, 102), dropoff(-811, -258), dropoff(632, -86), station(500, 500)}
+{idle(-238, -828), pickup(236, -836), dropoff(607, 835), pickup(828, -324), dropoff(-690, -740), pickup(944, -529), pickup(494, 274), dropoff(-116, 549), dropoff(-842, -574), pickup(-309, 630), dropoff(296, -170), pickup(-834, -400), dropoff(-869, -103), pickup(-374, 576), dropoff(213, -921), pickup(-71, -153), pickup(-620, 515), dropoff(621, 695), dropoff(290, -719), pickup(351, -610), pickup(480, 431), dropoff(-967, -715), dropoff(-876, -365), station(-500, -500), pickup(-885, -760), pickup(-475, -140), dropoff(-279, -474), pickup(-55, 39), dropoff(711, -255), pickup(168, 818), pickup(-206, 709), dropoff(-542, 777), dropoff(-472, -21), dropoff(45, 991), pickup(934, -806), dropoff(591, 474), pickup(242, -862), dropoff(-576, -924), pickup(-53, -878), dropoff(881, 165), pickup(425, -8), dropoff(832, -898), station(0, 0), pickup(726, -964), dropoff(877, -98), station(500, 500)}
 
-Cost:
-14227.0
-elapsed 156.0 ms.
+Total time/penalty: 1114.0/7482.0
+Cost: 8596.000000
+Time elapsed: 265.625 ms.

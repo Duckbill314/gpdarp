@@ -79,16 +79,6 @@ public class Node {
     }
 
     /**
-     * Helper method specifically for making idle nodes at updated times for a specific position.
-     *
-     * @param time the updated time.
-     * @return the idle node for a certain location and time.
-     */
-    public Node idleClone(int arrivalTime, int departureTime) {
-        return new Node(x, y, true, arrivalTime, departureTime, NodeType.IDLE, null);
-    }
-
-    /**
      * Node types are responsible for different reactive events.
      */
     public enum NodeType {

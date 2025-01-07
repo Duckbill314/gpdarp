@@ -25,7 +25,6 @@ public class DecisionProcessState {
         this.instance = instance;
         this.time = time;
         this.solution = solution;
-        this.solution.setTravelTimeRate(instance.getTravelTimeRate());
         this.solution.setLatenessPenalty(instance.getLatenessPenalty());
     }
 
@@ -56,10 +55,5 @@ public class DecisionProcessState {
         instance.reset();
         time = 0;
         solution.reset();
-    }
-
-    @Override
-    public DecisionProcessState clone() {
-        return new DecisionProcessState(instance.clone(), time, solution.clone());
     }
 }

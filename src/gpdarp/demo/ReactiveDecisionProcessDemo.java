@@ -1,6 +1,5 @@
 package gpdarp.demo;
 
-import gpdarp.core.Request;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
@@ -8,14 +7,11 @@ import gpdarp.core.Instance;
 import gpdarp.decisionprocess.allocationpolicy.requestpolicy.NearestRequestPolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.NearestVehiclePolicy;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
-import gpdarp.representation.Solution;
-import gpdarp.representation.route.Route;
 import util.Timer;
 
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.List;
 
 /**
  * A demo for a reactive decision process.
@@ -33,6 +29,7 @@ public class ReactiveDecisionProcessDemo {
         File file = new File(root + "/src/data/sample.txt");
         Instance instance = Instance.readFromFile(file);
         Instance original = Instance.readFromFile(file);
+        assert instance != null;
         instance.setOriginalCopy(original);
 
         // specify a vehicle allocation policy
@@ -48,26 +45,16 @@ public class ReactiveDecisionProcessDemo {
         long end = Timer.getCpuTime();
         double duration = (double) (end - start) / 1000000;
 
+        rdp.getState().getInstance().getRequests().forEach(System.out::println);
         System.out.println(rdp.getState().getSolution().toString());
-        for (Request request : rdp.getState().getInstance().getRequests()) {
-            System.out.println(request);
-        }
-        rdp.getState().getSolution().totalCost();
-        System.out.println("elapsed " + duration + " ms. \n");
-
-        Solution solution = rdp.getState().getSolution();
-        List<Route> routes = solution.getRoutes();
-        for (Route route : routes) {
-            System.out.println(route);
-            route.getArcs().stream()
-                    .map(a -> a.to().getArrivalTime() - a.from().getDepartureTime())
-                    .forEach(t -> System.out.println(t));
-        }
+        double cost = rdp.getState().getSolution().totalCost();
+        System.out.printf("Cost: %f%n", cost);
+        System.out.println("Time elapsed: " + duration + " ms. \n");
 
         // rerun the decision process for a number of times.
         // the instance and routing policy do not change,
         // so all the reruns will give the same results.
-        int maxReruns = 0;
+        int maxReruns = 2;
         for (int rerun = 0; rerun < maxReruns; rerun++) {
             // before rerunning, need to reset the decision process
             rdp.reset();
@@ -76,12 +63,11 @@ public class ReactiveDecisionProcessDemo {
             end = Timer.getCpuTime();
             duration = (double) (end - start) / 1000000;
 
+            rdp.getState().getInstance().getRequests().forEach(System.out::println);
             System.out.println(rdp.getState().getSolution().toString());
-            for (Request request : rdp.getState().getInstance().getRequests()) {
-                System.out.println(request);
-            }
-            rdp.getState().getSolution().totalCost();
-            System.out.println("elapsed " + duration + " ms. \n");
+            cost = rdp.getState().getSolution().totalCost();
+            System.out.printf("Cost: %f%n", cost);
+            System.out.println("Time elapsed: " + duration + " ms. \n");
         }
 
 

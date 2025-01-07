@@ -14,12 +14,11 @@ import java.util.List;
 
 public class Solution {
     private List<Route> routes;
-    private double travelTimeRate;
     private double latenessPenalty;
     private boolean feasible;
 
     public Solution(List<Route> routes) {
-        this.routes = Route.listClone(routes);
+        this.routes = routes;
         this.feasible = false;
     }
 
@@ -28,18 +27,14 @@ public class Solution {
     }
 
     // Getters
-    public List<Route> getRoutes() {
-        return routes;
-    }
-    public double getTravelTimeRate() { return travelTimeRate; }
+    public List<Route> getRoutes() { return routes; }
     public double getLatenessPenalty() { return latenessPenalty; }
     public boolean isFeasible() { return feasible; }
 
     // Setters
     public void setRoutes(List<Route> routes) {
-        this.routes = Route.listClone(routes);
+        this.routes = routes;
     }
-    public void setTravelTimeRate(double travelTimeRate) { this.travelTimeRate = travelTimeRate; }
     public void setLatenessPenalty(double latenessPenalty) { this.latenessPenalty = latenessPenalty; }
     public void setFeasible(boolean feasible) { this.feasible = feasible; }
 
@@ -72,8 +67,6 @@ public class Solution {
         double cost = time + penalty;
 
         System.out.printf("Total time/penalty: %.1f/%.1f%n", time, penalty);
-        System.out.printf("Total cost: %.1f%n", cost);
-
         return cost;
     }
 
@@ -104,8 +97,6 @@ public class Solution {
         double cost = time + penalty;
 
         System.out.printf("Highest cost route's time/penalty: %.1f/%.1f%n", time, penalty);
-        System.out.printf("Highest cost route's cost: %.1f%n", cost);
-
         return cost;
     }
 
@@ -119,25 +110,15 @@ public class Solution {
         return switch (objective) {
             case TOTAL_COST -> totalCost();
             case MAX_ROUTE_COST -> maxRouteCost();
-            default -> Double.NaN;
         };
     }
 
     @Override
     public String toString() {
-        String str = "\nRoutes: \n";
+        StringBuilder str = new StringBuilder("\nRoutes: \n");
         for (Route route : routes) {
-            str += String.format("%s\n", route);
+            str.append(String.format("%s\n", route));
         }
-        return str;
-    }
-
-    @Override
-    public Solution clone() {
-        Solution clone = new Solution(Route.listClone(routes));
-        clone.travelTimeRate = travelTimeRate;
-        clone.latenessPenalty = latenessPenalty;
-        clone.feasible = feasible;
-        return clone;
+        return str.toString();
     }
 }

@@ -1,7 +1,5 @@
 package gpdarp.core;
 
-import gpdarp.representation.route.Route;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -93,7 +91,7 @@ public final class Instance {
             reader.readLine(); // line 5: "B0[1] ... B0[n_K]"
             line = reader.readLine(); // line 6: corresponding entries for line 5
             segments = line.split("\\s+");
-            List<Double> chargeStates = new ArrayList<Double>();
+            List<Double> chargeStates = new ArrayList<>();
             for (String segment : segments) {
                 chargeStates.add(Double.parseDouble(segment));
             }
@@ -113,7 +111,7 @@ public final class Instance {
             reader.readLine(); // line 11: "loc_K[1] ... loc_K[n_K]"
             line = reader.readLine(); // line 12: corresponding entries for line 11
             segments = line.split("\\s+");
-            List<Node> vehicleNodes = new ArrayList<Node>();
+            List<Node> vehicleNodes = new ArrayList<>();
             for (int i = 0; i < segments.length; i += 2) {
                 int x = Integer.parseInt(segments[i]);
                 int y = Integer.parseInt(segments[i + 1]);

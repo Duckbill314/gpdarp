@@ -33,14 +33,4 @@ public class ReactiveDecisionProcess extends DecisionProcess {
         }
         waitingList.clear();
     }
-
-    @Override
-    protected ReactiveDecisionProcess clone() {
-        DecisionProcessState clonedState = state.clone();
-        PriorityQueue<DecisionProcessEvent> clonedEQ = new PriorityQueue<>();
-        clonedEQ.addAll(eventQueue);
-
-        return new ReactiveDecisionProcess(clonedState, clonedEQ, Request.listClone(waitingList),
-                vehiclePolicy, requestPolicy);
-    }
 }

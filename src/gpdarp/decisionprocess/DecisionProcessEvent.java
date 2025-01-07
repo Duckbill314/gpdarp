@@ -80,8 +80,8 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
 
         if (includeCharge) {
             Instance instance = state.getInstance();
-            Node station = instance.findClosestStation(waitingPoint);
-            waitingList.add(new Request(waitingPoint.getArrivalTime(), waitingPoint, station));
+            Node station = instance.findClosestStation(waitingPoint).clone();
+            waitingList.add(new Request(waitingPoint.getDepartureTime(), waitingPoint, station));
         }
         Pair<Request, Route> allocation = decisionProcess.getRequestPolicy()
                 .next(vehicle, state, waitingList);

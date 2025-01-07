@@ -20,12 +20,11 @@ public class Route {
     public Route(List<Arc> arcs) { this.arcs = arcs; }
 
     // Initialisation constructor
-    public Route() { this(new ArrayList<Arc>()); }
+    public Route() { this(new ArrayList<>()); }
 
     // Getters
     public List<Arc> getArcs() { return arcs; }
     public EphemeralRoute getEphemeralRoute() { return ephemeralRoute; }
-    public Node getStartpoint() { return arcs.getFirst().from(); }
     public Node getEndpoint() { return arcs.getLast().to(); }
 
     // Setters
@@ -104,47 +103,42 @@ public class Route {
      */
     public void updateTimes(DecisionProcessState state, Vehicle vehicle) {
         Instance instance = state.getInstance();
-
-        Arc arc;
-        int arrivalTime;
-        int departureTime;
-        int pickupTime;
-        int serveTime;
         int i = 0;
 
         if (!vehicle.isMoving()) {
-            arc = arcs.get(i);
+            Arc arc = arcs.get(i);
             Node from = arc.from();
             Node to = arc.to();
-            if (vehicle.getCurrPos().getArrivalTime() > state.getTime()) {
-                System.out.println(vehicle.getCurrPos());
-            }
-            departureTime = Math.max(state.getTime(), vehicle.getCurrPos().getArrivalTime());
+            int departureTime = Math.max(state.getTime(), from.getDepartureTime());
             from.setDepartureTime(departureTime);
             to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));
             i++;
         }
 
         while (i < arcs.size()) {
-            arc = arcs.get(i);
+            Arc arc = arcs.get(i);
             Node from = arc.from();
             Node to = arc.to();
 
-            arrivalTime = from.getArrivalTime();
+            int arrivalTime = from.getArrivalTime();
 
             if (from.getType() == Node.NodeType.PICKUP) {
-                pickupTime = from.getRequest().getTEarly();
+                int pickupTime = from.getRequest().getTEarly();
                 if (arrivalTime < pickupTime) {
                     arrivalTime = pickupTime;
                 }
             }
 
-            serveTime = vehicle.getServeTime();
-            departureTime = arrivalTime + serveTime;
+            int serveTime = vehicle.getServeTime();
+            int departureTime = arrivalTime + serveTime;
 
             from.setDepartureTime(departureTime);
             to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));
             i++;
+        }
+
+        if (vehicle.isMoving() && !arcs.isEmpty()) {
+            getEndpoint().setDepartureTime(getEndpoint().getArrivalTime() + vehicle.getServeTime());
         }
     }
 
@@ -187,24 +181,10 @@ public class Route {
     /**
      * Resets the route by replacing the arc list with an empty list.
      */
-    public void reset() { arcs = new ArrayList<Arc>(); }
+    public void reset() { arcs = new ArrayList<>(); }
 
     @Override
     public Route clone() { return new Route(Arc.listClone(arcs)); }
-
-    /**
-     * Utility method for creating deep clones of ArrayLists of Routes.
-     *
-     * @param routes the list of routes to be cloned.
-     * @return the cloned list.
-     */
-    public static List<Route> listClone(List<Route> routes) {
-        ArrayList<Route> clonedRoutes = new ArrayList<>();
-        for (Route route : routes) {
-            clonedRoutes.add(route.clone());
-        }
-        return clonedRoutes;
-    }
 
     public boolean isEmpty() { return arcs.isEmpty(); }
 

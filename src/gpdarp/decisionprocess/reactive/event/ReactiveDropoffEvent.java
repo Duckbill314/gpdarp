@@ -28,8 +28,7 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        int waitingPointTime = time + vehicle.getServeTime();
-        Node waitingPoint = node.idleClone(waitingPointTime, waitingPointTime);
+        Node waitingPoint = node;
 
         boolean includeStations = vehicle.getPlannedRoute().isEmpty();
         Request request = requestAllocation(decisionProcess, vehicle, waitingPoint, includeStations);
@@ -51,7 +50,7 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
             vehicle.setCurrPos(waitingPoint);
             if (request != null) {
                 vehicle.charge(decisionProcess.getState().getInstance(), request);
-                decisionProcess.addEvent(new ReactiveChargeEvent(vehicle.getCurrPos().getArrivalTime(), vehicle));
+                decisionProcess.addEvent(new ReactiveChargeEvent(vehicle.getCurrPos().getDepartureTime(), vehicle));
             }
         }
     }

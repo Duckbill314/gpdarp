@@ -56,7 +56,7 @@ public class Vehicle {
     public Vehicle(int id, int capacity, double chargeMax, double chargeState, double chargeFillRate,
                    double chargeDepletionRate, int serveTime, Node currPos) {
         this(id, capacity, 0, chargeMax, chargeState, chargeFillRate, chargeDepletionRate, serveTime,
-                currPos, null, new ArrayList<Request>(), new Route(), new Route(), 0.0);
+                currPos, null, new ArrayList<>(), new Route(), new Route(), 0.0);
     }
 
     // Getters
@@ -173,8 +173,8 @@ public class Vehicle {
         int chargeTime = estimateFillTime();
         fill(chargeTime);
 
-        int nextAvailableTime = currPos.getArrivalTime() + travelTime + chargeTime;
-        station.setArrivalTime(nextAvailableTime);
+        int nextAvailableTime = station.getArrivalTime() + chargeTime;
+        station.setDepartureTime(nextAvailableTime);
         setCurrPos(station);
     }
 
