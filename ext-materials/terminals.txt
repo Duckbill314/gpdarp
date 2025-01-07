@@ -1,11 +1,16 @@
-- Distance from vehicle's current position to request's pickup point
+- Travel time from vehicle's current position to request's pickup point (TVPU)
+- Expected cost for servicing the request (COST)
+- Request demand (is 0 for charging actions) (DEM)
+- Duration: travel time from the pickup to the dropoff location of the request (DUR)
+- Expected slack of the request (window end time - current time - earliest arrival time out of all vehicles); measure of urgency (SLACK)
+- Crowdedness of request: average travel time from its pickup point to all the pickup and dropoff points of the other requests (CRD)
+- Vehicle's remaining capacity (RQ)
+- Vehicle's remaining charge (RT)
+- Vehicle slack: the minimal slack of the requests in the vehicle's planned route (VSLACK)
+- Current distance of the vehicle from the closest charging station (TVC)
+
+
 - Distance from vehicle's current position to request's dropoff point (a vehicle may not want to serve a request whose dropoff is close to its current location)
-- Current distance of the vehicle from the closest charging station
 - Future distance of the vehicle from the closest charging station
-- Vehicle capacity
-- Request demand (is 0 for charging actions)
-- Vehicle's current charge
-- Expected cost for servicing the request
 - Expected penalty for servicing the request
-- Expected slack for serving the request (window end time - current time - time taken to get to request); measure of urgency
 - Time to wait for the best different vehicle to service the request
