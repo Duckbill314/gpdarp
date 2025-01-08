@@ -87,38 +87,30 @@ public class Route {
 
     /**
      * Updates the estimated arrival times for all nodes in the route.
-     * If the vehicle is moving:
-     * - the route is set to begin from the current arc's destination,
-     * - at that node's pre-established estimated arrival time,
-     * - with each arc being deterministic from the one before it,
-     * - and including serve costs and wait times explicitly.
-     * If the vehicle is stationary:
-     * - the route is set to begin from the current position,
-     * - at either the current state's time or the vehicle's next available time (whichever comes later),
-     * - and there will be an additional arc present to begin the chain,
-     * - that includes the serve cost implicitly, i.e., pending availability.
+     * Applies only to stationary vehicles.
+     * The route is set to begin from the current position,
+     * at either the current state's time or the vehicle's next available time (whichever comes later).
      *
      * @param state the state of the decision process.
      * @param vehicle the vehicle associated with the route.
      */
     public void updateTimes(DecisionProcessState state, Vehicle vehicle) {
         Instance instance = state.getInstance();
-        int i = 0;
 
-        if (!vehicle.isMoving()) {
-            Arc arc = arcs.get(i);
-            Node from = arc.from();
-            Node to = arc.to();
-            int departureTime = Math.max(state.getTime(), from.getDepartureTime());
-            from.setDepartureTime(departureTime);
-            to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));
-            i++;
-        }
+        Arc arc = arcs.getFirst();
+        Node from = arc.from();
+        Node to = arc.to();
 
-        while (i < arcs.size()) {
-            Arc arc = arcs.get(i);
-            Node from = arc.from();
-            Node to = arc.to();
+        int serveTime = vehicle.getServeTime();
+        int departureTime = Math.max(state.getTime(), from.getDepartureTime());
+
+        from.setDepartureTime(departureTime);
+        to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));
+
+        for (int i = 1; i < arcs.size(); i++) {
+            arc = arcs.get(i);
+            from = arc.from();
+            to = arc.to();
 
             int arrivalTime = from.getArrivalTime();
 
@@ -129,17 +121,13 @@ public class Route {
                 }
             }
 
-            int serveTime = vehicle.getServeTime();
-            int departureTime = arrivalTime + serveTime;
+            departureTime = arrivalTime + serveTime;
 
             from.setDepartureTime(departureTime);
             to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));
-            i++;
         }
 
-        if (vehicle.isMoving() && !arcs.isEmpty()) {
-            getEndpoint().setDepartureTime(getEndpoint().getArrivalTime() + vehicle.getServeTime());
-        }
+        getEndpoint().setDepartureTime(getEndpoint().getArrivalTime() + vehicle.getServeTime());
     }
 
     /**

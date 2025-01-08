@@ -139,12 +139,10 @@ public final class Instance {
                 int tEarly = Integer.parseInt(segments[6]);
                 int tLate = Integer.parseInt(segments[7]);
                 int tMax = Integer.parseInt(segments[8]);
-                // TODO: different demand amounts
                 requests.add(new Request(id, tRec, pickup, dropoff, tEarly, tLate, tMax, 1));
                 line = reader.readLine();
             }
-            // TODO: distance travel rate
-            return new Instance(file.getName(), vehicles, stations, requests, timeHorizon, 10000 * travelTimeRate,
+            return new Instance(file.getName(), vehicles, stations, requests, timeHorizon, travelTimeRate,
                     latenessPenalty);
 
         } catch (IOException e) {
@@ -171,7 +169,7 @@ public final class Instance {
      * @param distance the given distance.
      * @return the calculated travel time.
      */
-    public int calculateTravelTime(int distance) { return (int) Math.ceil(distance / travelTimeRate); }
+    public int calculateTravelTime(int distance) { return (int) Math.ceil(distance * travelTimeRate); }
 
     @Override
     public String toString() {

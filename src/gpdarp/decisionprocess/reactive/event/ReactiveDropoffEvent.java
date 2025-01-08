@@ -8,11 +8,10 @@ import gpdarp.decisionprocess.DecisionProcessEvent;
 
 /**
  * This event represents arrival of a vehicle to a dropoff point in its route.
- * During this event, the vehicle may potentially accept a request from the waiting list.
- * Then, the node is visited, the vehicle state is updated,
+ * During this event, the node is visited, the vehicle state is updated,
  * and a new event is invoked to move to the next point in the route.
- * A dropoff point implies that the vehicle's route may end.
- * If it does, the vehicle may either go to charge, or remain where it is.
+ * A dropoff point implies that the vehicle's route may be ending.
+ * If it does, the vehicle may take a new route, go to charge, or remain where it is.
  *
  * @author William Huang
  */
@@ -28,12 +27,19 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        Node waitingPoint = node;
-
-        boolean includeStations = vehicle.getPlannedRoute().isEmpty();
-        Request request = requestAllocation(decisionProcess, vehicle, waitingPoint, includeStations);
-
         vehicle.dropoff(node);
+        Request request = null;
+
+        if (vehicle.getPlannedRoute().isEmpty()) {
+            vehicle.setCurrPos(node);
+            request = requestAllocation(decisionProcess, vehicle, true);
+
+            if (request != null) {
+                if (request.getType() != Request.RequestType.CHARGE) {
+                    constructiveHeuristic(decisionProcess, vehicle);
+                }
+            }
+        }
 
         Node destination = vehicle.updateArcFromPlannedRoute();
 
@@ -47,7 +53,7 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
             }
         }
         else {
-            vehicle.setCurrPos(waitingPoint);
+            vehicle.setCurrPos(node);
             if (request != null) {
                 vehicle.charge(decisionProcess.getState().getInstance(), request);
                 decisionProcess.addEvent(new ReactiveChargeEvent(vehicle.getCurrPos().getDepartureTime(), vehicle));

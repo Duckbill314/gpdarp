@@ -68,23 +68,21 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param vehicle         the vehicle to which a request is to be allocated.
-     * @param waitingPoint    the point and time at which the vehicle will be after finishing its current task.
      * @param includeCharge   whether to also consider returning to a charging station.
      * @return the request allocation.
      */
-    public Request requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, Node waitingPoint,
-                                     boolean includeCharge) {
-
+    public Request requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, boolean includeCharge) {
         DecisionProcessState state = decisionProcess.getState();
+        Node currPos = vehicle.getCurrPos();
         List<Request> waitingList = new ArrayList<>(decisionProcess.getWaitingList());
 
         if (includeCharge) {
             Instance instance = state.getInstance();
-            Node station = instance.findClosestStation(waitingPoint).clone();
-            waitingList.add(new Request(waitingPoint.getDepartureTime(), waitingPoint, station));
+            Node station = instance.findClosestStation(currPos).clone();
+            waitingList.add(new Request(currPos.getDepartureTime(), currPos, station));
         }
-        Pair<Request, Route> allocation = decisionProcess.getRequestPolicy()
-                .next(vehicle, state, waitingList);
+
+        Pair<Request, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
 
         if (allocation == null) {
             return null;
@@ -98,5 +96,19 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
             decisionProcess.removeWaiting(request);
         }
         return request;
+    }
+
+    /**
+     * Iteratively adds waiting requests to construct a route,
+     * until there are no more feasible waiting requests.
+     *
+     * @param decisionProcess the decision process that invoked this event.
+     * @param vehicle         the vehicle to which a request is to be allocated.
+     */
+    public void constructiveHeuristic(DecisionProcess decisionProcess, Vehicle vehicle) {
+        Request allocation;
+        do {
+            allocation = requestAllocation(decisionProcess, vehicle, false);
+        } while (allocation != null);
     }
 }

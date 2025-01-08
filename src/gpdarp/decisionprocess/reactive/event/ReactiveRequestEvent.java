@@ -9,7 +9,8 @@ import gpdarp.decisionprocess.DecisionProcessEvent;
 /**
  * This event represents when a new request has been received.
  * During this event, the request is allocated to a vehicle, and the vehicle's route is updated.
- * If the vehicle is not currently moving, a new event is invoked to move to the next point in the route.
+ * It may also be expanded upon with existing waiting requests.
+ * Then, a new event is invoked to move to the next point in the route.
  * If no vehicle allocation is made, instead, the request is added to a waiting queue.
  *
  * @author William Huang
@@ -27,11 +28,10 @@ public class ReactiveRequestEvent extends DecisionProcessEvent {
         Vehicle vehicle = vehicleAllocation(decisionProcess, request);
 
         if (vehicle != null) {
-            if (!vehicle.isMoving()) {
-                vehicle.setCurrPos(null);
-                Node destination = vehicle.updateArcFromPlannedRoute();
-                decisionProcess.addEvent(new ReactivePickupEvent(destination.getArrivalTime(), destination, vehicle));
-            }
+            constructiveHeuristic(decisionProcess, vehicle);
+            vehicle.setCurrPos(null);
+            Node destination = vehicle.updateArcFromPlannedRoute();
+            decisionProcess.addEvent(new ReactivePickupEvent(destination.getArrivalTime(), destination, vehicle));
         }
     }
 }

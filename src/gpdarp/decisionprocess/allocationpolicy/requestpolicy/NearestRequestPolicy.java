@@ -8,7 +8,7 @@ import gpdarp.decisionprocess.RequestPolicy;
 
 /**
  * The nearest request policy selects the request whose pickup point (or for a charging event, station location)
- * is closest to the vehicle's current position (if it is stationary) or current destination (if it is moving).
+ * is closest to the vehicle's current position.
  * The priority is set to the length between the two aforementioned points.
  *
  * @author gphhucarp, William Huang
@@ -24,19 +24,15 @@ public class NearestRequestPolicy extends RequestPolicy {
 
     @Override
     public double priority(Request candidate, DecisionProcessState state, Vehicle vehicle) {
-        Node pos;
-        if (!vehicle.isMoving()) {
-            pos = vehicle.getCurrPos();
-        }
-        else {
-            pos = vehicle.getCurrArc().to();
-        }
+        Node pos = vehicle.getCurrPos();
         double priority = 0;
+
         switch (candidate.getType()) {
             case REQUEST -> priority = pos.calcDist(candidate.getPickup());
 
             case CHARGE -> priority = pos.calcDist(candidate.getDropoff());
         }
+
         return priority - MAX_RANGE/state.getInstance().getNumVehicles();
     }
 }

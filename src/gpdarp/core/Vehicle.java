@@ -10,7 +10,7 @@ import java.util.*;
  * - capacity and demand,
  * - battery charging information,
  * - the latest known idle position (implies that requests are not being served),
- * - the current arc (implies that requests are being served),
+ * - the current arc (implies that the vehicle is busy serving requests or charging),
  * - requests that have been allocated to the vehicle,
  * - full route history and future planned route.
  * It also has a temporary priority value for the purpose of request allocation.
@@ -75,7 +75,7 @@ public class Vehicle {
     public Route getPlannedRoute() { return plannedRoute; }
     public double getPriority() { return priority; }
     public int getRemainingCapacity() { return capacity - demand; }
-    public boolean isMoving() { return (currArc != null); }
+    public boolean isBusy() { return (currArc != null); }
 
     // Setters
     public void setDemand(int demand) { this.demand = demand; }
@@ -176,6 +176,7 @@ public class Vehicle {
         int nextAvailableTime = station.getArrivalTime() + chargeTime;
         station.setDepartureTime(nextAvailableTime);
         setCurrPos(station);
+        setCurrArc(toStation);
     }
 
     /**

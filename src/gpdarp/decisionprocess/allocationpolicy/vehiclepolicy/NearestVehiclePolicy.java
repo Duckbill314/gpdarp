@@ -7,8 +7,8 @@ import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
 
 /**
- * The nearest vehicle policy selects the vehicle whose current position (if it is stationary) or whose current
- * destination (if it is moving) is closest to the request pickup point.
+ * The nearest vehicle policy selects the vehicle whose current position
+ * is closest to the request pickup point.
  * The priority is set to the length between the two aforementioned points.
  *
  * @author gphhucarp, William Huang
@@ -24,13 +24,8 @@ public class NearestVehiclePolicy extends VehiclePolicy {
 
     @Override
     public double priority(Vehicle candidate, DecisionProcessState state, Request request) {
-        Node pos;
-        if (!candidate.isMoving()) {
-            pos = candidate.getCurrPos();
-        }
-        else {
-            pos = candidate.getCurrArc().to();
-        }
+        Node pos = candidate.getCurrPos();
+
         double priority = pos.calcDist(request.getPickup());
         return priority - MAX_RANGE/state.getInstance().getNumVehicles();
     }
