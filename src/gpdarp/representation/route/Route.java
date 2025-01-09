@@ -16,6 +16,7 @@ import java.util.List;
 public class Route {
     private List<Arc> arcs;
     private EphemeralRoute ephemeralRoute;
+    private double priority;
 
     public Route(List<Arc> arcs) { this.arcs = arcs; }
 
@@ -25,11 +26,13 @@ public class Route {
     // Getters
     public List<Arc> getArcs() { return arcs; }
     public EphemeralRoute getEphemeralRoute() { return ephemeralRoute; }
+    public double getPriority() { return priority; }
     public Node getEndpoint() { return arcs.getLast().to(); }
 
     // Setters
     public void setArcs(List<Arc> arcs) { this.arcs = arcs; }
     public void setEphemeralRoute(EphemeralRoute ephemeralRoute) { this.ephemeralRoute = ephemeralRoute; }
+    public void setPriority(double priority) { this.priority = priority; }
 
     // Manipulators
     public void push(Arc arc) { arcs.add(arc); }
@@ -127,7 +130,10 @@ public class Route {
             to.setArrivalTime(departureTime + instance.calculateTravelTime(arc.length()));
         }
 
-        getEndpoint().setDepartureTime(getEndpoint().getArrivalTime() + vehicle.getServeTime());
+        Node endpoint = getEndpoint();
+        if (endpoint.getType() != Node.NodeType.STATION) {
+            endpoint.setDepartureTime(getEndpoint().getArrivalTime() + vehicle.getServeTime());
+        }
     }
 
     /**

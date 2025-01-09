@@ -4,6 +4,7 @@ import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker;
+import gpdarp.representation.route.EphemeralRoute;
 import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -73,18 +74,16 @@ public abstract class VehiclePolicy {
         vehiclePool.forEach(pair -> {
             Vehicle vehicle = pair.getKey();
             Route route = pair.getValue();
-            vehicle.setPriority(priority(vehicle, request, route, state));
+            route.setPriority(priority(vehicle, request, route.getEphemeralRoute(), state));
         });
 
         return vehiclePool.stream()
-                .filter(e -> e.getKey().getPriority() <= 0)
+                .filter(e -> e.getValue().getPriority() <= 0)
                 .min((e1, e2) -> {
-                    Vehicle v1 = e1.getKey();
-                    Vehicle v2 = e2.getKey();
-                    if (Double.compare(v1.getPriority(), v2.getPriority()) == 0) {
-                        return tieBreaker.breakTie(v1, v2);
+                    if (Double.compare(e1.getValue().getPriority(), e2.getValue().getPriority()) == 0) {
+                        return tieBreaker.breakTie(e1.getKey(), e2.getKey());
                     }
-                    return Double.compare(v1.getPriority(), v2.getPriority());
+                    return Double.compare(e1.getValue().getPriority(), e2.getValue().getPriority());
                 })
                 .orElse(null);
     }
@@ -94,9 +93,9 @@ public abstract class VehiclePolicy {
      *
      * @param candidate the candidate vehicle.
      * @param request   the request to be allocated.
-     * @param route     the route associated with the candidate.
+     * @param route     a clone of the route associated with the candidate.
      * @param state     the decision process state.
      * @return the priority of the candidate vehicle.
      */
-    public abstract double priority(Vehicle candidate, Request request, Route route, DecisionProcessState state);
+    public abstract double priority(Vehicle candidate, Request request, EphemeralRoute route, DecisionProcessState state);
 }

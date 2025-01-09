@@ -7,6 +7,7 @@ import ec.simple.SimpleProblemForm;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
+import gpdarp.representation.route.EphemeralRoute;
 import gpdarp.representation.route.Route;
 
 /**
@@ -18,10 +19,10 @@ public class CalcPriorityProblem extends Problem implements SimpleProblemForm {
 
     private final Vehicle vehicle;
     private final Request request;
-    private final Route route;
+    private final EphemeralRoute route;
     private final DecisionProcessState state;
 
-    public CalcPriorityProblem(Vehicle vehicle, Request request, Route route, DecisionProcessState state) {
+    public CalcPriorityProblem(Vehicle vehicle, Request request, EphemeralRoute route, DecisionProcessState state) {
         this.vehicle = vehicle;
         this.request = request;
         this.route = route;
@@ -31,7 +32,7 @@ public class CalcPriorityProblem extends Problem implements SimpleProblemForm {
     // Getters
     public Vehicle getVehicle() { return vehicle; }
     public Request getRequest() { return request; }
-    public Route getRoute() { return route; }
+    public EphemeralRoute getRoute() { return route; }
     public DecisionProcessState getState() { return state; }
 
     @Override

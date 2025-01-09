@@ -8,7 +8,7 @@ import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,9 +38,9 @@ public class FeasiblePoolFilter extends PoolFilter {
         for (Vehicle vehicle : vehicles) {
             List<Request> requests = new ArrayList<>(vehicle.getRequests());
             requests.add(request);
-            Route route = recalculate(vehicle, state, requests);
+            List<Route> routes = recalculate(vehicle, state, requests);
 
-            if (route != null) {
+            for (Route route : routes) {
                 vehiclePool.add(Pair.of(vehicle, route));
             }
         }
@@ -58,14 +58,18 @@ public class FeasiblePoolFilter extends PoolFilter {
 
         for (Request request : requests) {
             switch (request.getType()) {
-                case CHARGE -> requestPool.add(Pair.of(request, null));
+                case CHARGE -> {
+                    List<Node> chargeRoute = new ArrayList<>(Arrays.asList(request.getPickup(), request.getDropoff()));
+                    List<Request> chargeRequest = new ArrayList<>(List.of(request));
+                    requestPool.add(Pair.of(request, Route.buildFromNodeList(chargeRoute, chargeRequest)));
+                }
 
                 case REQUEST -> {
                     List<Request> vehicleRequests = new ArrayList<>(vehicle.getRequests());
                     vehicleRequests.add(request);
-                    Route route = recalculate(vehicle, state, vehicleRequests);
+                    List<Route> routes = recalculate(vehicle, state, vehicleRequests);
 
-                    if (route != null) {
+                    for (Route route : routes) {
                         requestPool.add(Pair.of(request, route));
                     }
                 }
@@ -89,7 +93,7 @@ public class FeasiblePoolFilter extends PoolFilter {
      * @param requests the pool of requests.
      * @return the route with the lowest cost.
      */
-    public Route recalculate(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
+    public List<Route> recalculate(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
         List<Request> originalRequests = Request.listClone(requests);
 
         List<List<Node>> candidates = new ArrayList<>();
@@ -109,9 +113,7 @@ public class FeasiblePoolFilter extends PoolFilter {
             }
         });
 
-        return routes.stream()
-                .min(Comparator.comparing(Route::getTime))
-                .orElse(null);
+        return routes;
     }
 
     /**

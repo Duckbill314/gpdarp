@@ -1,4 +1,4 @@
-- Travel time from vehicle's current position to request's pickup point (TVPU)
+- Travel time from vehicle's current position to request's pickup point (TVPU) done!
 - Expected cost for servicing the request (COST)
 - Request demand (is 0 for charging actions) (DEM)
 - Duration: travel time from the pickup to the dropoff location of the request (DUR)
@@ -9,8 +9,5 @@
 - Vehicle slack: the minimal slack of the requests in the vehicle's planned route (VSLACK)
 - Current distance of the vehicle from the closest charging station (TVC)
 
-
-- Distance from vehicle's current position to request's dropoff point (a vehicle may not want to serve a request whose dropoff is close to its current location)
-- Future distance of the vehicle from the closest charging station
-- Expected penalty for servicing the request
-- Time to wait for the best different vehicle to service the request
+TODO: include this in the paper
+- Time to wait for the best different vehicle to service the request (OBV)

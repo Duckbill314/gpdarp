@@ -20,7 +20,7 @@ public abstract class PoolFilter {
      *
      * @param state the decision process state.
      * @param request the request to be fulfilled.
-     * @return the filtered pool, containing potentially multiple vehicles, but at most one route per vehicle.
+     * @return the filtered pool of candidate vehicles and their corresponding routes.
      */
     public abstract List<Pair<Vehicle, Route>> filterVehicles(DecisionProcessState state, Request request);
 
@@ -30,7 +30,7 @@ public abstract class PoolFilter {
      * @param vehicle the vehicle that is attempting to accept a request from the waiting list.
      * @param state the decision process state.
      * @param requests the waiting list of requests.
-     * @return the filtered pool, containing potentially multiple routes for the one vehicle.
+     * @return the filtered pool of candidate requests and their corresponding routes.
      */
     public abstract List<Pair<Request, Route>> filterRequests(Vehicle vehicle, DecisionProcessState state, List<Request> requests);
 }

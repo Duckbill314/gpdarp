@@ -1,12 +1,11 @@
 package gpdarp.decisionprocess.allocationpolicy.vehiclepolicy;
 
-import gpdarp.core.Arc;
 import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.DecisionProcessState;
-import gpdarp.representation.route.Route;
+import gpdarp.representation.route.EphemeralRoute;
 
 import java.util.Objects;
 
@@ -27,8 +26,14 @@ public class NearestVehiclePolicy extends VehiclePolicy {
     }
 
     @Override
-    public double priority(Vehicle candidate, Request request, Route route, DecisionProcessState state) {
-        Node to = request.getPickup();
+    public double priority(Vehicle candidate, Request request, EphemeralRoute route, DecisionProcessState state) {
+        Request requestClone = route.getRequestClones().stream()
+                .filter(r -> r.getId() == request.getId())
+                .findFirst()
+                .orElse(null);
+        assert requestClone != null;
+
+        Node to = requestClone.getPickup();
         Node from = Objects.requireNonNull(route.getArcs().stream()
                 .filter(a -> a.to() == to)
                 .findFirst()

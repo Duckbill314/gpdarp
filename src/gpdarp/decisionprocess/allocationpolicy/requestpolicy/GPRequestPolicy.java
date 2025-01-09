@@ -6,7 +6,7 @@ import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.gp.CalcPriorityProblem;
-import gpdarp.representation.route.Route;
+import gpdarp.representation.route.EphemeralRoute;
 import gputils.DoubleData;
 
 /**
@@ -34,7 +34,7 @@ public class GPRequestPolicy extends RequestPolicy {
     }
 
     @Override
-    public double priority(Request candidate, Vehicle vehicle, Route route, DecisionProcessState state) {
+    public double priority(Request candidate, Vehicle vehicle, EphemeralRoute route, DecisionProcessState state) {
         CalcPriorityProblem calcPrioProb = new CalcPriorityProblem(vehicle, candidate, route, state);
         DoubleData tmp = new DoubleData();
         gpTree.child.eval(null, 0, tmp, null, null, calcPrioProb);

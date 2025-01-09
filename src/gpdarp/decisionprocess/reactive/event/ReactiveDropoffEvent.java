@@ -28,11 +28,10 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
     @Override
     public void trigger(DecisionProcess decisionProcess) {
         vehicle.dropoff(node);
-        Request request = null;
 
         if (vehicle.getPlannedRoute().isEmpty()) {
             vehicle.setCurrPos(node);
-            request = requestAllocation(decisionProcess, vehicle, true);
+            Request request = requestAllocation(decisionProcess, vehicle, true);
 
             if (request != null) {
                 if (request.getType() != Request.RequestType.CHARGE) {
@@ -50,14 +49,15 @@ public class ReactiveDropoffEvent extends DecisionProcessEvent {
 
                 case DROPOFF -> decisionProcess.addEvent(
                         new ReactiveDropoffEvent(destination.getArrivalTime(), destination, vehicle));
+
+                case STATION -> {
+                    vehicle.charge(decisionProcess.getState().getInstance());
+                    decisionProcess.addEvent(new ReactiveChargeEvent(vehicle.getCurrPos().getDepartureTime(), vehicle));
+                }
             }
         }
         else {
             vehicle.setCurrPos(node);
-            if (request != null) {
-                vehicle.charge(decisionProcess.getState().getInstance(), request);
-                decisionProcess.addEvent(new ReactiveChargeEvent(vehicle.getCurrPos().getDepartureTime(), vehicle));
-            }
         }
     }
 }

@@ -151,32 +151,20 @@ public class Vehicle {
 
     /**
      * Helper method for handling charging events.
-     * Because a vehicle cannot serve requests while it is on the way to a charging station or while it is
-     * charging, the "dead" time can be accumulated to calculate the next available time.
-     * A vehicle can still accept requests during the "dead" time, but route calculation will begin no earlier than
-     * the next available time.
      *
      * @param instance the instance of the problem.
-     * @param request the selected charging "request".
      */
-    public void charge(Instance instance, Request request) {
-        Node startPoint = request.getPickup();
-        Station station = (Station) request.getDropoff();
-        Arc toStation = new Arc(startPoint, station);
-
-        int distanceToStation = toStation.length();
-        int travelTime = instance.calculateTravelTime(distanceToStation);
-        station.setArrivalTime(startPoint.getDepartureTime() + travelTime);
-        deplete(distanceToStation);
-        historicalRoute.push(toStation);
+    public void charge(Instance instance) {
+        deplete(currArc.length());
+        historicalRoute.push(currArc);
 
         int chargeTime = estimateFillTime();
         fill(chargeTime);
 
+        Node station = currArc.to();
         int nextAvailableTime = station.getArrivalTime() + chargeTime;
         station.setDepartureTime(nextAvailableTime);
         setCurrPos(station);
-        setCurrArc(toStation);
     }
 
     /**

@@ -13,10 +13,10 @@ import gpdarp.gp.terminal.FeatureGPNode;
  *
  * @author William Huang
  */
-public class CurrentDistanceFromStation extends FeatureGPNode {
-    public CurrentDistanceFromStation() {
+public class DistanceToStation extends FeatureGPNode {
+    public DistanceToStation() {
         super();
-        name = "CDFS";
+        name = "TVC";
     }
 
     @Override

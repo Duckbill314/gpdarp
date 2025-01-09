@@ -89,12 +89,14 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
         }
 
         Request request = allocation.getKey();
+        Route route = allocation.getValue();
+
         if (request.getType() == Request.RequestType.REQUEST) {
-            Route route = allocation.getValue();
             vehicle.allocate(request);
-            vehicle.updateRoute(state, route);
             decisionProcess.removeWaiting(request);
         }
+
+        vehicle.updateRoute(state, route);
         return request;
     }
 
