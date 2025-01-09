@@ -72,7 +72,8 @@ public abstract class VehiclePolicy {
 
         vehiclePool.forEach(pair -> {
             Vehicle vehicle = pair.getKey();
-            vehicle.setPriority(priority(vehicle, state, request));
+            Route route = pair.getValue();
+            vehicle.setPriority(priority(vehicle, request, route, state));
         });
 
         return vehiclePool.stream()
@@ -92,9 +93,10 @@ public abstract class VehiclePolicy {
      * Calculate the priority of a candidate vehicle for a request given a state.
      *
      * @param candidate the candidate vehicle.
-     * @param state     the decision process state.
      * @param request   the request to be allocated.
+     * @param route     the route associated with the candidate.
+     * @param state     the decision process state.
      * @return the priority of the candidate vehicle.
      */
-    public abstract double priority(Vehicle candidate, DecisionProcessState state, Request request);
+    public abstract double priority(Vehicle candidate, Request request, Route route, DecisionProcessState state);
 }

@@ -73,7 +73,8 @@ public abstract class RequestPolicy {
 
         requestPool.forEach(pair -> {
             Request request = pair.getKey();
-            request.setPriority(priority(request, state, vehicle));
+            Route route = pair.getValue();
+            request.setPriority(priority(request, vehicle, route, state));
         });
 
         return requestPool.stream()
@@ -93,9 +94,10 @@ public abstract class RequestPolicy {
      * Calculate the priority of a candidate request for a vehicle given a state.
      *
      * @param candidate the candidate request.
-     * @param state     the decision process state.
      * @param vehicle   the vehicle to be allocated to.
+     * @param route     the route associated with the candidate.
+     * @param state     the decision process state.
      * @return the priority of the candidate request.
      */
-    public abstract double priority(Request candidate, DecisionProcessState state, Vehicle vehicle);
+    public abstract double priority(Request candidate, Vehicle vehicle, Route route, DecisionProcessState state);
 }

@@ -7,6 +7,7 @@ import ec.simple.SimpleProblemForm;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
+import gpdarp.representation.route.Route;
 
 /**
  * The problem for calculating the priority of a candidate vehicle or request.
@@ -15,19 +16,22 @@ import gpdarp.decisionprocess.DecisionProcessState;
  */
 public class CalcPriorityProblem extends Problem implements SimpleProblemForm {
 
-    private Vehicle vehicle;
-    private Request request;
-    private DecisionProcessState state;
+    private final Vehicle vehicle;
+    private final Request request;
+    private final Route route;
+    private final DecisionProcessState state;
 
-    public CalcPriorityProblem(Vehicle vehicle, Request request, DecisionProcessState state) {
+    public CalcPriorityProblem(Vehicle vehicle, Request request, Route route, DecisionProcessState state) {
         this.vehicle = vehicle;
         this.request = request;
+        this.route = route;
         this.state = state;
     }
 
     // Getters
     public Vehicle getVehicle() { return vehicle; }
     public Request getRequest() { return request; }
+    public Route getRoute() { return route; }
     public DecisionProcessState getState() { return state; }
 
     @Override
