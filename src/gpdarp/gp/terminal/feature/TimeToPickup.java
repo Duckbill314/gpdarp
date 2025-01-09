@@ -1,12 +1,12 @@
 package gpdarp.gp.terminal.feature;
 
+import gpdarp.core.Arc;
 import gpdarp.core.Node;
 import gpdarp.core.Request;
-import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
-import gpdarp.representation.route.Route;
+import gpdarp.representation.route.EphemeralRoute;
 
 import java.util.Objects;
 
@@ -25,20 +25,26 @@ public class TimeToPickup extends FeatureGPNode {
     @Override
     public double value(CalcPriorityProblem calcPriorityProblem) {
         Request request = calcPriorityProblem.getRequest();
-        Route route = calcPriorityProblem.getRoute();
+        EphemeralRoute route = calcPriorityProblem.getRoute();
         DecisionProcessState state = calcPriorityProblem.getState();
 
         int distance = 0;
 
         switch (request.getType()) {
             case REQUEST -> {
-                Node to = request.getPickup();
-                Node from = Objects.requireNonNull(route.getArcs().stream()
-                        .filter(a -> a.to() == to)
+                Request requestClone = route.getRequestClones().stream()
+                        .filter(r -> r.getId() == request.getId())
                         .findFirst()
-                        .orElse(null)).from();
+                        .orElse(null);
+                assert requestClone != null;
 
-                distance = from.calcDist(to);
+                Node pickup = requestClone.getPickup();
+                Arc arc = Objects.requireNonNull(route.getArcs().stream()
+                        .filter(a -> a.to() == pickup)
+                        .findFirst()
+                        .orElse(null));
+
+                distance = arc.length();
             }
             case CHARGE -> {
                 distance = request.getPickup().calcDist(request.getDropoff());

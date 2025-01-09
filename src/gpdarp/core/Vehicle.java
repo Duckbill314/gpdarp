@@ -7,20 +7,18 @@ import java.util.*;
 
 /**
  * A vehicle is a defined construct with a set of important properties, including:
- * - capacity and demand,
+ * - capacity,
  * - battery charging information,
  * - the latest known idle position (implies that requests are not being served),
  * - the current arc (implies that the vehicle is busy serving requests or charging),
  * - requests that have been allocated to the vehicle,
  * - full route history and future planned route.
- * It also has a temporary priority value for the purpose of request allocation.
  *
  * @author William Huang
  */
 public class Vehicle {
     private final int id;
     private final int capacity;
-    private int demand;
     private final double chargeMax;
     private double chargeState;
     private final double chargeFillRate;
@@ -31,14 +29,12 @@ public class Vehicle {
     private List<Request> requests;
     private Route historicalRoute;
     private Route plannedRoute;
-    private double priority;
 
-    public Vehicle(int id, int capacity, int demand, double chargeMax, double chargeState, double chargeFillRate,
+    public Vehicle(int id, int capacity, double chargeMax, double chargeState, double chargeFillRate,
                    double chargeDepletionRate, int serveTime, Node currPos, Arc currArc, List<Request> requests,
-                   Route historicalRoute, Route plannedRoute, double priority) {
+                   Route historicalRoute, Route plannedRoute) {
         this.id = id;
         this.capacity = capacity;
-        this.demand = demand;
         this.chargeMax = chargeMax;
         this.chargeState = chargeState;
         this.chargeFillRate = chargeFillRate;
@@ -49,20 +45,18 @@ public class Vehicle {
         this.requests = requests;
         this.historicalRoute = historicalRoute;
         this.plannedRoute = plannedRoute;
-        this.priority = priority;
     }
 
     // Initialisation constructor
     public Vehicle(int id, int capacity, double chargeMax, double chargeState, double chargeFillRate,
                    double chargeDepletionRate, int serveTime, Node currPos) {
-        this(id, capacity, 0, chargeMax, chargeState, chargeFillRate, chargeDepletionRate, serveTime,
-                currPos, null, new ArrayList<>(), new Route(), new Route(), 0.0);
+        this(id, capacity, chargeMax, chargeState, chargeFillRate, chargeDepletionRate, serveTime,
+                currPos, null, new ArrayList<>(), new Route(), new Route());
     }
 
     // Getters
     public int getId() { return id; }
     public int getCapacity() { return capacity; }
-    public int getDemand() { return demand; }
     public double getChargeMax() { return chargeMax; }
     public double getChargeState() { return chargeState; }
     public double getChargeFillRate() { return chargeFillRate; }
@@ -73,19 +67,13 @@ public class Vehicle {
     public List<Request> getRequests() { return requests; }
     public Route getHistoricalRoute() { return historicalRoute; }
     public Route getPlannedRoute() { return plannedRoute; }
-    public double getPriority() { return priority; }
-    public int getRemainingCapacity() { return capacity - demand; }
     public boolean isBusy() { return (currArc != null); }
-
-    // Setters
-    public void setDemand(int demand) { this.demand = demand; }
     public void setChargeState(double chargeState) { this.chargeState = chargeState; }
     public void setCurrPos(Node currPos) { this.currPos = currPos; }
     public void setCurrArc(Arc currArc) { this.currArc = currArc; }
     public void setRequests(List<Request> requests) { this.requests = requests; }
     public void setHistoricalRoute(Route historicalRoute) { this.historicalRoute = historicalRoute; }
     public void setPlannedRoute(Route plannedRoute) { this.plannedRoute = plannedRoute; }
-    public void setPriority(double priority) { this.priority = priority; }
 
     /**
      * Helper method for ensuring the relationship between a request and its assigned vehicle is
@@ -131,7 +119,6 @@ public class Vehicle {
      */
     public void pickup(Node node) {
         node.visit();
-        demand += node.getRequest().getDemand();
         deplete(currArc.length());
         historicalRoute.push(currArc);
     }
@@ -144,7 +131,6 @@ public class Vehicle {
     public void dropoff(Node node) {
         node.visit();
         node.getRequest().finalise();
-        demand -= node.getRequest().getDemand();
         deplete(currArc.length());
         historicalRoute.push(currArc);
     }
@@ -220,9 +206,9 @@ public class Vehicle {
     public Vehicle clone() {
         Node clonedPos = currPos != null ? currPos.clone() : null;
         Arc clonedArc = currArc != null ? currArc.clone() : null;
-        return new Vehicle(id, capacity, demand, chargeMax, chargeState, chargeFillRate, chargeDepletionRate,
+        return new Vehicle(id, capacity, chargeMax, chargeState, chargeFillRate, chargeDepletionRate,
                 serveTime, clonedPos, clonedArc, Request.listClone(requests),
-                historicalRoute.clone(), plannedRoute.clone(), priority);
+                historicalRoute.clone(), plannedRoute.clone());
     }
 
     /**

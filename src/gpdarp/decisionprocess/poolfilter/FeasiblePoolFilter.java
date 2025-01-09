@@ -18,20 +18,11 @@ import java.util.List;
  * @author William Huang
  */
 public class FeasiblePoolFilter extends PoolFilter {
-    /**
-     * In theory, a singular vehicle could accept a bulk of the responsibility and intelligently plan a route to
-     * fulfill all the requests on its own.
-     * In practice, this would require an infeasible amount of planning.
-     * A driver may realistically be able to juggle a handful of requests at a time.
-     */
-    private static final int MAXIMUM_ALLOWABLE_REQUESTS = 3;
-
     @Override
     public List<Pair<Vehicle, Route>> filterVehicles(DecisionProcessState state, Request request) {
         Instance instance = state.getInstance();
         List<Vehicle> vehicles = new ArrayList<>(instance.getVehicles());
         vehicles.removeIf(Vehicle::isBusy);
-        vehicles.removeIf(v -> v.getRequests().size() >= MAXIMUM_ALLOWABLE_REQUESTS);
 
         List<Pair<Vehicle, Route>> vehiclePool = new ArrayList<>();
 
@@ -51,10 +42,6 @@ public class FeasiblePoolFilter extends PoolFilter {
     @Override
     public List<Pair<Request, Route>> filterRequests(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
         List<Pair<Request, Route>> requestPool = new ArrayList<>();
-
-        if (vehicle.getRequests().size() >= MAXIMUM_ALLOWABLE_REQUESTS) {
-            return requestPool;
-        }
 
         for (Request request : requests) {
             switch (request.getType()) {
@@ -163,29 +150,19 @@ public class FeasiblePoolFilter extends PoolFilter {
     }
 
     /**
-     * For a potential route, simulate pickup and dropoff events and check whether at any point the vehicle's demand
-     * would exceed its capacity.
+     * For a potential route, check whether the total demand of the involved requests exceeds the vehicle's capacity.
      *
      * @param vehicle the vehicle servicing along the route.
      * @param route the potential route.
      * @return whether violation occurred.
      */
-    public boolean demandConstraintViolation(Vehicle vehicle, Route route) {
-        int futureDemand = vehicle.getDemand();
-        List<Arc> arcs = new ArrayList<>(route.getArcs());
+    public boolean demandConstraintViolation(Vehicle vehicle, EphemeralRoute route) {
+        List<Request> requests = route.getRequestClones();
+        int demand = requests.stream()
+                .map(Request::getDemand)
+                .reduce(0, Integer::sum);
 
-        for (Arc arc : arcs) {
-            Node to = arc.to();
-            switch (to.getType()) {
-                case PICKUP -> futureDemand += to.getRequest().getDemand();
-                case DROPOFF -> futureDemand -= to.getRequest().getDemand();
-            }
-
-            if (futureDemand > vehicle.getCapacity()) {
-                return true;
-            }
-        }
-        return false;
+        return demand > vehicle.getCapacity();
     }
 
     /**

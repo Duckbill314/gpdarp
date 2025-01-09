@@ -1,15 +1,20 @@
 package gpdarp.gp.terminal.feature;
 
-import gpdarp.core.Instance;
-import gpdarp.core.Node;
-import gpdarp.core.Request;
-import gpdarp.core.Vehicle;
+import gpdarp.core.*;
 import gpdarp.decisionprocess.DecisionProcessState;
+import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
+import gpdarp.representation.route.EphemeralRoute;
+import gpdarp.representation.route.Route;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
- * Returns the expected slack for serving the request.
+ * Returns the expected slack of the request.
+ * It is calculated as: window end time - current time - shortest possible arrival time out of all vehicles.
  * It is a measure of urgency of a request.
  *
  * @author William Huang
@@ -19,25 +24,43 @@ public class ExpectedSlack extends FeatureGPNode {
 
     public ExpectedSlack() {
         super();
-        name = "SLCK";
+        name = "SLACK";
     }
 
     @Override
     public double value(CalcPriorityProblem calcPriorityProblem) {
-        Vehicle vehicle = calcPriorityProblem.getVehicle();
         Request request = calcPriorityProblem.getRequest();
         DecisionProcessState state = calcPriorityProblem.getState();
-        Instance instance = state.getInstance();
-        Node currPos = vehicle.getCurrPos();
 
         if (request.getType() == Request.RequestType.CHARGE) {
             return LIMIT;
         }
 
+        FeasiblePoolFilter poolFilter = new FeasiblePoolFilter();
+        List<Pair<Vehicle, Route>> pool = poolFilter.filterVehicles(state, request);
+
         int tMax = request.getTMax();
         int tCurr = state.getTime();
-        int travelTime = instance.calculateTravelTime(currPos.calcDist(request.getPickup()));
+        int bestTime = (int) LIMIT;
 
-        return tMax - tCurr - travelTime;
+        for (Pair<Vehicle, Route> candidate : pool) {
+            EphemeralRoute candidateRoute = candidate.getValue().getEphemeralRoute();
+
+            Request requestClone = candidateRoute.getRequestClones().stream()
+                    .filter(r -> r.getId() == request.getId())
+                    .findFirst()
+                    .orElse(null);
+            assert requestClone != null;
+
+            Node pickup = requestClone.getPickup();
+            Arc arc = Objects.requireNonNull(candidateRoute.getArcs().stream()
+                    .filter(a -> a.to() == pickup)
+                    .findFirst()
+                    .orElse(null));
+            int time = arc.to().getArrivalTime() - arc.from().getDepartureTime();
+            bestTime = Math.min(bestTime, time);
+        }
+
+        return tMax - tCurr - bestTime;
     }
 }

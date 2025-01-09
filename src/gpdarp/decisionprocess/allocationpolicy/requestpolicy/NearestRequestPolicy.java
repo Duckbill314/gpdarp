@@ -1,5 +1,6 @@
 package gpdarp.decisionprocess.allocationpolicy.requestpolicy;
 
+import gpdarp.core.Arc;
 import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
@@ -37,13 +38,13 @@ public class NearestRequestPolicy extends RequestPolicy {
                         .orElse(null);
                 assert requestClone != null;
 
-                Node to = requestClone.getPickup();
-                Node from = Objects.requireNonNull(route.getArcs().stream()
-                        .filter(a -> a.to() == to)
+                Node pickup = requestClone.getPickup();
+                Arc arc = Objects.requireNonNull(route.getArcs().stream()
+                        .filter(a -> a.to() == pickup)
                         .findFirst()
-                        .orElse(null)).from();
+                        .orElse(null));
 
-                priority = from.calcDist(to);
+                priority = arc.length();
             }
             case CHARGE -> {
                 priority = candidate.getPickup().calcDist(candidate.getDropoff());

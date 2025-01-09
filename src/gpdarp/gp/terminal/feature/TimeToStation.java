@@ -1,25 +1,29 @@
 package gpdarp.gp.terminal.feature;
 
+import gpdarp.core.Instance;
+import gpdarp.core.Node;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
 import gpdarp.representation.route.EphemeralRoute;
 
 /**
- * Returns the expected cost (increase in objective value) of the candidate route.
+ * Returns the travel time between the last position in the vehicle's route and the nearest charging station.
  *
  * @author William Huang
  */
-public class ExpectedCost extends FeatureGPNode {
-    public ExpectedCost() {
+public class TimeToStation extends FeatureGPNode {
+    public TimeToStation() {
         super();
-        name = "COST";
+        name = "TVC";
     }
 
     @Override
     public double value(CalcPriorityProblem calcPriorityProblem) {
         EphemeralRoute route = calcPriorityProblem.getRoute();
         DecisionProcessState state = calcPriorityProblem.getState();
-        return route.getTime() + state.getInstance().getLatenessPenalty() * route.calculatePenalty();
+        Instance instance = state.getInstance();
+        Node pos = route.getEndpoint();
+        return instance.calculateTravelTime(pos.calcDist(instance.findClosestStation(pos)));
     }
 }

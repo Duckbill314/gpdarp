@@ -10,7 +10,7 @@ import java.util.List;
  * - the pickup and dropoff destinations,
  * - the earliest and latest possible time the customer wishes to be picked up,
  * - the maximum ride time.
- * In addition, it also has a type identifier and a temporary priority value for the purpose of vehicle allocation.
+ * In addition, it also has a type identifier for the purpose of vehicle allocation.
  *
  * @author William Huang
  */
@@ -25,7 +25,6 @@ public class Request {
     private final int demand;
     private Vehicle vehicle;
     private RequestType type;
-    private double priority;
 
     public Request(int id, int tRec, Node pickup, Node dropoff, int tEarly, int tLate, int tMax, int demand) {
         this.id = id;
@@ -38,7 +37,6 @@ public class Request {
         this.demand = demand;
         this.vehicle = null;
         this.type = RequestType.REQUEST;
-        this.priority = 0;
         pickup.setRequest(this);
         pickup.setType(Node.NodeType.PICKUP);
         dropoff.setRequest(this);
@@ -57,7 +55,6 @@ public class Request {
         this.demand = 0;
         this.vehicle = null;
         this.type = RequestType.CHARGE;
-        this.priority = 0;
     }
 
     // Getters
@@ -71,14 +68,12 @@ public class Request {
     public int getDemand() { return demand; }
     public Vehicle getVehicle() { return vehicle; }
     public RequestType getType() { return type; }
-    public double getPriority() { return priority; }
 
     // Setters
     public void setPickup(Node pickup) { this.pickup = pickup; }
     public void setDropoff(Node dropoff) { this.dropoff = dropoff; }
     public void setVehicle(Vehicle vehicle) { this.vehicle = vehicle; }
     public void setType(RequestType type) { this.type = type; }
-    public void setPriority(double priority) { this.priority = priority; }
 
     /**
      * Request types are responsible for handling behaviour during reactive events.
@@ -128,7 +123,6 @@ public class Request {
     @Override
     public Request clone() {
         Request clone = new Request(id, tRec, pickup.clone(), dropoff.clone(), tEarly, tLate, tMax, demand);
-        clone.setPriority(priority);
         clone.setType(type);
         return clone;
     }
