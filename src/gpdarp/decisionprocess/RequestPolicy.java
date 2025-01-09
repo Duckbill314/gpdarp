@@ -79,7 +79,7 @@ public abstract class RequestPolicy {
         });
 
         return requestPool.stream()
-                .filter(e -> e.getKey().getPriority() <= 0)
+                .filter(e -> e.getValue().getPriority() <= 0)
                 .min((e1, e2) -> {
                     if (Double.compare(e1.getValue().getPriority(), e2.getValue().getPriority()) == 0) {
                         return tieBreaker.breakTie(e1.getKey(), e2.getKey());
