@@ -465,10 +465,13 @@ Pickup and dropoff arrival times: [1586, 1598]
 Time taken/maximum allowable time: 12/30
 
 
-Routes:
+Routes: 
 {idle(-914, 564), pickup(-768, 662), dropoff(-256, 241), station(0, 0), pickup(944, -529), dropoff(-116, 549), pickup(-665, 959), dropoff(-256, -659), pickup(828, -324), dropoff(-690, -740), station(-500, -500), pickup(-395, -64), dropoff(677, -319), pickup(332, -446), dropoff(919, 549), pickup(-834, -400), dropoff(-869, -103), station(-500, -500), pickup(-374, 576), dropoff(213, -921), pickup(476, -929), dropoff(718, 655), pickup(280, -384), dropoff(-261, 959), pickup(480, 431), dropoff(-876, -365), pickup(-947, -472), dropoff(-954, -489), pickup(-659, 581), dropoff(989, 933), station(500, 500), pickup(-475, -140), pickup(-600, 401), dropoff(353, 161), dropoff(-279, -474), pickup(229, 893), dropoff(-530, -281), station(-500, -500), pickup(-53, -878), dropoff(881, 165), pickup(-854, -176), dropoff(924, 880), pickup(168, 818), dropoff(-472, -21), station(0, 0), pickup(425, -8), pickup(489, -53), dropoff(832, -898), dropoff(-630, 102), pickup(320, -172), dropoff(-78, -746), station(-500, -500), pickup(-407, -69), dropoff(-122, 728), pickup(-291, 836), dropoff(712, -466), pickup(-611, -299), dropoff(632, -86), station(500, 500)}
 {idle(-238, -828), pickup(236, -836), dropoff(607, 835), station(500, 500), pickup(-309, 630), dropoff(296, -170), pickup(737, 776), dropoff(-999, -792), pickup(494, 274), dropoff(-842, -574), station(-500, -500), pickup(364, 816), dropoff(-549, 515), pickup(-620, 515), dropoff(290, -719), pickup(-71, -153), dropoff(621, 695), station(500, 500), pickup(661, -115), pickup(351, -610), dropoff(-967, -715), dropoff(-609, -150), pickup(627, -35), dropoff(-281, -933), station(-500, -500), pickup(235, 330), pickup(-206, 709), dropoff(45, 991), dropoff(763, 19), pickup(-885, -760), dropoff(711, -255), station(0, 0), pickup(-493, 707), pickup(-159, 751), dropoff(-811, -258), dropoff(716, -92), pickup(-55, 39), dropoff(-542, 777), station(0, 0), pickup(242, -862), pickup(965, -972), dropoff(-576, -924), dropoff(-982, -119), pickup(592, 389), dropoff(-838, -752), pickup(-749, 335), dropoff(491, 934), pickup(-798, -886), dropoff(-806, 638), pickup(-367, 963), dropoff(0, 214), station(0, 0), pickup(934, -806), pickup(726, -964), dropoff(877, -98), dropoff(591, 474), pickup(-958, 31), dropoff(199, -26), station(0, 0)}
 
 Total time/penalty: 1198.0/8406.0
 Cost: 9604.000000
-Time elapsed: 0.0 ms.
+Time elapsed: 439.204273 ms. 
+
+
+Process finished with exit code 0

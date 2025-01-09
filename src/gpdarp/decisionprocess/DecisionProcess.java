@@ -37,6 +37,7 @@ public abstract class DecisionProcess {
         this.waitingList = waitingList;
         this.vehiclePolicy = vehiclePolicy;
         this.requestPolicy = requestPolicy;
+        state.setWaitingList(waitingList);
     }
 
     // Getters

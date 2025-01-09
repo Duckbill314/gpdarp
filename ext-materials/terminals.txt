@@ -3,10 +3,10 @@
 - Request demand (is 0 for charging actions) (DEM) done!
 - Duration: travel time from the pickup to the dropoff location of the request (DUR) done!
 - Expected slack of the request (window end time - current time - earliest arrival time out of all vehicles); measure of urgency (SLACK) done!
-- Crowdedness of request: average travel time from its pickup point to all the pickup and dropoff points of the other requests (CRD)
+- Crowdedness of request: average travel time from its pickup point to all the pickup and dropoff points of the other requests (CRD) done!
 - Vehicle's remaining capacity (RQ) done!
 - Vehicle's remaining charge (RT) done!
-- Vehicle slack: the minimal slack of the requests in the vehicle's planned route (VSLACK)
+- Vehicle slack: the minimal slack of the requests in the vehicle's planned route (VSLACK) done!
 - Current distance of the vehicle from the closest charging station (TVC) done!
 
 TODO: include this in the paper

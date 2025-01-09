@@ -22,7 +22,6 @@ import java.nio.file.Path;
  * @author gphhucarp, William Huang
  */
 public class ReactiveDecisionProcessDemo {
-
     public static void main(String[] args) {
         // read an instance from a data file
         Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
@@ -69,7 +68,5 @@ public class ReactiveDecisionProcessDemo {
             System.out.printf("Cost: %f%n", cost);
             System.out.println("Time elapsed: " + duration + " ms. \n");
         }
-
-
     }
 }

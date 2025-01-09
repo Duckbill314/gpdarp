@@ -12,7 +12,8 @@ import java.util.List;
  * This information includes
  * - the instance (which contains most of the information),
  * - the current time,
- * - the solution.
+ * - the solution,
+ * - the current waiting list of requests (for the purpose of evaluating terminals only).
  *
  * @author gphhucarp, William Huang
  */
@@ -20,6 +21,7 @@ public class DecisionProcessState {
     private final Instance instance;
     private int time;
     private final Solution solution;
+    private List<Request> waitingList;
 
     public DecisionProcessState(Instance instance, int time, Solution solution) {
         this.instance = instance;
@@ -35,9 +37,11 @@ public class DecisionProcessState {
     public Instance getInstance() { return instance; }
     public int getTime() { return time; }
     public Solution getSolution() { return solution; }
+    public List<Request> getWaitingList() { return waitingList; }
 
     // Setters
     public void setTime(int time) { this.time = time; }
+    public void setWaitingList(List<Request> waitingList) { this.waitingList = waitingList; }
 
     /**
      * Update the solution with all the vehicles' current historical routes.

@@ -5,7 +5,6 @@ import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
-import gpdarp.representation.route.EphemeralRoute;
 import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -40,27 +39,19 @@ public class ExpectedSlack extends FeatureGPNode {
         List<Pair<Vehicle, Route>> pool = poolFilter.filterVehicles(state, request);
 
         int tMax = request.getTMax();
-        int tCurr = state.getTime();
-        int bestTime = (int) LIMIT;
 
-        for (Pair<Vehicle, Route> candidate : pool) {
-            EphemeralRoute candidateRoute = candidate.getValue().getEphemeralRoute();
+        int bestTime = pool.stream()
+                .map(pair -> pair.getValue().getEphemeralRoute())
+                .map(route -> route.getRequestClones().stream()
+                        .filter(req -> req.getId() == request.getId())
+                        .findFirst()
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .map(Request::getPickup)
+                .map(Node::getArrivalTime)
+                .min(Double::compare)
+                .orElse((int) LIMIT);
 
-            Request requestClone = candidateRoute.getRequestClones().stream()
-                    .filter(r -> r.getId() == request.getId())
-                    .findFirst()
-                    .orElse(null);
-            assert requestClone != null;
-
-            Node pickup = requestClone.getPickup();
-            Arc arc = Objects.requireNonNull(candidateRoute.getArcs().stream()
-                    .filter(a -> a.to() == pickup)
-                    .findFirst()
-                    .orElse(null));
-            int time = arc.to().getArrivalTime() - arc.from().getDepartureTime();
-            bestTime = Math.min(bestTime, time);
-        }
-
-        return tMax - tCurr - bestTime;
+        return tMax - bestTime;
     }
 }
