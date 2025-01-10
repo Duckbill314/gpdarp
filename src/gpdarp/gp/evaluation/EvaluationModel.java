@@ -28,7 +28,7 @@ import java.util.Map;
 public abstract class EvaluationModel {
     public static final String P_OBJECTIVES = "objectives";
     public static final String P_INSTANCES = "instances";
-    public static final String P_DATASET = "dataset";
+    public static final String P_DATAPATH = "datapath";
 
     protected List<Objective> objectives;
     protected List<Instance> instanceSamples;
@@ -90,14 +90,13 @@ public abstract class EvaluationModel {
             System.exit(1);
         }
 
-        // which dataset to use (train or test)
-        p = base.push(P_DATASET);
-        String dataset = state.parameters.getStringWithDefault(p, null, "train");
+        // the path containing the dataset of interest
+        p = base.push(P_DATAPATH);
+        String datapath = state.parameters.getStringWithDefault(p, null, "");
 
         instanceSamples = new ArrayList<>();
         for (int i = 0; i < numInstances; i++) {
-            Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
-            File file = new File(root + String.format("/src/data/%s/%d.txt", dataset, i+1));
+            File file = new File(String.format("%s/%d.txt", datapath, i+1));
             Instance instance = Instance.readFromFile(file);
             Instance original = Instance.readFromFile(file);
             instance.setOriginalCopy(original);

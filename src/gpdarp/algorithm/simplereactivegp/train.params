@@ -25,7 +25,7 @@ stat.file = $job.0.out.stat
 #stat.child.0 = ec.gp.koza.KozaShortStatistics
 #stat.child.0.file = $outtabular.stat
 
-generations = 5
+generations = 5 // TODO
 quit-on-run-complete = true
 
 pop = ec.Population
@@ -230,7 +230,7 @@ eval.problem.eval-model = gpdarp.gp.evaluation.ReactiveEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = total-cost
 eval.problem.eval-model.instances = 1
-eval.problem.eval-model.instances.dataset = train
+eval.problem.eval-model.datapath = $data/train
 
 # ==============================
 # The GPHH evolution state parameters

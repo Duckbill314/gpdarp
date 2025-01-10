@@ -1,8 +1,9 @@
+# // TODO
 # ==============================
 # The training results
 # ==============================
 analysis = terminal-frequency
-# train-path = // TODO: set path
+# train-path =
 solution-type = simple-solution
 fitness-type = simple-fitness
 num-trains = 30

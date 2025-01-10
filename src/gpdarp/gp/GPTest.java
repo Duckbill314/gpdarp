@@ -10,6 +10,7 @@ import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import gpdarp.core.Instance;
 import gpdarp.core.Objective;
+import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
 import gpdarp.gp.evaluation.EvaluationModel;
@@ -17,6 +18,7 @@ import gpdarp.gp.io.FitnessType;
 import gpdarp.gp.io.GPResult;
 import gpdarp.gp.io.SolutionType;
 import gputils.UniqueTerminalsGatherer;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -103,7 +105,8 @@ public class GPTest {
                 long start = System.currentTimeMillis();
 
                 for (int j = 0; j < result.getSolutions().size(); j++) {
-                    testEvaluationModel.evaluateOriginal(result.getSolutionAtGen(j), null,
+                    Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
+                    testEvaluationModel.evaluateOriginal(solution.getLeft(), solution.getRight(),
                             result.getTestFitnessAtGen(j), state);
 
                     System.out.println("Generation " + j + ": test fitness = " +
@@ -111,9 +114,11 @@ public class GPTest {
                 }
 
                 // test the best rule
-                testEvaluationModel.evaluateOriginal(result.getBestSolution(), null,
+                Pair<VehiclePolicy, RequestPolicy> bestSolution = result.getBestSolution();
+                testEvaluationModel.evaluateOriginal(bestSolution.getLeft(), bestSolution.getRight(),
                         result.getBestTestFitness(), state);
-                System.out.println("Best indi: test fitness = " +
+
+                System.out.println("Best individual: test fitness = " +
                         result.getBestTestFitness().fitness());
 
                 long finish = System.currentTimeMillis();

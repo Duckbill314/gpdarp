@@ -3,8 +3,10 @@ package gpdarp.gp.io;
 import ec.Fitness;
 import ec.Problem;
 import ec.multiobjective.MultiObjectiveFitness;
+import gpdarp.core.Request;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
+import gpdarp.decisionprocess.allocationpolicy.requestpolicy.GPRequestPolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
 import gpdarp.gp.UCARPPrimitiveSet;
 import gpdarp.gp.ReactiveGPHHProblem;
@@ -22,14 +24,15 @@ import java.util.Objects;
 
 /**
  * A GP result is a class that stores the information read from an out.stat file produced by a GP run.
- * It includes
- *  - a list of solutions (best individuals), one per generation.
- *  - a list of training fitnesses, each for a solution.
- *  - a list of demo fitnesses, each for a solution.
- *  - a best solution according to the training fitness.
- *  - the training fitness of the best solution.
- *  - the demo fitness of the best solution.
- *  - the time statistics, i.e. the time spent for each generation.
+ * It includes:
+ *  - A list of pairs of expressions representing the evolved trees, one pair per generation.
+ *  - A list of solutions, each comprised of a paired VehiclePolicy and RequestPolicy.
+ *  - A list of training fitnesses, each for a solution.
+ *  - A list of test fitnesses, each for a solution.
+ *  - The aforementioned information for the best individual of the run (i.e. the last individual in the run).
+ *  - The time statistics, i.e. the time spent for each generation.
+ *
+ * @author gphhucarp, William Huang
  */
 
 public class GPResult {
@@ -114,6 +117,7 @@ public class GPResult {
                                         Problem problem,
                                         SolutionType solutionType,
                                         FitnessType fitnessType) {
+
         if (Objects.requireNonNull(solutionType) == SolutionType.SIMPLE_SOLUTION) {
             return readSimpleSolutionFromFile(file, problem, fitnessType);
         }
@@ -123,14 +127,15 @@ public class GPResult {
     public static GPResult readSimpleSolutionFromFile(File file,
                                                       Problem problem,
                                                       FitnessType fitnessType) {
-        ReactiveGPHHProblem prob = (ReactiveGPHHProblem)problem;
 
         GPResult result = new GPResult();
 
         String line;
         Fitness fitness = null;
-        VehiclePolicy solution = null;
-        String expression = "";
+        String expression1 = "";
+        String expression2 = "";
+        Pair<String, String> expression = null;
+        Pair<VehiclePolicy, RequestPolicy> solution = null;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (!(line = br.readLine()).equals("Best Individual of Run:")) {
@@ -141,21 +146,27 @@ public class GPResult {
                     line = br.readLine();
                     fitness = readFitnessFromLine(line, fitnessType);
                     br.readLine();
-                    expression = br.readLine();
+                    expression1 = br.readLine();
+                    expression1 = LispUtils.simplifyExpression(expression1);
+                    br.readLine();
+                    expression2 = br.readLine();
+                    expression2 = LispUtils.simplifyExpression(expression2);
 
-                    expression = LispUtils.simplifyExpression(expression);
-
+                    expression = Pair.of(expression1, expression2);
                     result.addExpression(expression);
 
-                    VehiclePolicy vehiclePolicy =
-                            new GPVehiclePolicy(LispUtils.parseExpression(expression,
-                                            UCARPPrimitiveSet.primitiveSet()));
+                    VehiclePolicy vehiclePolicy = new GPVehiclePolicy(
+                            LispUtils.parseExpression(expression1, UCARPPrimitiveSet.primitiveSet()));
 
-                    result.addSolution(vehiclePolicy);
+                    RequestPolicy requestPolicy = new GPRequestPolicy(
+                            LispUtils.parseExpression(expression2, UCARPPrimitiveSet.primitiveSet()));
+
+                    solution = Pair.of(vehiclePolicy, requestPolicy);
+                    result.addSolution(solution);
+
                     result.addTrainFitness(fitness);
                     result.addTestFitness((Fitness)fitness.clone());
 
-                    solution = vehiclePolicy;
                 }
             }
         } catch (IOException e) {
@@ -173,17 +184,16 @@ public class GPResult {
 
     private static Fitness readFitnessFromLine(String line,
                                                FitnessType fitnessType) {
-        switch (fitnessType) {
-            case SIMPLE_FITNESS:
-                return readSimpleFitnessFromLine(line);
-            default:
-                return null;
+
+        if (Objects.requireNonNull(fitnessType) == FitnessType.SIMPLE_FITNESS) {
+            return readSimpleFitnessFromLine(line);
         }
+        return null;
     }
 
     private static Fitness readSimpleFitnessFromLine(String line) {
         String[] segments = line.split("\\[|\\]");
-        double fitness = Double.valueOf(segments[1]);
+        double fitness = Double.parseDouble(segments[1]);
         MultiObjectiveFitness f = new MultiObjectiveFitness();
         f.objectives = new double[1];
         f.objectives[0] = fitness;
@@ -205,7 +215,7 @@ public class GPResult {
                     break;
 
                 String[] commaSegments = line.split(",");
-                generationalTimeStat.addValue(Double.valueOf(commaSegments[1]));
+                generationalTimeStat.addValue(Double.parseDouble(commaSegments[1]));
             }
 
         } catch (IOException e) {
