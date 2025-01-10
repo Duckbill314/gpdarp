@@ -25,13 +25,13 @@ stat.file = $job.0.out.stat
 #stat.child.0 = ec.gp.koza.KozaShortStatistics
 #stat.child.0.file = $outtabular.stat
 
-generations = 51
+generations = 5
 quit-on-run-complete = true
 
 pop = ec.Population
 pop.subpops = 1
 pop.subpop.0 = ec.Subpopulation
-pop.subpop.0.size =	1024
+pop.subpop.0.size =	20
 
 breed.elite.0 = 10
 
@@ -43,9 +43,11 @@ breed.elite.0 = 10
 # GP population parameters
 pop.subpop.0.species = ec.gp.GPSpecies
 pop.subpop.0.species.ind = ec.gp.GPIndividual
-pop.subpop.0.species.ind.numtrees = 1
+pop.subpop.0.species.ind.numtrees = 2
 pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
 pop.subpop.0.species.ind.tree.0.tc = tc0
+pop.subpop.0.species.ind.tree.1 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.1.tc = tc1
 
 #pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 pop.subpop.0.species.fitness = ec.multiobjective.MultiObjectiveFitness
@@ -103,12 +105,18 @@ gp.type.a.0.name = nil
 gp.type.s.size = 0
 
 # GP tree constraints
-gp.tc.size = 1
+gp.tc.size = 2
 gp.tc.0 = ec.gp.GPTreeConstraints
 gp.tc.0.name = tc0
 gp.tc.0.fset = f0
 gp.tc.0.returns = nil
 gp.tc.0.init = ec.gp.koza.HalfBuilder
+
+gp.tc.1 = ec.gp.GPTreeConstraints
+gp.tc.1.name = tc1
+gp.tc.1.fset = f0
+gp.tc.1.returns = nil
+gp.tc.1.init = ec.gp.koza.HalfBuilder
 
 # Koza half-ramp-and-ramp parameters, for gp.tc.0.init
 gp.koza.half.min-depth = 2
@@ -215,22 +223,16 @@ gp.fs.0.func.7.nc = nc3
 # ==============================
 
 eval.problem = gpdarp.gp.ReactiveGPHHProblem
-eval.problem.pool-filter = gpdarp.decisionprocess.poolfilter.ExpFeasibleNoRefillPoolFilter
+eval.problem.pool-filter = gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter
 eval.problem.tie-breaker = gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker
 eval.problem.data = gputils.DoubleData
 eval.problem.eval-model = gpdarp.gp.evaluation.ReactiveEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = total-cost
 eval.problem.eval-model.instances = 1
-eval.problem.eval-model.instances.0.file = egl/egl-e1-A.dat
-eval.problem.eval-model.instances.0.samples = 5
-eval.problem.eval-model.instances.0.vehicles = from-file
-eval.problem.eval-model.instances.0.demand-uncertainty-level = 0.2
-eval.problem.eval-model.instances.0.cost-uncertainty-level = 0.2
+eval.problem.eval-model.instances.dataset = train
 
 # ==============================
 # The GPHH evolution state parameters
 # ==============================
-terminals-from = extended
 include-erc = true
-rotate-eval-model = true

@@ -66,7 +66,7 @@ public class Solution {
 
         double cost = time + penalty;
 
-        System.out.printf("Total time/penalty: %.1f/%.1f%n", time, penalty);
+        // System.out.printf("Total time/penalty: %.1f/%.1f%n", time, penalty);
         return cost;
     }
 
@@ -96,7 +96,7 @@ public class Solution {
         double penalty = latenessPenalty * route.calculatePenalty();
         double cost = time + penalty;
 
-        System.out.printf("Highest cost route's time/penalty: %.1f/%.1f%n", time, penalty);
+        // System.out.printf("Highest cost route's time/penalty: %.1f/%.1f%n", time, penalty);
         return cost;
     }
 

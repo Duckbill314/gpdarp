@@ -1,16 +1,8 @@
 # ==============================
 # The training results
 # ==============================
-#policy-type = gp-evolved
-policy-type = manual
-
-# for manual policies
-manual-policies = 5
-manual-policies.0 = gpdarp.decisionprocess.allocationpolicy.PathScanning1Policy
-manual-policies.1 = gpdarp.decisionprocess.allocationpolicy.PathScanning2Policy
-manual-policies.2 = gpdarp.decisionprocess.allocationpolicy.PathScanning3Policy
-manual-policies.3 = gpdarp.decisionprocess.allocationpolicy.PathScanning4Policy
-manual-policies.4 = gpdarp.decisionprocess.allocationpolicy.PathScanning5Policy
+policy-type = gp-evolved
+# policy-type = manual
 
 # for gp-evolved policies
 train-path = /Users/yimei/Dropbox/HHUCARP/

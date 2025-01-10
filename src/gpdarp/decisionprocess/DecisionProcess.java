@@ -100,7 +100,7 @@ public abstract class DecisionProcess {
     public void run() {
         while (!eventQueue.isEmpty()) {
             DecisionProcessEvent event = eventQueue.poll();
-            System.out.println(event);
+            // System.out.println(event);
             state.setTime(event.getTime());
             event.trigger(this);
             state.updateSolution();

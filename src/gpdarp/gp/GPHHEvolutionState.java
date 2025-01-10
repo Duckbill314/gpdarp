@@ -21,7 +21,6 @@ import java.util.Map;
  * The evolution state of evolving routing policy with GPHH.
  *
  * @author gphhucarp
- *
  */
 public class GPHHEvolutionState extends TerminalERCEvolutionState {
 
@@ -29,30 +28,22 @@ public class GPHHEvolutionState extends TerminalERCEvolutionState {
 	public static final String POP_PROG_SIZE = "pop-prog-size";
 	public static final String POP_FITNESS = "pop-fitness";
 
-	// Read the file to specify the terminals.
-	public static final String P_TERMINALS_FROM = "terminals-from";
+	// Whether to include ephemeral random constants.
 	public static final String P_INCLUDE_ERC = "include-erc";
-
-	// Whether to rotate the evaluation model or not.
-	public static final String P_ROTATE_EVAL_MODEL = "rotate-eval-model";
-
-	protected String terminalFrom;
 	protected boolean includeErc;
-	protected boolean rotateEvalModel;
 
-	protected long jobSeed;
-
+	// Fields
     protected Map<String, DescriptiveStatistics> statisticsMap;
 	protected File statFile;
+	protected long jobSeed;
 
+	// Getters
 	public Map<String, DescriptiveStatistics> getStatisticsMap() {
 		return statisticsMap;
 	}
-
 	public DescriptiveStatistics getStatistics(String key) {
 		return statisticsMap.get(key);
 	}
-
 	public long getJobSeed() {
 		return jobSeed;
 	}
@@ -120,19 +111,17 @@ public class GPHHEvolutionState extends TerminalERCEvolutionState {
 	 * Initialize the terminal set.
 	 */
 	public void initTerminalSets() {
-		if (terminalFrom.equals("basic")) {
-			terminalSets = new ArrayList<>();
+		terminalSets = new ArrayList<>();
 
-			for (int i = 0; i < subpops; i++)
-				terminalSets.add(UCARPPrimitiveSet.terminalSet());
-		}
-		else {
-			initTerminalSetsFromCsv(new File(terminalFrom), UCARPPrimitiveSet.terminalSet());
+		for (int i = 0; i < subpops; i++) {
+			terminalSets.add(UCARPPrimitiveSet.terminalSet());
 		}
 
-		if (includeErc)
-			for (int i = 0; i < subpops; i++)
+		if (includeErc) {
+			for (int i = 0; i < subpops; i++) {
 				terminalSets.get(i).add(new DoubleERC());
+			}
+		}
 	}
 
 	/**
@@ -160,17 +149,9 @@ public class GPHHEvolutionState extends TerminalERCEvolutionState {
 		p = new Parameter("seed").push(""+0);
 		jobSeed = parameters.getLongWithDefault(p, null, 0);
 
-		// get the source of the terminal sets
- 		p = new Parameter(P_TERMINALS_FROM);
- 		terminalFrom = parameters.getStringWithDefault(p, null, "basic");
-
  		// get whether to include the double ERC in the terminal sets or not
 		p = new Parameter(P_INCLUDE_ERC);
 		includeErc = parameters.getBoolean(p, null, false);
-
-		// get whether to rotate the evaluation model per generation or not
-		p = new Parameter(P_ROTATE_EVAL_MODEL);
-		rotateEvalModel = parameters.getBoolean(p, null, false);
 
 		// get the number of subpopulations
 		p = new Parameter(Initializer.P_POP).push(Population.P_SIZE);

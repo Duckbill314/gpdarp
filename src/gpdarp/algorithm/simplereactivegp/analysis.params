@@ -2,7 +2,7 @@
 # The training results
 # ==============================
 analysis = terminal-frequency
-train-path = /Users/yimei/Dropbox/Research/GPAnalysis/gpucarp/gp-veh1/val10C/
+# train-path = // TODO: set path
 solution-type = simple-solution
 fitness-type = simple-fitness
 num-trains = 30
@@ -13,19 +13,14 @@ num-trains = 30
 state = ec.simple.SimpleEvolutionState
 eval = ec.simple.SimpleEvaluator
 eval.problem = gpdarp.gp.ReactiveGPHHProblem
-eval.problem.pool-filter = gpdarp.decisionprocess.poolfilter.ExpFeasiblePoolFilter
+eval.problem.pool-filter = gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter
 eval.problem.tie-breaker = gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker
 eval.problem.data = gputils.DoubleData
 eval.problem.eval-model = gpdarp.gp.evaluation.ReactiveEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = total-cost
-eval.problem.eval-model.instances = 1
-eval.problem.eval-model.instances.0.file = gdb/gdb18.dat
-eval.problem.eval-model.instances.0.samples = 500
-eval.problem.eval-model.instances.0.vehicles = 2
-eval.problem.eval-model.instances.0.demand-uncertainty-level = 0.2
-eval.problem.eval-model.instances.0.cost-uncertainty-level = 0.2
-eval.problem.eval-model.seed = 25234
+eval.problem.eval-model.instances = 500
+eval.problem.eval-model.instances.dataset = test
 
 
 
@@ -86,9 +81,11 @@ breed.elite.0 = 10
 # GP population parameters
 pop.subpop.0.species = ec.gp.GPSpecies
 pop.subpop.0.species.ind = ec.gp.GPIndividual
-pop.subpop.0.species.ind.numtrees = 1
+pop.subpop.0.species.ind.numtrees = 2
 pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
 pop.subpop.0.species.ind.tree.0.tc = tc0
+pop.subpop.0.species.ind.tree.1 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.1.tc = tc0
 
 #pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 pop.subpop.0.species.fitness = ec.multiobjective.MultiObjectiveFitness

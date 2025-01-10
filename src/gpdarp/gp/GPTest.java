@@ -57,14 +57,17 @@ public class GPTest {
         // read the path of the training out.stat files.
         p = new Parameter(P_TRAIN_PATH);
         String trainPath = parameters.getStringWithDefault(p, null, "");
+
         // read the solution type, e.g. a single routing policy or ensemble
         p = new Parameter(P_SOLUTION_TYPE);
         String stString = parameters.getStringWithDefault(p, null, "");
         SolutionType solutionType = SolutionType.get(stString);
+
         // read the fitness type, e.g. a multiobjective fitness
         p = new Parameter(P_FITNESS_TYPE);
         String ftString = parameters.getStringWithDefault(p, null, "");
         FitnessType fitnessType = FitnessType.get(ftString);
+
         // read the number of trains, i.e. the number of out.stat files
         p = new Parameter(P_NUM_TRAINS);
         int numTrains = parameters.getIntWithDefault(p, null, 1);

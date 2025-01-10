@@ -3,11 +3,13 @@ package gpdarp.gp.io;
 import ec.Fitness;
 import ec.Problem;
 import ec.multiobjective.MultiObjectiveFitness;
+import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
 import gpdarp.gp.UCARPPrimitiveSet;
 import gpdarp.gp.ReactiveGPHHProblem;
 import gputils.LispUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import java.io.BufferedReader;
@@ -31,13 +33,13 @@ import java.util.Objects;
  */
 
 public class GPResult {
-    private List<String> expressions;
-    private List<VehiclePolicy> solutions;
+    private List<Pair<String, String>> expressions;
+    private Pair<String, String> bestExpression;
+    private List<Pair<VehiclePolicy, RequestPolicy>> solutions;
+    private Pair<VehiclePolicy, RequestPolicy> bestSolution;
     private List<Fitness> trainFitnesses;
-    private List<Fitness> testFitnesses;
-    private String bestExpression;
-    private VehiclePolicy bestSolution;
     private Fitness bestTrainFitness;
+    private List<Fitness> testFitnesses;
     private Fitness bestTestFitness;
     private DescriptiveStatistics timeStat;
 
@@ -48,106 +50,62 @@ public class GPResult {
         testFitnesses = new ArrayList<>();
     }
 
-    public List<String> getExpressions() {
-        return expressions;
-    }
-
-    public void setExpressions(List<String> expressions) {
-        this.expressions = expressions;
-    }
-
-    public String getBestExpression() {
+    // Getters
+    public Pair<String, String> getBestExpression() {
         return bestExpression;
     }
-
-    public void setBestExpression(String bestExpression) {
-        this.bestExpression = bestExpression;
-    }
-
-    public List<VehiclePolicy> getSolutions() {
+    public List<Pair<VehiclePolicy, RequestPolicy>> getSolutions() {
         return solutions;
     }
-
-    public void setSolutions(List<VehiclePolicy> solutions) {
-        this.solutions = solutions;
-    }
-
-    public List<Fitness> getTrainFitnesses() {
-        return trainFitnesses;
-    }
-
-    public void setTrainFitnesses(List<Fitness> trainFitnesses) {
-        this.trainFitnesses = trainFitnesses;
-    }
-
-    public List<Fitness> getTestFitnesses() {
-        return testFitnesses;
-    }
-
-    public void setTestFitnesses(List<Fitness> testFitnesses) {
-        this.testFitnesses = testFitnesses;
-    }
-
-    public VehiclePolicy getBestSolution() {
+    public Pair<VehiclePolicy, RequestPolicy> getBestSolution() {
         return bestSolution;
     }
-
-    public void setBestSolution(VehiclePolicy bestSolution) {
-        this.bestSolution = bestSolution;
-    }
-
     public Fitness getBestTrainFitness() {
         return bestTrainFitness;
     }
-
-    public void setBestTrainFitness(Fitness bestTrainFitness) {
-        this.bestTrainFitness = bestTrainFitness;
-    }
-
     public Fitness getBestTestFitness() {
         return bestTestFitness;
     }
-
-    public void setBestTestFitness(Fitness bestTestFitness) {
-        this.bestTestFitness = bestTestFitness;
-    }
-
-    public DescriptiveStatistics getTimeStat() {
-        return timeStat;
-    }
-
-    public void setTimeStat(DescriptiveStatistics timeStat) {
-        this.timeStat = timeStat;
-    }
-
-    public VehiclePolicy getSolutionAtGen(int gen) {
+    public Pair<VehiclePolicy, RequestPolicy> getSolutionAtGen(int gen) {
         return solutions.get(gen);
     }
-
     public Fitness getTrainFitnessAtGen(int gen) {
         return trainFitnesses.get(gen);
     }
-
     public Fitness getTestFitnessAtGen(int gen) {
         return testFitnesses.get(gen);
     }
-
     public double getTimeAtGen(int gen) {
         return timeStat.getElement(gen);
     }
 
-    public void addExpression(String expression) {
+    // Setters
+    public void setBestExpression(Pair<String, String> bestExpression) {
+        this.bestExpression = bestExpression;
+    }
+    public void setBestSolution(Pair<VehiclePolicy, RequestPolicy> bestSolution) {
+        this.bestSolution = bestSolution;
+    }
+    public void setBestTrainFitness(Fitness bestTrainFitness) {
+        this.bestTrainFitness = bestTrainFitness;
+    }
+    public void setBestTestFitness(Fitness bestTestFitness) {
+        this.bestTestFitness = bestTestFitness;
+    }
+    public void setTimeStat(DescriptiveStatistics timeStat) {
+        this.timeStat = timeStat;
+    }
+
+    // Adders
+    public void addExpression(Pair<String, String> expression) {
         expressions.add(expression);
     }
-
-    public void addSolution(VehiclePolicy solution) {
+    public void addSolution(Pair<VehiclePolicy, RequestPolicy> solution) {
         solutions.add(solution);
     }
-
     public void addTrainFitness(Fitness fitness) {
         trainFitnesses.add(fitness);
     }
-
     public void addTestFitness(Fitness fitness) {
         testFitnesses.add(fitness);
     }
