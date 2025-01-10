@@ -8,15 +8,17 @@ import gputils.LispUtils;
  * A demo for lisp reader.
  * Given a string lisp expression, one can first simplify the expression,
  * then parse the string into a GPTree class, and print it in a Graphviz format.
+ *
+ * @author gphhucarp, William Huang
  */
 public class LispReaderDemo {
     public static void main(String[] args) {
         String expression =
-                "(* (+ (min (max CFH 0.04039157370305135) (/ FULL CTD)) (max (- CFH FULL) 0.7542589688893021)) (+ (+ (/ DEM1 (- CFH CFR1)) (+ FUT CFH)) (- CFH CFR1)))";
+                "(* (+ (min (max TVPU CRD) (/ COST DUR)) (- DEM SLACK)) (+ (/ RQ (- RT VSLACK)) (+ TVC OBV)))";
 
         expression = LispUtils.simplifyExpression(expression);
 
-        GPTree gpTree = LispUtils.parseExpression(expression, UCARPPrimitiveSet.wholePrimitiveSet());
+        GPTree gpTree = LispUtils.parseExpression(expression, UCARPPrimitiveSet.primitiveSet());
         System.out.println(gpTree.child.makeGraphvizTree());
     }
 }

@@ -191,7 +191,7 @@ public class GPResult {
 
                     VehiclePolicy vehiclePolicy =
                             new GPVehiclePolicy(LispUtils.parseExpression(expression,
-                                            UCARPPrimitiveSet.wholePrimitiveSet()));
+                                            UCARPPrimitiveSet.primitiveSet()));
 
                     result.addSolution(vehiclePolicy);
                     result.addTrainFitness(fitness);

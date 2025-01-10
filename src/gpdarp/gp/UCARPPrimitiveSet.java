@@ -1,76 +1,67 @@
 package gpdarp.gp;
 
-import gputils.function.*;
+import gpdarp.gp.terminal.FeatureGPNode;
 import gpdarp.gp.terminal.feature.*;
+import gputils.function.*;
 import gputils.terminal.PrimitiveSet;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-// TODO: Rework this file
 /**
- * The primitive set for UCARP.
+ * The primitive set for GP hyper heuristic dial-a-ride-problem.
+ *
+ * @author William Huang
  */
-
 public class UCARPPrimitiveSet extends PrimitiveSet {
     /**
-     * Return the basic terminals:
-     *  - ServeCost
-     *  - CostFromDepot
-     *  - CostFromHere
-     *  - CostToDepot
-     *  - CostRefill
-     *  - DeadheadingCost
-     *  - Demand
-     *  - RemainingCapacity
-     *  - Fullness
-     *  - FractionRemainingTasks
-     *  - FractionUnassignedTasks
-     * @return the basic terminal set.
-     */
-    public static UCARPPrimitiveSet basicTerminalSet() {
-        UCARPPrimitiveSet terminalSet = new UCARPPrimitiveSet();
-//        terminalSet.add(new FloodFill());
-
-        return terminalSet;
-    }
-
-    /**
-     * The extended terminal set includes the basic terminals as well as
-     * the extended ones.
-     * @return the extended terminal set.
-     */
-    public static UCARPPrimitiveSet extendedTerminalSet() {
-        UCARPPrimitiveSet terminalSet = basicTerminalSet();
-
-        return terminalSet;
-    }
-
-    /**
-     * The terminal set used for generating routes sequentially.
-     * No need to consider other routes.
+     * The terminal set includes:
+     *  - Travel time to pickup point,
+     *  - Expected request cost,
+     *  - Request demand,
+     *  - Request duration,
+     *  - Expected request slack,
+     *  - Request crowdedness,
+     *  - Vehicle remaining capacity,
+     *  - Vehicle remaining charge,
+     *  - Vehicle minimum slack,
+     *  - Travel time to charging station,
+     *  - Travel time of other best vehicle to serve the request.
+     *
      * @return the terminal set.
      */
-    public static UCARPPrimitiveSet seqTerminalSet() {
-        UCARPPrimitiveSet terminalSet = basicTerminalSet();
+    public static UCARPPrimitiveSet terminalSet() {
+        UCARPPrimitiveSet terminalSet = new UCARPPrimitiveSet();
+
+        List<FeatureGPNode> terminals = new ArrayList<>(Arrays.asList(
+                new TimeToPickup(),
+                new ExpectedCost(),
+                new RequestDemand(),
+                new RequestDuration(),
+                new ExpectedSlack(),
+                new RequestCrowdedness(),
+                new VehicleCapacity(),
+                new VehicleCharge(),
+                new VehicleSlack(),
+                new TimeToStation(),
+                new OtherBestVehicle()
+        ));
+
+        for (FeatureGPNode terminal : terminals) {
+            terminalSet.add(terminal);
+        }
 
         return terminalSet;
     }
 
     /**
-     * The whole terminal set including all the possible terminals.
-     * It is the extended terminal set in this case.
-     * @return the whole terminal set.
+     * The primitive set includes the terminal set and all the basic function nodes.
+     *
+     * @return the primitive set.
      */
-    public static UCARPPrimitiveSet wholeTerminalSet() {
-        return extendedTerminalSet();
-    }
-
-    /**
-     * The whole primitive set includes the whole terminal set
-     * and all the function nodes.
-     * @return the whole primitive set.
-     */
-    public static UCARPPrimitiveSet wholePrimitiveSet() {
-        UCARPPrimitiveSet primitiveSet = wholeTerminalSet();
+    public static UCARPPrimitiveSet primitiveSet() {
+        UCARPPrimitiveSet primitiveSet = terminalSet();
 
         primitiveSet.add(new Add());
         primitiveSet.add(new Sub());

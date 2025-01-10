@@ -17,31 +17,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO: Rework this file
 /**
  * The evolution state of evolving routing policy with GPHH.
  *
  * @author gphhucarp
  *
  */
-
 public class GPHHEvolutionState extends TerminalERCEvolutionState {
 
-	/**
-	 * Statistics to store.
-	 */
+	// Statistics to store.
 	public static final String POP_PROG_SIZE = "pop-prog-size";
 	public static final String POP_FITNESS = "pop-fitness";
 
-	/**
-	 * Read the file to specify the terminals.
-	 */
+	// Read the file to specify the terminals.
 	public static final String P_TERMINALS_FROM = "terminals-from";
 	public static final String P_INCLUDE_ERC = "include-erc";
 
-	/**
-	 * Whether to rotate the evaluation model or not.
-	 */
+	// Whether to rotate the evaluation model or not.
 	public static final String P_ROTATE_EVAL_MODEL = "rotate-eval-model";
 
 	protected String terminalFrom;
@@ -132,22 +124,10 @@ public class GPHHEvolutionState extends TerminalERCEvolutionState {
 			terminalSets = new ArrayList<>();
 
 			for (int i = 0; i < subpops; i++)
-				terminalSets.add(UCARPPrimitiveSet.basicTerminalSet());
-		}
-		else if (terminalFrom.equals("extended")) {
-			terminalSets = new ArrayList<>();
-
-			for (int i = 0; i < subpops; i++)
-				terminalSets.add(UCARPPrimitiveSet.extendedTerminalSet());
-		}
-		else if (terminalFrom.equals("seq")) {
-			terminalSets = new ArrayList<>();
-
-			for (int i = 0; i < subpops; i++)
-				terminalSets.add(UCARPPrimitiveSet.seqTerminalSet());
+				terminalSets.add(UCARPPrimitiveSet.terminalSet());
 		}
 		else {
-			initTerminalSetsFromCsv(new File(terminalFrom), UCARPPrimitiveSet.basicTerminalSet());
+			initTerminalSetsFromCsv(new File(terminalFrom), UCARPPrimitiveSet.terminalSet());
 		}
 
 		if (includeErc)
@@ -157,6 +137,7 @@ public class GPHHEvolutionState extends TerminalERCEvolutionState {
 
 	/**
 	 * Return the best individual of a particular subpopulation.
+	 *
 	 * @param subpop the subpopulation id.
 	 * @return the best individual in that subpopulation.
 	 */

@@ -23,6 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Demonstrate the terminal (FeatureGPNode) outputs.
+ *
+ * @author William Huang
+ */
 public class GPTerminalDemo {
     public static void main(String[] args) {
         // read an instance from a data file

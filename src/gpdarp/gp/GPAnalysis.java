@@ -37,7 +37,7 @@ public class GPAnalysis {
     Map<String, int[]> terminalFrequencyMap = new HashMap<>();
 
     public void terminalFrequencyAnalysis(List<GPResult> results) {
-        for (GPNode terminal : UCARPPrimitiveSet.wholeTerminalSet().getList()) {
+        for (GPNode terminal : UCARPPrimitiveSet.terminalSet().getList()) {
             terminalFrequencyMap.put(((FeatureGPNode)terminal).getName(), new int[numTrains]);
         }
 

@@ -25,14 +25,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Rework this file
 /**
  * The main program of the GP test process.
  * It reads the out.stat files from the training path subject to the solution and fitness types.
  * Then it tests all the solutions read from the training files on the test set.
  * Finally, it writes all the related information to a csv file.
+ *
+ * @author gphhucarp
  */
-
 public class GPTest {
     public static final String P_POLICY_TYPE = "policy-type"; // manual or gp-evolved
     public static final String P_MANUAL_POLICIES = "manual-policies";
@@ -48,7 +48,7 @@ public class GPTest {
 
         Parameter p;
 
-        // setup the evaluator, essentially the test evaluation model
+        // set up the evaluator, essentially the test evaluation model
         p = new Parameter(EvolutionState.P_EVALUATOR);
         state.evaluator = (Evaluator)
                 (parameters.getInstanceForParameter(p, null, Evaluator.class));
