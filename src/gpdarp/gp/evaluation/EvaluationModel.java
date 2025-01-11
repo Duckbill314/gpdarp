@@ -43,11 +43,10 @@ public abstract class EvaluationModel {
     }
 
     /**
-     * Get the objective reference value of a particular decision process and an objective.
+     * Get the objective reference value of a particular instance and an objective.
      *
-     * @param index the index of the decision process.
+     * @param index the index of the instance.
      * @param objective the objective.
-     *
      * @return the corresponding objective reference value.
      */
     public double getObjRefValue(int index, Objective objective) {

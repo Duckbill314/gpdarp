@@ -1,4 +1,4 @@
-# // TODO
+# // TODO: generations = 51, subpop size = 1024, instances = 500
 # ==============================
 # The training results
 # ==============================
@@ -6,7 +6,7 @@ policy-type = gp-evolved
 # policy-type = manual
 
 # for gp-evolved policies
-train-path = /Users/yimei/Dropbox/HHUCARP/
+# train-path =
 solution-type = simple-solution
 fitness-type = simple-fitness
 num-trains = 1
@@ -17,19 +17,14 @@ num-trains = 1
 state = ec.simple.SimpleEvolutionState
 eval = ec.simple.SimpleEvaluator
 eval.problem = gpdarp.gp.ReactiveGPHHProblem
-eval.problem.pool-filter = gpdarp.decisionprocess.poolfilter.ExpFeasiblePoolFilter
+eval.problem.pool-filter = gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter
 eval.problem.tie-breaker = gpdarp.decisionprocess.tiebreaker.SimpleTieBreaker
 eval.problem.data = gputils.DoubleData
 eval.problem.eval-model = gpdarp.gp.evaluation.ReactiveEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = total-cost
-eval.problem.eval-model.instances = 1
-eval.problem.eval-model.instances.0.file = gdb/gdb1.dat
-eval.problem.eval-model.instances.0.samples = 500
-eval.problem.eval-model.instances.0.vehicles = from-file
-eval.problem.eval-model.instances.0.demand-uncertainty-level = 0.2
-eval.problem.eval-model.instances.0.cost-uncertainty-level = 0.2
-eval.problem.eval-model.seed = 25234
+eval.problem.eval-model.instances = 500
+eval.problem.eval-model.datapath = data/test
 
 
 
@@ -90,14 +85,13 @@ breed.elite.0 = 10
 # GP population parameters
 pop.subpop.0.species = ec.gp.GPSpecies
 pop.subpop.0.species.ind = ec.gp.GPIndividual
-pop.subpop.0.species.ind.numtrees = 1
+pop.subpop.0.species.ind.numtrees = 2
 pop.subpop.0.species.ind.tree.0 = ec.gp.GPTree
 pop.subpop.0.species.ind.tree.0.tc = tc0
+pop.subpop.0.species.ind.tree.1 = ec.gp.GPTree
+pop.subpop.0.species.ind.tree.1.tc = tc1
 
-#pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
-pop.subpop.0.species.fitness = ec.multiobjective.MultiObjectiveFitness
-pop.subpop.0.species.fitness.num-objectives = 1
-pop.subpop.0.species.fitness.maximize = false
+pop.subpop.0.species.fitness = ec.gp.koza.KozaFitness
 pop.subpop.0.duplicate-retries = 100
 
 # GP initializer
@@ -150,12 +144,18 @@ gp.type.a.0.name = nil
 gp.type.s.size = 0
 
 # GP tree constraints
-gp.tc.size = 1
+gp.tc.size = 2
 gp.tc.0 = ec.gp.GPTreeConstraints
 gp.tc.0.name = tc0
 gp.tc.0.fset = f0
 gp.tc.0.returns = nil
 gp.tc.0.init = ec.gp.koza.HalfBuilder
+
+gp.tc.1 = ec.gp.GPTreeConstraints
+gp.tc.1.name = tc1
+gp.tc.1.fset = f0
+gp.tc.1.returns = nil
+gp.tc.1.init = ec.gp.koza.HalfBuilder
 
 # Koza half-ramp-and-ramp parameters, for gp.tc.0.init
 gp.koza.half.min-depth = 2

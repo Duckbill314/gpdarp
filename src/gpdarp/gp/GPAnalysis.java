@@ -11,6 +11,7 @@ import gpdarp.gp.io.GPResult;
 import gpdarp.gp.io.SolutionType;
 import gpdarp.gp.terminal.FeatureGPNode;
 import gputils.LispUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,8 +44,12 @@ public class GPAnalysis {
 
         for (int i = 0; i < results.size(); i++) {
             GPResult result = results.get(i);
-            String bestExp = result.getBestExpression();
-            List<String> terminals = LispUtils.terminals(bestExp);
+            Pair<String, String> bestExp = result.getBestExpression();
+            List<String> terminals = new ArrayList<>();
+            List<String> terminals1 = LispUtils.terminals(bestExp.getLeft());
+            List<String> terminals2 = LispUtils.terminals(bestExp.getRight());
+            terminals.addAll(terminals1);
+            terminals.addAll(terminals2);
 
             for (String terminal : terminals) {
                 terminalFrequencyMap.get(terminal)[i] ++;

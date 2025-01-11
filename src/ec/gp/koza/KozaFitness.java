@@ -77,8 +77,8 @@ public class KozaFitness extends Fitness
         {
         if (_f < 0.0 || _f >= Double.POSITIVE_INFINITY || Double.isNaN(_f))
             {
-            state.output.warning("Bad fitness (may not be < 0, NaN, or infinity): " + _f  + ", setting to 0.");
-            standardizedFitness = 0;
+            state.output.warning("Bad fitness (may be < 0, NaN, or infinity): " + _f  + ", setting to max value.");
+            standardizedFitness = Double.MAX_VALUE;
             }
         else standardizedFitness = _f;
         }
@@ -203,5 +203,14 @@ public class KozaFitness extends Fitness
         h /= fitnesses.length;
         standardizedFitness = (double)f;
         hits = (int)h;
+        }
+
+    public void setFitnessExplicitly(final double _f)
+        {
+            if (_f < 0.0 || _f >= Double.POSITIVE_INFINITY || Double.isNaN(_f))
+            {
+                standardizedFitness = Double.MAX_VALUE;
+            }
+            else standardizedFitness = _f;
         }
     }

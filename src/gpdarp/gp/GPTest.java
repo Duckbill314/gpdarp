@@ -5,6 +5,7 @@ import ec.EvolutionState;
 import ec.Evolve;
 import ec.Fitness;
 import ec.gp.GPNode;
+import ec.gp.koza.KozaFitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
@@ -12,6 +13,7 @@ import gpdarp.core.Instance;
 import gpdarp.core.Objective;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
+import gpdarp.decisionprocess.allocationpolicy.requestpolicy.GPRequestPolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
 import gpdarp.gp.evaluation.EvaluationModel;
 import gpdarp.gp.io.FitnessType;
@@ -26,6 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The main program of the GP test process.
@@ -37,7 +40,6 @@ import java.util.List;
  */
 public class GPTest {
     public static final String P_POLICY_TYPE = "policy-type"; // manual or gp-evolved
-    public static final String P_MANUAL_POLICIES = "manual-policies";
     public static final String P_TRAIN_PATH = "train-path"; // path of the out.stat files of the training
     public static final String P_SOLUTION_TYPE = "solution-type"; // solution type, e.g. a single routing policy
     public static final String P_FITNESS_TYPE = "fitness-type"; // fitness type, e.g. multiobjective fitness
@@ -150,32 +152,34 @@ public class GPTest {
 
                     switch (solutionType) {
                         case SIMPLE_SOLUTION:
-                            GPVehiclePolicy solution1;
-                            int numUniqueTerminals;
                             // write the test results for each generation
+                            int numTerminals = 0;
+                            int numUniqueTerminals = 0;
+
                             for (int j = 0; j < result.getSolutions().size(); j++) {
-                                solution1 = (GPVehiclePolicy) result.getSolutionAtGen(j);
+                                numTerminals = 0;
+                                numUniqueTerminals = 0;
 
-                                numUniqueTerminals = solution1.getGPTree().child.numNodes(gatherer);
+                                Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
+                                GPVehiclePolicy tree1 = (GPVehiclePolicy) solution.getLeft();
+                                GPRequestPolicy tree2 = (GPRequestPolicy) solution.getRight();
 
-                                writer.write(i + "," + j + ",0," +
-                                        solution1.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL) + "," +
-                                        numUniqueTerminals + "," + fitnessString(result, j, fitnessType) +
+                                numTerminals += tree1.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
+                                numTerminals += tree2.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
+
+                                numUniqueTerminals += tree1.getGPTree().child.numNodes(gatherer);
+                                numUniqueTerminals += tree2.getGPTree().child.numNodes(gatherer);
+
+                                writer.write(i + "," + j + ",0," + numTerminals + "," + numUniqueTerminals + "," +
+                                        fitnessString(result, j, fitnessType) +
                                         result.getTimeAtGen(j));
                                 writer.newLine();
                             }
-                            // write the test results of the best individual, shown as gen = -1
-                            solution1 = (GPVehiclePolicy) result.getBestSolution();
-
-                            numUniqueTerminals = solution1.getGPTree().child.numNodes(gatherer);
-
-                            writer.write(i + ",-1,0," +
-                                    solution1.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL) + "," +
-                                    numUniqueTerminals + "," + fitnessString(result, -1, fitnessType) +
-                                    "0");
+                            writer.write(i + "," + "-1" + ",0," + numTerminals + "," + numUniqueTerminals + "," +
+                                    fitnessString(result, result.getSolutions().size()-1, fitnessType) +
+                                    result.getTimeAtGen(result.getSolutions().size()-1));
                             writer.newLine();
                             break;
-                        case CC_SOLUTION:
                         default:
                             System.err.println("Unknown solution type: " + solutionType.toString());
                             System.exit(1);
@@ -190,27 +194,23 @@ public class GPTest {
             String writtenFileName = testFileName(testEvaluationModel);
             File csvFile = new File("manual-" + writtenFileName + ".csv");
 
-            Parameter b = new Parameter(P_MANUAL_POLICIES);
-            int manualPolicies = parameters.getIntWithDefault(b, null, 0);
-
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile.getAbsoluteFile()));
-                writer.write("Policy,Fitness");
+                writer.write("VehiclePolicy,RequestPolicy,Fitness");
                 writer.newLine();
 
-                for (int i = 0; i < manualPolicies; i++) {
-                    p = b.push("" + i);
+                int maxIndex = testEvaluationModel.getInstanceSamples().size()-1;
+                Objective objective = testEvaluationModel.getObjectives().getFirst();
+                double objValue = 0;
 
-                    VehiclePolicy policy = (VehiclePolicy)parameters.getInstanceForParameter(
-                            p, null, VehiclePolicy.class);
-
-                    MultiObjectiveFitness fit = new MultiObjectiveFitness();
-                    fit.objectives = new double[1];
-                    testEvaluationModel.evaluateOriginal(policy, null, fit, state);
-
-                    writer.write(policy.getName() + "," + fit.objectives[0]);
-                    writer.newLine();
+                for (int i = 0; i < maxIndex; i++) {
+                    objValue += testEvaluationModel.getObjRefValue(i, objective);
                 }
+
+                VehiclePolicy vehiclePolicy = Objective.refVehiclePolicy();
+                RequestPolicy requestPolicy = Objective.refRequestPolicy();
+
+                writer.write(String.format("%s,%s,%f", vehiclePolicy.getName(), requestPolicy.getName(), objValue));
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -236,7 +236,7 @@ public class GPTest {
         if (fitnessType == FitnessType.DIMENSION_AWARE_FITNESS)
             s += "DimensionGap,";
 
-        s += "Obj,TrainFitness,TestFitness,Time";
+        s += "TrainFitness,TestFitness,Time";
 
         return s;
     }
@@ -254,12 +254,12 @@ public class GPTest {
 
         switch (fitnessType) {
             case SIMPLE_FITNESS:
-                MultiObjectiveFitness simpleTrainFit = (MultiObjectiveFitness)trainFit;
-                MultiObjectiveFitness simpleTestFit = (MultiObjectiveFitness)testFit;
-                for (int k = 0; k < simpleTrainFit.objectives.length; k++) {
-                    s += k + "," + simpleTrainFit.getObjective(k) + "," +
-                            simpleTestFit.getObjective(k) + ",";
-                }
+                KozaFitness simpleTrainFit = (KozaFitness) trainFit;
+                KozaFitness simpleTestFit = (KozaFitness) testFit;
+                s += simpleTrainFit.standardizedFitness();
+                s += ",";
+                s += simpleTestFit.standardizedFitness();
+                s += ",";
                 break;
         }
 

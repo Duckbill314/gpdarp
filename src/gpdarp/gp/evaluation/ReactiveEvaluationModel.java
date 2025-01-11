@@ -2,6 +2,7 @@ package gpdarp.gp.evaluation;
 
 import ec.EvolutionState;
 import ec.Fitness;
+import ec.gp.koza.KozaFitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import gpdarp.core.Instance;
 import gpdarp.core.Objective;
@@ -10,6 +11,8 @@ import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import gpdarp.representation.Solution;
+
+import java.sql.Array;
 
 /**
  * A reactive evaluation model is a set of reactive decision processes, corresponding to a set of instances.
@@ -27,40 +30,36 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     @Override
     public void evaluate(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                          Fitness fitness, EvolutionState state) {
-        double[] fitnesses = evaluateFitnesses(vehiclePolicy, requestPolicy, fitness, state);
 
-        for (int j = 0; j < fitnesses.length; j++) {
-            fitnesses[j] /= instanceSamples.size();
-        }
+        double fitnessValue = evaluateFitnesses(vehiclePolicy, requestPolicy);
+        fitnessValue /= instanceSamples.size();
 
-        MultiObjectiveFitness f = (MultiObjectiveFitness) fitness;
-        f.setObjectives(state, fitnesses);
+        KozaFitness f = (KozaFitness) fitness;
+        f.setStandardizedFitness(state, fitnessValue);
     }
 
     @Override
     public void evaluateOriginal(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                                  Fitness fitness, EvolutionState state) {
-        double[] fitnesses = evaluateFitnesses(vehiclePolicy, requestPolicy, fitness, state);
 
-        MultiObjectiveFitness f = (MultiObjectiveFitness) fitness;
-        f.setObjectives(state, fitnesses);
+        double fitnessValue = evaluateFitnesses(vehiclePolicy, requestPolicy);
+
+        KozaFitness f = (KozaFitness) fitness;
+        f.setStandardizedFitness(state, fitnessValue);
     }
 
-    public double[] evaluateFitnesses(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
-                                      Fitness fitness, EvolutionState state) {
-        double[] fitnesses = new double[objectives.size()];
+    public double evaluateFitnesses(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy) {
+        double fitnessValue = 0;
 
         for (Instance sample : instanceSamples) {
             ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample.clone(), vehiclePolicy, requestPolicy);
             dp.run();
             Solution solution = dp.getState().getSolution();
 
-            for (int j = 0; j < fitnesses.length; j++) {
-                Objective objective = objectives.get(j);
+                Objective objective = objectives.getFirst();
                 double objValue = solution.objValue(objective);
-                fitnesses[j] += objValue;
-            }
+                fitnessValue += objValue;
         }
-        return fitnesses;
+        return fitnessValue;
     }
 }

@@ -2,6 +2,7 @@ package gpdarp.gp.io;
 
 import ec.Fitness;
 import ec.Problem;
+import ec.gp.koza.KozaFitness;
 import ec.multiobjective.MultiObjectiveFitness;
 import gpdarp.core.Request;
 import gpdarp.decisionprocess.RequestPolicy;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -192,11 +194,12 @@ public class GPResult {
     }
 
     private static Fitness readSimpleFitnessFromLine(String line) {
-        String[] segments = line.split("\\[|\\]");
-        double fitness = Double.parseDouble(segments[1]);
-        MultiObjectiveFitness f = new MultiObjectiveFitness();
-        f.objectives = new double[1];
-        f.objectives[0] = fitness;
+        String[] segments = line.split(" ");
+        String standardisedFitness = segments[1];
+        standardisedFitness = standardisedFitness.replace("Standardized=", "");
+        double fitness = Double.parseDouble(standardisedFitness);
+        KozaFitness f = new KozaFitness();
+        f.setFitnessExplicitly(fitness);
 
         return f;
     }
