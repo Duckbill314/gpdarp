@@ -5,7 +5,7 @@ analysis = terminal-frequency
 # train-path =
 solution-type = simple-solution
 fitness-type = simple-fitness
-# num-trains = 30
+# num-trains = 1
 
 # ==============================
 # The test set

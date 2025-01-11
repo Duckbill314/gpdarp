@@ -1,39 +1,36 @@
 #$ -S /bin/sh
-#$ -wd /vol/grid-solar/sgeusers/yimei
-##$ -M Fred.Bloggs@ecs.vuw.ac.nz 
+#$ -wd /vol/grid-solar/sgeusers/huangwill
+##$ -M huangwill@myvuw.ac.nz
 ##$ -m be 
 
-ALGO="reactivegp"
-DATASET=$1
-INSTANCEID=$2
-INSTANCE=$1$2
-GRID_PATH="/vol/grid-solar/sgeusers/yimei/gphhucarp"
+GRID_PATH="/vol/grid-solar/sgeusers/huangwill/gphhdeadarp"
 JAR_PATH=$GRID_PATH"/package"
 DATA_PATH=$GRID_PATH"/data"
-ALGO_PATH=$GRID_PATH/$ALGO
+ALGO_PATH=$GRID_PATH"/algorithm"
 
-mkdir -p /local/tmp/yimei/$JOB_ID 
+mkdir -p /local/tmp/huangwill/$JOB_ID 
 
-if [ -d /local/tmp/yimei/$JOB_ID ]; then
-        cd /local/tmp/yimei/$JOB_ID
+if [ -d /local/tmp/huangwill/$JOB_ID ]; then
+        cd /local/tmp/huangwill/$JOB_ID
 else
         echo "There's no job directory to change into "
         echo "Here's LOCAL TMP "
         ls -la /local/tmp
         echo "AND LOCAL TMP FRED "
-        ls -la /local/tmp/yimei
+        ls -la /local/tmp/huangwill
         echo "Exiting"
         exit 1
 fi
 
-cp $JAR_PATH/gptest.jar .
+cp $JAR_PATH/GPTest.jar .
 cp -r $DATA_PATH ./data
 cp -r $ALGO_PATH/params ./params
+cp -r $ALGO_PATH/train ./train
 sleep 2
 
-/usr/pkg/java/sun-8/bin/java -jar gptest.jar -file params/test.params -p train-path=$ALGO_PATH/$INSTANCE/ -p eval.problem.eval-model.instances.0.file=$DATASET"/"$INSTANCE".dat"
+/usr/lib/jvm/java-21-openjdk/bin/java -jar GPTest.jar -file params/test.params -p train-path=train/ -p num-trains=30
 
-cp -r test/ $ALGO_PATH/$INSTANCE/
-cd $ALGO_PATH/$INSTANCE/
+cp train/test/*.csv $ALGO_PATH/test
+cd $ALGO_PATH/test
 pwd
-rm -fr /local/tmp/yimei/$JOB_ID
+rm -fr /local/tmp/huangwill/$JOB_ID
