@@ -3,7 +3,7 @@
 ##$ -M huangwill@myvuw.ac.nz
 ##$ -m be 
 
-GRID_PATH="/vol/grid-solar/sgeusers/huangwill/gphhdeadarp"
+GRID_PATH="/vol/grid-solar/sgeusers/huangwill/darp"
 JAR_PATH=$GRID_PATH"/package"
 DATA_PATH=$GRID_PATH"/data"
 ALGO_PATH=$GRID_PATH"/algorithm"

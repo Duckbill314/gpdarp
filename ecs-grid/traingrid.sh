@@ -3,9 +3,9 @@
 ##$ -M huangwill@myvuw.ac.nz
 ##$ -m be 
 
-JAR_PATH="/vol/grid-solar/sgeusers/huangwill/gphhdeadarp/package"
-DATA_PATH="/vol/grid-solar/sgeusers/huangwill/gphhdeadarp/data"
-ALGO_PATH="/vol/grid-solar/sgeusers/huangwill/gphhdeadarp/algorithm"
+JAR_PATH="/vol/grid-solar/sgeusers/huangwill/darp/package"
+DATA_PATH="/vol/grid-solar/sgeusers/huangwill/darp/data"
+ALGO_PATH="/vol/grid-solar/sgeusers/huangwill/darp/algorithm"
 
 mkdir -p /local/tmp/huangwill/$JOB_ID
 

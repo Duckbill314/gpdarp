@@ -25,13 +25,13 @@ stat.file = $job.0.out.stat
 #stat.child.0 = ec.gp.koza.KozaShortStatistics
 #stat.child.0.file = $outtabular.stat
 
-generations = 2
+generations = 50
 quit-on-run-complete = true
 
 pop = ec.Population
 pop.subpops = 1
 pop.subpop.0 = ec.Subpopulation
-pop.subpop.0.size =	10
+pop.subpop.0.size =	1000
 
 breed.elite.0 = 10
 
@@ -226,7 +226,7 @@ eval.problem.data = gputils.DoubleData
 eval.problem.eval-model = gpdarp.gp.evaluation.ReactiveEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = total-cost
-eval.problem.eval-model.instances = 25
+eval.problem.eval-model.instances = 250
 eval.problem.eval-model.datapath = data/train
 eval.problem.eval-model.rotating = true
 eval.problem.eval-model.batchsize = 5
