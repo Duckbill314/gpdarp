@@ -3,57 +3,107 @@ Generation: 0
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.15902401069665217 Adjusted=0.8627948953351986 Hits=0
+Fitness: Standardized=0.37635891793697196 Adjusted=0.7265546704190377 Hits=0
 Tree 0:
- (* (+ (* (max VSLACK DEM) OBV) (min (+ VSLACK OBV) (min CRD RT))) (- (max (+ RT COST) (- RQ RQ)) (max (* COST RT) (- CRD RQ))))
+ (* (* CRD OBV) (- SLACK TVC))
 Tree 1:
- (min (min SLACK SLACK) (max TVC COST))
+ (* (/ (max 0.7821353594553382 CRD) COST) (- SLACK TVPU))
 
 Generation: 1
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.1761430367518044 Adjusted=0.8502367218546267 Hits=0
+Fitness: Standardized=0.3730489143431852 Adjusted=0.7283061728928735 Hits=0
 Tree 0:
- (* (+ (* (max VSLACK DEM) OBV) (min COST (min CRD RT))) (- (max (+ RT COST) (- RQ RQ)) (max (* COST RT) (- CRD RQ))))
+ (* (- (* TVPU VSLACK) (/ RT DEM)) (+ (* CRD 0.07835088179608285) (/ RQ TVC)))
 Tree 1:
- (min (min SLACK SLACK) (max TVC COST))
+ (min (max DEM OBV) (/ DEM VSLACK))
 
 Generation: 2
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.24349878627140506 Adjusted=0.8041825300034838 Hits=0
+Fitness: Standardized=0.314329969934556 Adjusted=0.7608439454894212 Hits=0
 Tree 0:
- (* (+ (* (max VSLACK DEM) OBV) (min (+ VSLACK OBV) (min CRD RT))) (- (max (+ RT COST) (- RQ RQ)) (max (* COST RT) (- CRD RQ))))
+ (* (- (* TVPU VSLACK) (/ RT DEM)) (+ (* CRD 0.07835088179608285) (/ RQ TVC)))
 Tree 1:
- (min (min SLACK SLACK) (max TVC COST))
+ (min (max DEM OBV) (/ DEM VSLACK))
 
 Generation: 3
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.20298891294623111 Adjusted=0.8312628564056401 Hits=0
+Fitness: Standardized=0.45629759324580127 Adjusted=0.6866728370890158 Hits=0
 Tree 0:
- (* (+ (* (- CRD RQ) OBV) (* COST RT)) (- (max (+ RT COST) (- RQ RQ)) (max (* COST RT) (- CRD RQ))))
+ (/ (+ 0.5187004744209003 RT) (min SLACK TVC))
 Tree 1:
- (min (min SLACK SLACK) (max TVC COST))
+ (/ (min (max DEM OBV) (/ DEM VSLACK)) (+ (- TVC VSLACK) (/ DUR RT)))
 
 Generation: 4
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.19018688568664344 Adjusted=0.8402041830792644 Hits=0
+Fitness: Standardized=0.4219622004782135 Adjusted=0.7032535742959234 Hits=0
 Tree 0:
- (* (+ (* (- CRD RQ) OBV) (* COST RT)) (- (max (+ RT COST) (- RQ RQ)) (max (* COST RT) (- CRD RQ))))
+ (/ SLACK TVPU)
 Tree 1:
- (min (min SLACK SLACK) (max TVC COST))
+ (/ DEM VSLACK)
+
+Generation: 5
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.29506595922841444 Adjusted=0.7721614431096534 Hits=0
+Tree 0:
+ (* CRD 0.07835088179608285)
+Tree 1:
+ (/ (min (max DEM OBV) (/ DEM VSLACK)) (+ (- TVC VSLACK) (/ DUR RT)))
+
+Generation: 6
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.28497412092478697 Adjusted=0.778225789699412 Hits=0
+Tree 0:
+ (* (- (* TVPU VSLACK) (/ RT DEM)) (+ (/ RT DEM) (- (- (- RQ TVC) (min VSLACK RQ)) COST)))
+Tree 1:
+ (min (/ (max 0.7821353594553382 (/ DEM VSLACK)) COST) (/ DEM VSLACK))
+
+Generation: 7
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.33131402350068306 Adjusted=0.7511375846327416 Hits=0
+Tree 0:
+ (/ (+ 0.5187004744209003 RT) (* (- (* TVPU VSLACK) (/ RT DEM)) (+ (* CRD 0.07835088179608285) (/ RQ TVC))))
+Tree 1:
+ (/ (min (min (max DEM OBV) (min (max DEM OBV) (/ DEM VSLACK))) (/ DEM VSLACK)) (+ (- TVC VSLACK) (/ DUR RT)))
+
+Generation: 8
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.3618881371789612 Adjusted=0.7342746975323667 Hits=0
+Tree 0:
+ (* (- (* TVPU VSLACK) (- SLACK TVC)) (+ (* CRD 0.07835088179608285) (+ (min TVC DEM) (- 0.7660041216676505 RQ))))
+Tree 1:
+ (min (max (/ DEM (/ DEM VSLACK)) OBV) (/ DEM VSLACK))
+
+Generation: 9
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.4067501543370998 Adjusted=0.7108582834819224 Hits=0
+Tree 0:
+ (/ (+ 0.5187004744209003 RT) (* (- (/ RQ TVC) (/ RT DEM)) (+ (* CRD 0.07835088179608285) (/ RQ TVC))))
+Tree 1:
+ (/ (min (min (max DEM OBV) (min (max DEM OBV) (/ DEM VSLACK))) (/ DEM VSLACK)) (+ (- TVC VSLACK) (/ DUR RT)))
 
 Best Individual of Run:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.15902401069665217 Adjusted=0.8627948953351986 Hits=0
+Fitness: Standardized=0.28497412092478697 Adjusted=0.778225789699412 Hits=0
 Tree 0:
- (* (+ (* (max VSLACK DEM) OBV) (min (+ VSLACK OBV) (min CRD RT))) (- (max (+ RT COST) (- RQ RQ)) (max (* COST RT) (- CRD RQ))))
+ (* (- (* TVPU VSLACK) (/ RT DEM)) (+ (/ RT DEM) (- (- (- RQ TVC) (min VSLACK RQ)) COST)))
 Tree 1:
- (min (min SLACK SLACK) (max TVC COST))
+ (min (/ (max 0.7821353594553382 (/ DEM VSLACK)) COST) (/ DEM VSLACK))

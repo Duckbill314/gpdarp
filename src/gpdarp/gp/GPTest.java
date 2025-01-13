@@ -134,7 +134,7 @@ public class GPTest {
                     result.addAvgDecisionTime(avgDecisionTime);
 
                     System.out.println("Generation " + j + ": test fitness = " +
-                            result.getTestFitnessAtGen(j).fitness());
+                            ((KozaFitness)result.getTestFitnessAtGen(j)).standardizedFitness());
                 }
 
                 // test the best rule
@@ -143,7 +143,7 @@ public class GPTest {
                         result.getBestTestFitness(), state);
 
                 System.out.println("Best individual: test fitness = " +
-                        result.getBestTestFitness().fitness());
+                        ((KozaFitness)result.getBestTestFitness()).standardizedFitness());
 
                 long finish = System.currentTimeMillis();
                 long duration = finish - start;
@@ -254,16 +254,16 @@ public class GPTest {
     private static String fitnessString(GPResult result, int gen) {
         String s = "";
 
-        Fitness trainFit = result.getBestTrainFitness();
-        Fitness testFit = result.getBestTestFitness();
+        KozaFitness trainFit = (KozaFitness) result.getBestTrainFitness();
+        KozaFitness testFit = (KozaFitness) result.getBestTestFitness();
 
         if (gen != -1) {
-            trainFit = result.getTrainFitnessAtGen(gen);
-            testFit = result.getTestFitnessAtGen(gen);
+            trainFit = (KozaFitness) result.getTrainFitnessAtGen(gen);
+            testFit = (KozaFitness) result.getTestFitnessAtGen(gen);
         }
 
-        KozaFitness simpleTrainFit = (KozaFitness) trainFit;
-        KozaFitness simpleTestFit = (KozaFitness) testFit;
+        KozaFitness simpleTrainFit = trainFit;
+        KozaFitness simpleTestFit = testFit;
         s += simpleTrainFit.standardizedFitness();
         s += ",";
         s += simpleTestFit.standardizedFitness();

@@ -62,22 +62,22 @@ public class ReactiveEvaluationModel extends EvaluationModel {
 
         if (isRotating()) {
             for (int i = rotationIndex; i < rotationIndex + batchsize; i++) {
-                fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, fitnessValue, solutions, i, normalise);
-                fitnessValue /= batchsize;
+                fitnessValue += getFitnessValue(vehiclePolicy, requestPolicy, solutions, i, normalise);
             }
+            fitnessValue /= batchsize;
         }
         else {
             for (int i = 0; i < instanceSamples.size(); i++) {
-                fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, fitnessValue, solutions, i, normalise);
-                fitnessValue /= instanceSamples.size();
+                fitnessValue += getFitnessValue(vehiclePolicy, requestPolicy, solutions, i, normalise);
             }
+            fitnessValue /= instanceSamples.size();
         }
 
         return Pair.of(solutions, fitnessValue);
     }
 
     private double getFitnessValue(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
-                                   double fitnessValue, List<Solution> solutions, int i, boolean normalise) {
+                                   List<Solution> solutions, int i, boolean normalise) {
 
         Instance sample = instanceSamples.get(i);
         ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample.clone(), vehiclePolicy, requestPolicy);
@@ -90,9 +90,9 @@ public class ReactiveEvaluationModel extends EvaluationModel {
 
         if (normalise) {
             double refValue = getObjRefValue(i, objective);
-            fitnessValue += objValue / refValue;
+            return objValue / refValue;
         }
 
-        return fitnessValue;
+        return objValue;
     }
 }

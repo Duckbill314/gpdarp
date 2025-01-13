@@ -3,7 +3,7 @@ Generation: 0
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.0653743342587317 Adjusted=0.9386372168387012 Hits=0
+Fitness: Standardized=0.32687167129365846 Adjusted=0.7536523852566926 Hits=0
 Tree 0:
  (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (/ (max (/ (* RQ RQ) (min TVC SLACK)) (min (- 0.245518675985808 DEM) (* DUR TVPU))) (min (- (min SLACK CRD) (/ COST TVC)) (max (/ DUR DEM) (/ RQ DEM)))))
 Tree 1:
@@ -13,46 +13,96 @@ Generation: 1
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.092582301641336 Adjusted=0.9152628579995723 Hits=0
+Fitness: Standardized=0.46291150820668003 Adjusted=0.6835683459937073 Hits=0
 Tree 0:
  (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (/ (max (/ (* RQ RQ) (min TVC SLACK)) (min (- 0.245518675985808 DEM) (* DUR TVPU))) (min (- (min SLACK CRD) (/ COST TVC)) (max (/ DUR DEM) (/ RQ DEM)))))
 Tree 1:
- (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* TVPU CRD) 0.5363365384262342))
+ (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* TVPU CRD) (/ SLACK TVC)))
 
 Generation: 2
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.12014096240492159 Adjusted=0.8927447826325525 Hits=0
+Fitness: Standardized=0.6180663251679256 Adjusted=0.6180216375841197 Hits=0
 Tree 0:
- (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) RT)) (/ (max (/ (* RQ RQ) (min TVC SLACK)) (min (- 0.245518675985808 DEM) (* DUR TVPU))) (min (- (min SLACK CRD) (/ COST TVC)) (max (/ DUR DEM) (/ RQ DEM)))))
+ (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (min TVC SLACK))
 Tree 1:
- (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* TVPU CRD) 0.5363365384262342))
+ (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* TVPU CRD) (/ SLACK TVC)))
 
 Generation: 3
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.12176135883047617 Adjusted=0.8914552031303503 Hits=0
+Fitness: Standardized=0.610011065096072 Adjusted=0.6211137436750028 Hits=0
 Tree 0:
- (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) RT)) (/ (max (/ (* RQ RQ) (min TVC SLACK)) (min (- 0.245518675985808 DEM) (* DUR TVPU))) (min (- (min SLACK CRD) (/ COST TVC)) (max (/ DUR DEM) (/ RQ DEM)))))
+ (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (min TVC SLACK))
 Tree 1:
- (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* TVPU CRD) 0.5363365384262342)) 0.5363365384262342))
+ (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* TVPU SLACK) (/ SLACK TVC)))
 
 Generation: 4
 Best Individual:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.12024512990693534 Adjusted=0.8926617695566998 Hits=0
+Fitness: Standardized=0.6012256495346767 Adjusted=0.6245215971219326 Hits=0
 Tree 0:
- (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) RT)) (/ (max (/ (* RQ RQ) (min TVC SLACK)) (min (- 0.245518675985808 DEM) (* DUR TVPU))) (min (min CRD RT) (max (/ DUR DEM) (/ RQ DEM)))))
+ (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (min TVC SLACK))
 Tree 1:
- (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* TVPU CRD) 0.5363365384262342))
+ (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* (/ SLACK VSLACK) (- RQ OBV)) (/ SLACK TVC)))
+
+Generation: 5
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.3761005376839301 Adjusted=0.7266910902331797 Hits=0
+Tree 0:
+ (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (min TVC SLACK))
+Tree 1:
+ (min (* (/ SLACK VSLACK) (- RQ OBV)) (/ VSLACK (+ (min 0.5091394013319068 0.523008538097377) (* TVPU DUR))))
+
+Generation: 6
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.459309924789366 Adjusted=0.6852553957270853 Hits=0
+Tree 0:
+ (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (min TVC SLACK))
+Tree 1:
+ (min (* (/ SLACK VSLACK) (- RQ OBV)) (+ (* TVPU CRD) (* TVPU CRD)))
+
+Generation: 7
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.6710127104083191 Adjusted=0.5984394934707862 Hits=0
+Tree 0:
+ (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (min 0.0610366860709004 RQ)) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (min TVC SLACK))
+Tree 1:
+ (min (* (/ SLACK VSLACK) (* (/ SLACK VSLACK) (- RQ OBV))) (+ (max (min DEM SLACK) (+ DEM TVPU)) (* TVPU CRD)))
+
+Generation: 8
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.5038989770138674 Adjusted=0.6649382806188178 Hits=0
+Tree 0:
+ (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (min TVC SLACK))
+Tree 1:
+ (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* VSLACK (- RQ OBV)) (min (* TVPU CRD) (/ SLACK TVC))))
+
+Generation: 9
+Best Individual:
+Subpopulation 0:
+Evaluated: true
+Fitness: Standardized=0.4927338814638459 Adjusted=0.6699117722305281 Hits=0
+Tree 0:
+ (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (min 0.0610366860709004 RQ))
+Tree 1:
+ (min (* (/ SLACK VSLACK) (- RQ OBV)) (min (* VSLACK (- RQ OBV)) (min (* TVPU CRD) (/ SLACK TVC))))
 
 Best Individual of Run:
 Subpopulation 0:
 Evaluated: true
-Fitness: Standardized=0.0653743342587317 Adjusted=0.9386372168387012 Hits=0
+Fitness: Standardized=0.32687167129365846 Adjusted=0.7536523852566926 Hits=0
 Tree 0:
  (- (* (min (* (min VSLACK OBV) (* DUR 0.9488368842415907)) (max (- RQ DUR) (min 0.0610366860709004 RQ))) (* (+ (+ DEM COST) (max 0.7953011656542576 DUR)) (* (min CRD RT) (max SLACK RT)))) (/ (max (/ (* RQ RQ) (min TVC SLACK)) (min (- 0.245518675985808 DEM) (* DUR TVPU))) (min (- (min SLACK CRD) (/ COST TVC)) (max (/ DUR DEM) (/ RQ DEM)))))
 Tree 1:

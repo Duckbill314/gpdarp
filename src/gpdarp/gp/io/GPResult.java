@@ -137,7 +137,7 @@ public class GPResult {
                     result.addTrainFitness(fitness);
                     result.addTestFitness((Fitness)fitness.clone());
 
-                    if (bestFitness == null || fitness.betterThan(bestFitness)) {
+                    if (bestFitness == null || ((KozaFitness)fitness).betterThan((KozaFitness)bestFitness)) {
                         bestFitness = fitness;
                     }
 
