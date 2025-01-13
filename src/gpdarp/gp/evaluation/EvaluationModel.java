@@ -29,15 +29,23 @@ public abstract class EvaluationModel {
     public static final String P_OBJECTIVES = "objectives";
     public static final String P_INSTANCES = "instances";
     public static final String P_DATAPATH = "datapath";
+    public static final String P_ROTATING = "rotating";
+    public static final String P_BATCHSIZE = "batchsize";
 
     protected List<Objective> objectives;
     protected List<Instance> instanceSamples;
+    protected boolean rotating;
+    protected int batchsize;
+    protected int rotationIndex = 0;
     protected Map<Pair<Integer, Objective>, Double> objRefValueMap;
 
     // Getters
     public List<Objective> getObjectives() {
         return objectives;
     }
+    public boolean isRotating() { return rotating; }
+    public int getBatchsize() { return batchsize; }
+    public int getRotationIndex() { return rotationIndex; }
     public List<Instance> getInstanceSamples() {
         return instanceSamples;
     }
@@ -102,6 +110,12 @@ public abstract class EvaluationModel {
             instanceSamples.add(instance);
         }
 
+        // determine whether instance sample rotation should occur, and by how much
+        p = base.push(P_ROTATING);
+        this.rotating = state.parameters.getBoolean(p, null, false);
+        p = base.push(P_BATCHSIZE);
+        this.batchsize = state.parameters.getIntWithDefault(p, null, 5);
+
         // calculate the initial objective reference values
         objRefValueMap = new HashMap<>();
         calcObjRefValueMap();
@@ -128,6 +142,13 @@ public abstract class EvaluationModel {
         }
     }
 
+    public void rotate() {
+        rotationIndex += batchsize;
+        if (rotationIndex + batchsize > instanceSamples.size()) {
+            rotationIndex = 0;
+        }
+    }
+
     /**
      * Evaluate an individual (a combination of policies) using this evaluation model.
      *
@@ -147,7 +168,8 @@ public abstract class EvaluationModel {
      * @param requestPolicy the request allocation policy to be evaluated.
      * @param fitness the fitness of the individual.
      * @param state the evolution state.
+     * @return the solutions for the individual against all instances.
      */
-    public abstract void evaluateOriginal(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
+    public abstract List<Solution> evaluateOriginal(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                                           Fitness fitness, EvolutionState state);
 }

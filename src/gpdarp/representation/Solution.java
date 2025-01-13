@@ -16,6 +16,9 @@ public class Solution {
     private List<Route> routes;
     private double latenessPenalty;
     private boolean feasible;
+    private int numRequests;
+    private double avgDecisionTime;
+    private String name;
 
     public Solution(List<Route> routes) {
         this.routes = routes;
@@ -30,6 +33,9 @@ public class Solution {
     public List<Route> getRoutes() { return routes; }
     public double getLatenessPenalty() { return latenessPenalty; }
     public boolean isFeasible() { return feasible; }
+    public int getNumRequests() { return numRequests; }
+    public double getAvgDecisionTime() { return avgDecisionTime; }
+    public String getName() { return name; }
 
     // Setters
     public void setRoutes(List<Route> routes) {
@@ -37,6 +43,9 @@ public class Solution {
     }
     public void setLatenessPenalty(double latenessPenalty) { this.latenessPenalty = latenessPenalty; }
     public void setFeasible(boolean feasible) { this.feasible = feasible; }
+    public void setNumRequests(int numRequests) { this.numRequests = numRequests; }
+    public void setAvgDecisionTime(double avgDecisionTime) { this.avgDecisionTime = avgDecisionTime; }
+    public void setName(String name) { this.name = name; }
 
     /**
      * Reset this solution by resetting each route.

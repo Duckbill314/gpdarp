@@ -31,6 +31,7 @@ sleep 2
 /usr/lib/jvm/java-21-openjdk/bin/java -jar GPTest.jar -file params/test.params -p train-path=train/ -p num-trains=30
 
 cp train/test/*.csv $ALGO_PATH/test
+cp train/test/*.sol $ALGO_PATH/test
 cd $ALGO_PATH/test
 pwd
 rm -fr /local/tmp/huangwill/$JOB_ID

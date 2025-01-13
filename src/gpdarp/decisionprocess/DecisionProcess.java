@@ -26,6 +26,7 @@ public abstract class DecisionProcess {
     protected List<Request> waitingList;
     protected VehiclePolicy vehiclePolicy;
     protected RequestPolicy requestPolicy;
+    protected List<Double> decisionTimes = new ArrayList<Double>();
 
     public DecisionProcess(DecisionProcessState state,
                            PriorityQueue<DecisionProcessEvent> eventQueue,
@@ -52,6 +53,7 @@ public abstract class DecisionProcess {
         return vehiclePolicy;
     }
     public RequestPolicy getRequestPolicy() { return requestPolicy; }
+    public List<Double> getDecisionTimes() { return decisionTimes; }
 
     /**
      * Add an event to the event queue.
@@ -73,6 +75,8 @@ public abstract class DecisionProcess {
      * @param request the request to be removed.
      */
     public void removeWaiting(Request request) { waitingList.remove(request); }
+
+    public void addDecisionTime(Double d) { decisionTimes.add(d); }
 
     /**
      * Initialise a reactive decision process from an instance,
@@ -108,6 +112,18 @@ public abstract class DecisionProcess {
         if (waitingList.isEmpty()) {
             state.getSolution().setFeasible(true);
         }
+        state.getSolution().setNumRequests(state.getInstance().getNumRequests());
+        state.getSolution().setName(state.getInstance().getName());
+        double avgDecisionTime;
+        if (decisionTimes.isEmpty()) {
+            avgDecisionTime = 0;
+        }
+        else {
+            avgDecisionTime = decisionTimes.stream()
+                    .mapToDouble(Double::doubleValue)
+                    .sum() / decisionTimes.size();
+        }
+        state.getSolution().setAvgDecisionTime(avgDecisionTime);
     }
 
     /**

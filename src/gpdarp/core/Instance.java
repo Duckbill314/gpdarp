@@ -102,10 +102,12 @@ public final class Instance {
             reader.readLine(); // line 9: "loc_S[1] ... loc_S[n_S]"
             line = reader.readLine(); // line 10: corresponding entries for line 9
             segments = line.split("\\s+");
+            int vid = 1000001;
             for (int i = 0; i < segments.length; i += 2) {
                 int x = Integer.parseInt(segments[i]);
                 int y = Integer.parseInt(segments[i + 1]);
-                stations.add(new Station(x, y));
+                stations.add(new Station(vid, x, y));
+                vid++;
             }
 
             reader.readLine(); // line 11: "loc_K[1] ... loc_K[n_K]"

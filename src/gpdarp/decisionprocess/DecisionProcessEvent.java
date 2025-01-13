@@ -3,6 +3,7 @@ package gpdarp.decisionprocess;
 import gpdarp.core.*;
 import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
+import util.Timer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,10 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      */
     public Vehicle vehicleAllocation(DecisionProcess decisionProcess, Request request) {
         DecisionProcessState state = decisionProcess.getState();
+        long startTime = Timer.getCpuTime();
         Pair<Vehicle, Route> allocation = decisionProcess.getVehiclePolicy().next(state, request);
+        long endTime = Timer.getCpuTime();
+        decisionProcess.addDecisionTime((double) (endTime - startTime) / 1000000000);
 
         if (allocation == null) {
             decisionProcess.addWaiting(request);
@@ -82,7 +86,10 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
             waitingList.add(new Request(currPos.getDepartureTime(), currPos, station));
         }
 
+        long startTime = Timer.getCpuTime();
         Pair<Request, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
+        long endTime = Timer.getCpuTime();
+        decisionProcess.addDecisionTime((double) (endTime - startTime) / 1000000000);
 
         if (allocation == null) {
             return null;

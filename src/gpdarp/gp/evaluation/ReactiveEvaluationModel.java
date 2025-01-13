@@ -11,8 +11,11 @@ import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import gpdarp.representation.Solution;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A reactive evaluation model is a set of reactive decision processes, corresponding to a set of instances.
@@ -31,7 +34,7 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     public void evaluate(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                          Fitness fitness, EvolutionState state) {
 
-        double fitnessValue = evaluateFitnesses(vehiclePolicy, requestPolicy);
+        double fitnessValue = evaluateFitnesses(vehiclePolicy, requestPolicy).getRight();
         fitnessValue /= instanceSamples.size();
 
         KozaFitness f = (KozaFitness) fitness;
@@ -39,27 +42,51 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     }
 
     @Override
-    public void evaluateOriginal(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
+    public List<Solution> evaluateOriginal(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                                  Fitness fitness, EvolutionState state) {
 
-        double fitnessValue = evaluateFitnesses(vehiclePolicy, requestPolicy);
+        Pair<List<Solution>, Double> solutionPair = evaluateFitnesses(vehiclePolicy, requestPolicy);
+        List<Solution> solutions = solutionPair.getLeft();
+        Double fitnessValue = solutionPair.getRight();
 
         KozaFitness f = (KozaFitness) fitness;
         f.setStandardizedFitness(state, fitnessValue);
+
+        return solutions;
     }
 
-    public double evaluateFitnesses(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy) {
+    public Pair<List<Solution>, Double> evaluateFitnesses(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy) {
         double fitnessValue = 0;
+        List<Solution> solutions = new ArrayList<>();
 
-        for (Instance sample : instanceSamples) {
-            ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample.clone(), vehiclePolicy, requestPolicy);
-            dp.run();
-            Solution solution = dp.getState().getSolution();
-
-                Objective objective = objectives.getFirst();
-                double objValue = solution.objValue(objective);
-                fitnessValue += objValue;
+        if (isRotating()) {
+            for (int i = rotationIndex; i < rotationIndex + batchsize; i++) {
+                fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, fitnessValue, solutions, i);
+            }
         }
+        else {
+            for (int i = 0; i < instanceSamples.size(); i++) {
+                fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, fitnessValue, solutions, i);
+            }
+        }
+
+        return Pair.of(solutions, fitnessValue);
+    }
+
+    private double getFitnessValue(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
+                                   double fitnessValue, List<Solution> solutions, int i) {
+
+        Instance sample = instanceSamples.get(i);
+        ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample.clone(), vehiclePolicy, requestPolicy);
+        dp.run();
+        Solution solution = dp.getState().getSolution();
+        solutions.add(solution);
+
+        Objective objective = objectives.getFirst();
+        double objValue = solution.objValue(objective);
+        double refValue = getObjRefValue(i, objective);
+
+        fitnessValue += objValue / refValue;
         return fitnessValue;
     }
 }

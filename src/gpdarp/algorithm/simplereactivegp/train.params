@@ -1,4 +1,3 @@
-# // TODO: generations = 51, subpop size = 1024, instances = 500
 #print-unaccessed-params = true
 #print-used-params = true
 
@@ -26,13 +25,13 @@ stat.file = $job.0.out.stat
 #stat.child.0 = ec.gp.koza.KozaShortStatistics
 #stat.child.0.file = $outtabular.stat
 
-generations = 51
+generations = 2
 quit-on-run-complete = true
 
 pop = ec.Population
 pop.subpops = 1
 pop.subpop.0 = ec.Subpopulation
-pop.subpop.0.size =	1024
+pop.subpop.0.size =	10
 
 breed.elite.0 = 10
 
@@ -227,8 +226,10 @@ eval.problem.data = gputils.DoubleData
 eval.problem.eval-model = gpdarp.gp.evaluation.ReactiveEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = total-cost
-eval.problem.eval-model.instances = 500
+eval.problem.eval-model.instances = 25
 eval.problem.eval-model.datapath = data/train
+eval.problem.eval-model.rotating = true
+eval.problem.eval-model.batchsize = 5
 
 # ==============================
 # The GPHH evolution state parameters

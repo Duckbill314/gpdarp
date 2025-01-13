@@ -8,6 +8,8 @@ import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 import ec.util.Checkpoint;
 import ec.util.Parameter;
+import gpdarp.gp.evaluation.EvaluationModel;
+import gpdarp.gp.evaluation.ReactiveEvaluationModel;
 import gputils.TerminalERCEvolutionState;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import gputils.terminal.DoubleERC;
@@ -249,6 +251,12 @@ public class GPHHEvolutionState extends TerminalERCEvolutionState {
 	    statistics.prePostBreedingExchangeStatistics(this);
 	    population = exchanger.postBreedingExchangePopulation(this);
 	    statistics.postPostBreedingExchangeStatistics(this);
+
+		// ROTATE INSTANCE SAMPLES IF NECESSARY
+		EvaluationModel evaluationModel = ((ReactiveGPHHProblem)evaluator.p_problem).getEvaluationModel();
+		if (evaluationModel != null) {
+			evaluationModel.rotate();
+		}
 
 	    // INCREMENT GENERATION AND CHECKPOINT
 	    generation++;

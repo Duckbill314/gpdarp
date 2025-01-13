@@ -3,14 +3,11 @@ package gpdarp.gp.io;
 import ec.Fitness;
 import ec.Problem;
 import ec.gp.koza.KozaFitness;
-import ec.multiobjective.MultiObjectiveFitness;
-import gpdarp.core.Request;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.allocationpolicy.requestpolicy.GPRequestPolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
 import gpdarp.gp.UCARPPrimitiveSet;
-import gpdarp.gp.ReactiveGPHHProblem;
 import gputils.LispUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -20,7 +17,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,6 +43,8 @@ public class GPResult {
     private List<Fitness> testFitnesses;
     private Fitness bestTestFitness;
     private DescriptiveStatistics timeStat;
+    private int bestIndex;
+    private List<Double> avgDecisionTimes = new ArrayList<Double>();
 
     public GPResult() {
         expressions = new ArrayList<>();
@@ -56,64 +54,33 @@ public class GPResult {
     }
 
     // Getters
-    public Pair<String, String> getBestExpression() {
-        return bestExpression;
-    }
-    public List<Pair<VehiclePolicy, RequestPolicy>> getSolutions() {
-        return solutions;
-    }
-    public Pair<VehiclePolicy, RequestPolicy> getBestSolution() {
-        return bestSolution;
-    }
-    public Fitness getBestTrainFitness() {
-        return bestTrainFitness;
-    }
-    public Fitness getBestTestFitness() {
-        return bestTestFitness;
-    }
-    public Pair<VehiclePolicy, RequestPolicy> getSolutionAtGen(int gen) {
-        return solutions.get(gen);
-    }
-    public Fitness getTrainFitnessAtGen(int gen) {
-        return trainFitnesses.get(gen);
-    }
-    public Fitness getTestFitnessAtGen(int gen) {
-        return testFitnesses.get(gen);
-    }
-    public double getTimeAtGen(int gen) {
-        return timeStat.getElement(gen);
-    }
+    public Pair<String, String> getBestExpression() { return bestExpression; }
+    public List<Pair<VehiclePolicy, RequestPolicy>> getSolutions() { return solutions; }
+    public Pair<VehiclePolicy, RequestPolicy> getBestSolution() { return bestSolution; }
+    public Fitness getBestTrainFitness() { return bestTrainFitness; }
+    public Fitness getBestTestFitness() { return bestTestFitness; }
+    public Pair<String, String> getExpressionAtGen(int gen) { return expressions.get(gen); }
+    public Pair<VehiclePolicy, RequestPolicy> getSolutionAtGen(int gen) { return solutions.get(gen); }
+    public Fitness getTrainFitnessAtGen(int gen) { return trainFitnesses.get(gen); }
+    public Fitness getTestFitnessAtGen(int gen) { return testFitnesses.get(gen); }
+    public double getTimeAtGen(int gen) { return timeStat.getElement(gen); }
+    public int getBestIndex() { return bestIndex; }
+    public Double getAvgDecisionTimeAtGen(int gen) { return avgDecisionTimes.get(gen); }
 
     // Setters
-    public void setBestExpression(Pair<String, String> bestExpression) {
-        this.bestExpression = bestExpression;
-    }
-    public void setBestSolution(Pair<VehiclePolicy, RequestPolicy> bestSolution) {
-        this.bestSolution = bestSolution;
-    }
-    public void setBestTrainFitness(Fitness bestTrainFitness) {
-        this.bestTrainFitness = bestTrainFitness;
-    }
-    public void setBestTestFitness(Fitness bestTestFitness) {
-        this.bestTestFitness = bestTestFitness;
-    }
-    public void setTimeStat(DescriptiveStatistics timeStat) {
-        this.timeStat = timeStat;
-    }
+    public void setBestExpression(Pair<String, String> bestExpression) { this.bestExpression = bestExpression; }
+    public void setBestSolution(Pair<VehiclePolicy, RequestPolicy> bestSolution) { this.bestSolution = bestSolution; }
+    public void setBestTrainFitness(Fitness bestTrainFitness) { this.bestTrainFitness = bestTrainFitness; }
+    public void setBestTestFitness(Fitness bestTestFitness) { this.bestTestFitness = bestTestFitness; }
+    public void setTimeStat(DescriptiveStatistics timeStat) { this.timeStat = timeStat; }
+    public void setBestIndex(int bestIndex) { this.bestIndex = bestIndex; }
 
     // Adders
-    public void addExpression(Pair<String, String> expression) {
-        expressions.add(expression);
-    }
-    public void addSolution(Pair<VehiclePolicy, RequestPolicy> solution) {
-        solutions.add(solution);
-    }
-    public void addTrainFitness(Fitness fitness) {
-        trainFitnesses.add(fitness);
-    }
-    public void addTestFitness(Fitness fitness) {
-        testFitnesses.add(fitness);
-    }
+    public void addExpression(Pair<String, String> expression) { expressions.add(expression); }
+    public void addSolution(Pair<VehiclePolicy, RequestPolicy> solution) { solutions.add(solution); }
+    public void addTrainFitness(Fitness fitness) { trainFitnesses.add(fitness); }
+    public void addTestFitness(Fitness fitness) { testFitnesses.add(fitness); }
+    public void addAvgDecisionTime(double time) { avgDecisionTimes.add(time); }
 
     public static GPResult readFromFile(File file,
                                         Problem problem,
@@ -134,6 +101,7 @@ public class GPResult {
 
         String line;
         Fitness fitness = null;
+        Fitness bestFitness = null;
         String expression1 = "";
         String expression2 = "";
         Pair<String, String> expression = null;
@@ -169,17 +137,23 @@ public class GPResult {
                     result.addTrainFitness(fitness);
                     result.addTestFitness((Fitness)fitness.clone());
 
+                    if (bestFitness == null || fitness.betterThan(bestFitness)) {
+                        bestFitness = fitness;
+                    }
+
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Set the best solution as the solution in the last generation
-        result.setBestExpression(expression);
-        result.setBestSolution(solution);
-        result.setBestTrainFitness(fitness);
-        result.setBestTestFitness((Fitness)fitness.clone());
+        // Identify and set the best solution
+        int bestIndex = result.trainFitnesses.indexOf(bestFitness);
+        result.setBestIndex(bestIndex);
+        result.setBestExpression(result.getExpressionAtGen(bestIndex));
+        result.setBestSolution(result.getSolutionAtGen(bestIndex));
+        result.setBestTrainFitness(result.getTrainFitnessAtGen(bestIndex));
+        result.setBestTestFitness((Fitness)result.getTrainFitnessAtGen(bestIndex).clone());
 
         return result;
     }
