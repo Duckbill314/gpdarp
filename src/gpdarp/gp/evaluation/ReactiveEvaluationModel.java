@@ -34,8 +34,7 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     public void evaluate(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                          Fitness fitness, EvolutionState state) {
 
-        double fitnessValue = evaluateFitnesses(vehiclePolicy, requestPolicy).getRight();
-        fitnessValue /= instanceSamples.size();
+        double fitnessValue = evaluateFitnesses(vehiclePolicy, requestPolicy, true).getRight();
 
         KozaFitness f = (KozaFitness) fitness;
         f.setStandardizedFitness(state, fitnessValue);
@@ -45,7 +44,7 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     public List<Solution> evaluateOriginal(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                                  Fitness fitness, EvolutionState state) {
 
-        Pair<List<Solution>, Double> solutionPair = evaluateFitnesses(vehiclePolicy, requestPolicy);
+        Pair<List<Solution>, Double> solutionPair = evaluateFitnesses(vehiclePolicy, requestPolicy, false);
         List<Solution> solutions = solutionPair.getLeft();
         Double fitnessValue = solutionPair.getRight();
 
@@ -55,18 +54,22 @@ public class ReactiveEvaluationModel extends EvaluationModel {
         return solutions;
     }
 
-    public Pair<List<Solution>, Double> evaluateFitnesses(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy) {
+    public Pair<List<Solution>, Double> evaluateFitnesses(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
+                                                          boolean normalise) {
+
         double fitnessValue = 0;
         List<Solution> solutions = new ArrayList<>();
 
         if (isRotating()) {
             for (int i = rotationIndex; i < rotationIndex + batchsize; i++) {
-                fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, fitnessValue, solutions, i);
+                fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, fitnessValue, solutions, i, normalise);
+                fitnessValue /= batchsize;
             }
         }
         else {
             for (int i = 0; i < instanceSamples.size(); i++) {
-                fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, fitnessValue, solutions, i);
+                fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, fitnessValue, solutions, i, normalise);
+                fitnessValue /= instanceSamples.size();
             }
         }
 
@@ -74,7 +77,7 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     }
 
     private double getFitnessValue(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
-                                   double fitnessValue, List<Solution> solutions, int i) {
+                                   double fitnessValue, List<Solution> solutions, int i, boolean normalise) {
 
         Instance sample = instanceSamples.get(i);
         ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample.clone(), vehiclePolicy, requestPolicy);
@@ -84,9 +87,12 @@ public class ReactiveEvaluationModel extends EvaluationModel {
 
         Objective objective = objectives.getFirst();
         double objValue = solution.objValue(objective);
-        double refValue = getObjRefValue(i, objective);
 
-        fitnessValue += objValue / refValue;
+        if (normalise) {
+            double refValue = getObjRefValue(i, objective);
+            fitnessValue += objValue / refValue;
+        }
+
         return fitnessValue;
     }
 }

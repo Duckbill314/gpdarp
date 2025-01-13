@@ -28,10 +28,10 @@ eval.problem.data = gputils.DoubleData
 eval.problem.eval-model = gpdarp.gp.evaluation.ReactiveEvaluationModel
 eval.problem.eval-model.objectives = 1
 eval.problem.eval-model.objectives.0 = total-cost
-eval.problem.eval-model.instances = 1
+eval.problem.eval-model.instances = 250
 eval.problem.eval-model.datapath = data/test
 eval.problem.eval-model.rotating = false
-eval.problem.eval-model.batchsize = 500
+eval.problem.eval-model.batchsize = 250
 
 
 

@@ -5,7 +5,7 @@ analysis = terminal-frequency
 # train-path =
 solution-type = simple-solution
 fitness-type = simple-fitness
-num-trains = 30
+num-trains = 1
 
 # ==============================
 # The test set
@@ -22,7 +22,7 @@ eval.problem.eval-model.objectives.0 = total-cost
 eval.problem.eval-model.instances = 1
 eval.problem.eval-model.datapath = data/test
 eval.problem.eval-model.rotating = false
-eval.problem.eval-model.batchsize = 500
+eval.problem.eval-model.batchsize = 250
 
 
 
