@@ -7,7 +7,9 @@ import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.allocationpolicy.requestpolicy.GPRequestPolicy;
 import gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.GPVehiclePolicy;
+import gpdarp.gp.ReactiveGPHHProblem;
 import gpdarp.gp.UCARPPrimitiveSet;
+import gpdarp.gp.evaluation.ReactiveEvaluationModel;
 import gputils.LispUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -100,12 +102,14 @@ public class GPResult {
         GPResult result = new GPResult();
 
         String line;
-        Fitness fitness = null;
+        Fitness fitness;
         Fitness bestFitness = null;
-        String expression1 = "";
-        String expression2 = "";
-        Pair<String, String> expression = null;
-        Pair<VehiclePolicy, RequestPolicy> solution = null;
+        double val;
+        double bestVal = Double.MAX_VALUE;
+        String expression1;
+        String expression2;
+        Pair<String, String> expression;
+        Pair<VehiclePolicy, RequestPolicy> solution;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (!(line = br.readLine()).equals("Best Individual of Run:")) {
@@ -137,10 +141,15 @@ public class GPResult {
                     result.addTrainFitness(fitness);
                     result.addTestFitness((Fitness)fitness.clone());
 
-                    if (bestFitness == null || ((KozaFitness)fitness).betterThan((KozaFitness)bestFitness)) {
+                    ReactiveEvaluationModel model = (ReactiveEvaluationModel) ((ReactiveGPHHProblem)problem)
+                            .getEvaluationModel();
+
+                    val = model.validation(vehiclePolicy, requestPolicy);
+
+                    if (val < bestVal) {
+                        bestVal = val;
                         bestFitness = fitness;
                     }
-
                 }
             }
         } catch (IOException e) {

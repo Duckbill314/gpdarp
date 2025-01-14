@@ -31,13 +31,19 @@ public abstract class EvaluationModel {
     public static final String P_DATAPATH = "datapath";
     public static final String P_ROTATING = "rotating";
     public static final String P_BATCHSIZE = "batchsize";
+    public static final String P_VALIDATING = "validating";
+    public static final String P_VALIDATIONS = "validations";
+    public static final String P_VALPATH = "valpath";
 
     protected List<Objective> objectives;
     protected List<Instance> instanceSamples;
     protected boolean rotating;
     protected int batchsize;
     protected int rotationIndex = 0;
+    protected List<Instance> validationSamples;
+    protected boolean validating;
     protected Map<Pair<Integer, Objective>, Double> objRefValueMap;
+    protected Map<Pair<Integer, Objective>, Double> valObjRefValueMap;
 
     // Getters
     public List<Objective> getObjectives() {
@@ -59,6 +65,10 @@ public abstract class EvaluationModel {
      */
     public double getObjRefValue(int index, Objective objective) {
         return objRefValueMap.get(Pair.of(index, objective));
+    }
+
+    public double getValObjRefValue(int index, Objective objective) {
+        return valObjRefValueMap.get(Pair.of(index, objective));
     }
 
     /**
@@ -110,6 +120,33 @@ public abstract class EvaluationModel {
             instanceSamples.add(instance);
         }
 
+        // set up validation set if it is specified
+        p = base.push(P_VALIDATING);
+        validating = state.parameters.getBoolean(p, null, false);
+
+        if (validating) {
+            p = base.push(P_VALIDATIONS);
+            int numVals = state.parameters.getIntWithDefault(p, null, 0);
+
+            if (numVals == 0) {
+                System.err.println("ERROR:");
+                System.err.println("No validation instances are provided.");
+                System.exit(1);
+            }
+
+            p = base.push(P_VALPATH);
+            String valpath = state.parameters.getStringWithDefault(p, null, "");
+
+            validationSamples = new ArrayList<>();
+            for (int i = 0; i < numVals; i++) {
+                File file = new File(String.format("%s/%d.txt", valpath, i+1));
+                Instance instance = Instance.readFromFile(file);
+                Instance original = Instance.readFromFile(file);
+                instance.setOriginalCopy(original);
+                validationSamples.add(instance);
+            }
+        }
+
         // determine whether instance sample rotation should occur, and by how much
         p = base.push(P_ROTATING);
         this.rotating = state.parameters.getBoolean(p, null, false);
@@ -118,6 +155,7 @@ public abstract class EvaluationModel {
 
         // calculate the initial objective reference values
         objRefValueMap = new HashMap<>();
+        valObjRefValueMap = new HashMap<>();
         calcObjRefValueMap();
     }
 
@@ -139,6 +177,24 @@ public abstract class EvaluationModel {
                 index++;
             }
             dp.reset();
+        }
+
+        if (validating) {
+            index = 0;
+            for (Instance sample : validationSamples) {
+                ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample,
+                        Objective.refVehiclePolicy(), Objective.refRequestPolicy());
+
+                // get the objective reference values by applying the reference routing policy
+                dp.run();
+                Solution solution = dp.getState().getSolution();
+                for (Objective objective : objectives) {
+                    double objValue = solution.objValue(objective);
+                    valObjRefValueMap.put(Pair.of(index, objective), objValue);
+                    index++;
+                }
+                dp.reset();
+            }
         }
     }
 

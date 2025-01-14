@@ -95,4 +95,25 @@ public class ReactiveEvaluationModel extends EvaluationModel {
 
         return objValue;
     }
+
+    public double validation(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy) {
+        assert (validating);
+
+        double fitness = 0;
+
+        for (int i = 0; i < validationSamples.size(); i++) {
+            Instance sample = validationSamples.get(i);
+            ReactiveDecisionProcess dp = DecisionProcess.initReactive(sample.clone(), vehiclePolicy, requestPolicy);
+            dp.run();
+            Solution solution = dp.getState().getSolution();
+
+            Objective objective = objectives.getFirst();
+            double objValue = solution.objValue(objective);
+            double refValue = super.getValObjRefValue(i, objective);
+
+            fitness += objValue / refValue;
+        }
+        fitness /= validationSamples.size();
+        return fitness;
+    }
 }
