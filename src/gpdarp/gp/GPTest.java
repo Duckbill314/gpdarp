@@ -3,7 +3,6 @@ package gpdarp.gp;
 import ec.Evaluator;
 import ec.EvolutionState;
 import ec.Evolve;
-import ec.Fitness;
 import ec.gp.GPNode;
 import ec.gp.koza.KozaFitness;
 import ec.util.Parameter;
@@ -163,40 +162,58 @@ public class GPTest {
                 writer.write(csvTitle());
                 writer.newLine();
 
+                List<Integer> size1 = new ArrayList<>();
+                List<Integer> size2 = new ArrayList<>();
+                List<Integer> unique1 = new ArrayList<>();
+                List<Integer> unique2 = new ArrayList<>();
+
                 for (int i = 0; i < numTrains; i++) {
                     GPResult result = results.get(i);
 
                     // used to calculate the number of unique terminals
-                    UniqueTerminalsGatherer gatherer = new UniqueTerminalsGatherer();
+                    UniqueTerminalsGatherer gatherer1;
+                    UniqueTerminalsGatherer gatherer2;
 
                     // write the test results for each generation
-                    int numTerminals = 0;
-                    int numUniqueTerminals = 0;
+                    int numTerminals1;
+                    int numTerminals2;
+                    int numUnique1;
+                    int numUnique2;
 
                     for (int j = 0; j < result.getSolutions().size(); j++) {
-                        gatherer = new UniqueTerminalsGatherer();
-                        numTerminals = 0;
-                        numUniqueTerminals = 0;
+                        gatherer1 = new UniqueTerminalsGatherer();
+                        gatherer2 = new UniqueTerminalsGatherer();
 
                         Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
                         GPVehiclePolicy tree1 = (GPVehiclePolicy) solution.getLeft();
                         GPRequestPolicy tree2 = (GPRequestPolicy) solution.getRight();
 
-                        numTerminals += tree1.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
-                        numTerminals += tree2.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
+                        numTerminals1 = tree1.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
+                        numTerminals2 = tree2.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
 
-                        numUniqueTerminals += tree1.getGPTree().child.numNodes(gatherer);
-                        numUniqueTerminals += tree2.getGPTree().child.numNodes(gatherer);
+                        numUnique1 = tree1.getGPTree().child.numNodes(gatherer1);
+                        numUnique2 = tree2.getGPTree().child.numNodes(gatherer2);
 
-                        writer.write(i + "," + j + ",0," + numTerminals + "," + numUniqueTerminals + "," +
+                        writer.write(i + "," + j + ",0," +
+                                numTerminals1 + "," + numUnique1 + "," +
+                                numTerminals2 + "," + numUnique2 + "," +
                                 fitnessString(result, j) + result.getTimeAtGen(j) +
                                 "," + result.getAvgDecisionTimeAtGen(j));
                         writer.newLine();
+
+                        size1.add(numTerminals1);
+                        size2.add(numTerminals2);
+                        unique1.add(numUnique1);
+                        unique2.add(numUnique2);
                     }
 
-                    writer.write(i + "," + "-1" + ",0," + numTerminals + "," + numUniqueTerminals + "," +
-                            fitnessString(result, -1) + result.getTimeAtGen(result.getBestIndex()) +
-                            "," + result.getAvgDecisionTimeAtGen(result.getBestIndex()));
+                    int bestIndex = result.getBestIndex();
+
+                    writer.write(i + "," + "-1" + ",0," +
+                            size1.get(bestIndex) + "," + unique1.get(bestIndex) + "," +
+                            size2.get(bestIndex) + "," + unique2.get(bestIndex) + "," +
+                            fitnessString(result, -1) + result.getTimeAtGen(bestIndex) +
+                            "," + result.getAvgDecisionTimeAtGen(bestIndex));
                     writer.newLine();
                 }
                 writer.close();
@@ -248,7 +265,8 @@ public class GPTest {
     }
 
     private static String csvTitle() {
-        return "Run,Generation,Subpop,Size,UniqueTerminals,TrainFitness,TestFitness,TrainTime,AvgDecisionTime";
+        return "Run,Generation,Subpop,VPSize,VPUniqueTerminals,RPSize,RPUniqueTerminals," +
+                "TrainFitness,TestFitness,TrainTime,AvgDecisionTime";
     }
 
     private static String fitnessString(GPResult result, int gen) {

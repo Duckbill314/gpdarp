@@ -35,24 +35,26 @@ public class GPAnalysis {
     public FitnessType fitnessType;
     public int numTrains;
 
-    Map<String, int[]> terminalFrequencyMap = new HashMap<>();
+    Map<String, int[]> vehicleTerminalFrequencyMap = new HashMap<>();
+    Map<String, int[]> requestTerminalFrequencyMap = new HashMap<>();
 
     public void terminalFrequencyAnalysis(List<GPResult> results) {
         for (GPNode terminal : UCARPPrimitiveSet.terminalSet().getList()) {
-            terminalFrequencyMap.put(((FeatureGPNode)terminal).getName(), new int[numTrains]);
+            vehicleTerminalFrequencyMap.put(((FeatureGPNode)terminal).getName(), new int[numTrains]);
+            requestTerminalFrequencyMap.put(((FeatureGPNode)terminal).getName(), new int[numTrains]);
         }
 
         for (int i = 0; i < results.size(); i++) {
             GPResult result = results.get(i);
             Pair<String, String> bestExp = result.getBestExpression();
-            List<String> terminals = new ArrayList<>();
-            List<String> terminals1 = LispUtils.terminals(bestExp.getLeft());
-            List<String> terminals2 = LispUtils.terminals(bestExp.getRight());
-            terminals.addAll(terminals1);
-            terminals.addAll(terminals2);
+            List<String> vehicleTerminals = LispUtils.terminals(bestExp.getLeft());
+            List<String> requestTerminals = LispUtils.terminals(bestExp.getRight());
 
-            for (String terminal : terminals) {
-                terminalFrequencyMap.get(terminal)[i] ++;
+            for (String terminal : vehicleTerminals) {
+                vehicleTerminalFrequencyMap.get(terminal)[i] ++;
+            }
+            for (String terminal : requestTerminals) {
+                requestTerminalFrequencyMap.get(terminal)[i] ++;
             }
         }
 
@@ -67,11 +69,15 @@ public class GPAnalysis {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile.getAbsoluteFile()));
             // write the title
-            writer.write("Terminal,Run,Frequency");
+            writer.write("Terminal,Run,VehiclePolicyFrequency,RequestPolicyFrequency");
             writer.newLine();
-            for (String terminal : terminalFrequencyMap.keySet()) {
+            for (String terminal : UCARPPrimitiveSet.terminalSet().getList().stream()
+                    .map(e -> ((FeatureGPNode)e).getName())
+                    .toList()) {
                 for (int i = 0; i < numTrains; i++) {
-                    writer.write(terminal + "," + i + "," + terminalFrequencyMap.get(terminal)[i]);
+                    writer.write(terminal + "," + i + "," +
+                            vehicleTerminalFrequencyMap.get(terminal)[i] + "," +
+                            requestTerminalFrequencyMap.get(terminal)[i]);
                     writer.newLine();
                 }
 
