@@ -182,6 +182,15 @@ public class FeasiblePoolFilter extends PoolFilter {
         return (estimatedChargeState < 0);
     }
 
+    /**
+     * A variant of the recalculation method used for debugging purposes.
+     * It returns all the routes unconditionally and logs the constraint violations that the routes cause.
+     *
+     * @param vehicle the vehicle for which the optimal route is being calculated.
+     * @param state the current decision process state.
+     * @param requests the pool of requests.
+     * @return a list of all the generated routes.
+     */
     public List<Route> debugRecalculate(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
         List<Request> originalRequests = Request.listClone(requests);
 

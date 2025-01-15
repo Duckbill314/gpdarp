@@ -42,7 +42,9 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
     public String toString() { return String.format("%s at time %d", name, time); }
 
     /**
-     * Helper method for handling vehicle allocation.
+     * Helper method for handling vehicle allocation (which vehicle to assign an incoming request to).
+     * The first time a request is seen this way, if it is not assigned a vehicle, it goes into the waiting list.
+     * If a request is assigned a vehicle this way from the waiting list, it is removed from the waiting list.
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param request the request to be allocated.
@@ -56,9 +58,12 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
         decisionProcess.addDecisionTime((double) (endTime - startTime) / 1000000000);
 
         if (allocation == null) {
-            decisionProcess.addWaiting(request);
+            if (!decisionProcess.getWaitingList().contains(request)) {
+                decisionProcess.addWaiting(request);
+            }
             return null;
         }
+        decisionProcess.removeWaiting(request);
 
         Vehicle vehicle = allocation.getKey();
         Route route = allocation.getValue();
@@ -68,7 +73,8 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
     }
 
     /**
-     * Helper method for handling waiting list request allocation.
+     * Helper method for handling waiting list request allocation (which request to assign to an idle vehicle).
+     * If the vehicle has not yet been assigned any requests, it may also decide to visit a charging station.
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param vehicle         the vehicle to which a request is to be allocated.
@@ -108,8 +114,7 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
     }
 
     /**
-     * Iteratively adds waiting requests to construct a route,
-     * until there are no more feasible waiting requests.
+     * Iteratively adds waiting requests to construct a route, until there are no more feasible waiting requests.
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param vehicle         the vehicle to which a request is to be allocated.

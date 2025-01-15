@@ -16,7 +16,8 @@ import java.util.PriorityQueue;
  *  - An event queue: the events to happen,
  *  - A waiting list: the list of requests that were not accepted,
  *  - A vehicle allocation policy: for selecting a vehicle to allocate a request to,
- *  - A request allocation policy: for selecting a request to allocate to a vehicle.
+ *  - A request allocation policy: for selecting a request to allocate to a vehicle,
+ *  - A list of decision times: for calculating the average decision time in the simulation.
  *
  * @author gphhucarp, William Huang
  */
@@ -26,7 +27,7 @@ public abstract class DecisionProcess {
     protected List<Request> waitingList;
     protected VehiclePolicy vehiclePolicy;
     protected RequestPolicy requestPolicy;
-    protected List<Double> decisionTimes = new ArrayList<Double>();
+    protected List<Double> decisionTimes = new ArrayList<>();
 
     public DecisionProcess(DecisionProcessState state,
                            PriorityQueue<DecisionProcessEvent> eventQueue,
@@ -55,27 +56,10 @@ public abstract class DecisionProcess {
     public RequestPolicy getRequestPolicy() { return requestPolicy; }
     public List<Double> getDecisionTimes() { return decisionTimes; }
 
-    /**
-     * Add an event to the event queue.
-     *
-     * @param event the event to be added.
-     */
+    // Adders
     public void addEvent(DecisionProcessEvent event) { eventQueue.add(event); }
-
-    /**
-     * Add a request to the waiting list.
-     *
-     * @param request the request to be added.
-     */
     public void addWaiting(Request request) { waitingList.add(request); }
-
-    /**
-     * Remove a request from the waiting list.
-     *
-     * @param request the request to be removed.
-     */
     public void removeWaiting(Request request) { waitingList.remove(request); }
-
     public void addDecisionTime(Double d) { decisionTimes.add(d); }
 
     /**

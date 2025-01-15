@@ -101,6 +101,14 @@ public abstract class VehiclePolicy {
      */
     public abstract double priority(Vehicle candidate, Request request, EphemeralRoute route, DecisionProcessState state);
 
+    /**
+     * A variant of the allocation method used for debugging purposes.
+     * It circumvents the feasibility pool filter to offer all possible routes.
+     *
+     * @param state the decision process state.
+     * @param request the request to be allocated.
+     * @return a list of all the generated routes.
+     */
     public List<Pair<Vehicle, Route>> debugNext(DecisionProcessState state, Request request) {
         Instance instance = state.getInstance();
         List<Vehicle> vehicles = new ArrayList<>(instance.getVehicles());

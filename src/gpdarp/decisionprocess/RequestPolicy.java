@@ -103,6 +103,15 @@ public abstract class RequestPolicy {
      */
     public abstract double priority(Request candidate, Vehicle vehicle, EphemeralRoute route, DecisionProcessState state);
 
+    /**
+     * A variant of the allocation method used for debugging purposes.
+     * It circumvents the feasibility pool filter to offer all possible routes.
+     *
+     * @param vehicle the vehicle to accept a request.
+     * @param state the decision process state.
+     * @param requests the waiting list of requests.
+     * @return a list of all the generated routes.
+     */
     public List<Pair<Request, Route>> debugNext(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
         List<Pair<Request, Route>> requestPool = new ArrayList<>();
 

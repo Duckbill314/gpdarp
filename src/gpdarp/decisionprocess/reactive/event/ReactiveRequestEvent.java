@@ -14,7 +14,7 @@ import java.util.List;
  * Then, a new event is invoked to move to the next point in the route.
  * If no vehicle allocation is made, instead, the request is added to a waiting queue.
  * It is possible that no allocation is made because the request's pickup time is too far in the future.
- * Thus, all vehicles that rejected the request for this reason will give the request the chance to be revisited
+ * Thus, all vehicles that rejected the request for this reason will give the request the chance to be accepted
  * closer to its actual pickup time.
  *
  * @author William Huang

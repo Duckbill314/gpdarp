@@ -9,8 +9,7 @@ import java.util.PriorityQueue;
 
 /**
  * The reactive decision process builds the solution in real time.
- * It assigns requests to vehicles based on whichever one can fulfill them at minimum cost.
- * It also plans refills whenever necessary.
+ * It assigns requests/actions to vehicles based on the supplied policies.
  *
  * @author gphhucarp, William Huang
  */

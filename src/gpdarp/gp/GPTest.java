@@ -32,11 +32,15 @@ import java.util.Random;
 
 /**
  * The main program of the GP test process.
- * It reads the out.stat files from the training path subject to the solution and fitness types.
- * Then it tests all the solutions read from the training files on the test set.
+ * It reads the out.stat files from the training path.
+ * For each generation in a run, it does the following:
+ * - read the solution,
+ * - determine whether the best individual in the generation generalised well to the validation set,
+ * - if so, evaluate that individual against the test set, and,
+ * - if it doesn't generalise well to the test set, identify the infeasible instances and write their states to file.
  * Finally, it writes all the related information to a csv file.
  *
- * @author gphhucarp
+ * @author gphhucarp, William Huang
  */
 public class GPTest {
     public static final String P_POLICY_TYPE = "policy-type"; // manual or gp-evolved
@@ -85,22 +89,18 @@ public class GPTest {
         String policyType = parameters.getStringWithDefault(p, null, "");
 
         if (policyType.equals("gp-evolved")) {
-            // create new subdirectory
-            File writtenPath = new File(trainPath + "test");
-            if (!writtenPath.exists()) {
-                writtenPath.mkdirs();
-            }
-            String filePath = writtenPath + "/gp";
-
-            // read the results from the training files
-            List<GPResult> results = new ArrayList<>();
-
-            // start testing the rules
             System.out.println("Test rules from path " + trainPath);
-
+            List<GPResult> results = new ArrayList<>();
             List<Solution> solutions;
 
-            // create new subdirectory
+            // create subdirectory for test output
+            File outputPath = new File(trainPath + "test");
+            if (!outputPath.exists()) {
+                outputPath.mkdirs();
+            }
+            String filePath = outputPath + "/gp";
+
+            // create subdirectory for debug output
             File debugPath = new File(trainPath + "debug");
             if (!debugPath.exists()) {
                 debugPath.mkdirs();
@@ -110,19 +110,17 @@ public class GPTest {
                 System.out.println("Testing run " + i);
 
                 File sourceFile = new File(trainPath + "job." + i + ".out.stat");
-
-                // read the rules to a result class
                 GPResult result = GPResult.readFromFile(sourceFile, state.evaluator.p_problem, solutionType, fitnessType);
 
-                // read the time from the .stat.csv file
                 File timeFile = new File(trainPath + "job." + i + ".stat.csv");
                 result.setTimeStat(GPResult.readTimeFromFile(timeFile));
 
-                // test the rules for each generation
                 long start = System.currentTimeMillis();
 
+                // test the rules for each generation
                 for (int j = 0; j < result.getSolutions().size(); j++) {
                     double val = result.getValidationAtGen(j);
+
                     if (val >= 0 && val < Double.MAX_VALUE) {
                         Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
                         solutions = testEvaluationModel.evaluateOriginal(solution.getLeft(), solution.getRight(),
@@ -131,6 +129,7 @@ public class GPTest {
 
                         if (((KozaFitness)result.getTestFitnessAtGen(j)).standardizedFitness() > 1000000) {
                             System.out.printf("Generation %d: num failed tests = %d\n", j, solutions.size());
+
                             for (int k = 0; k < solutions.size(); k++) {
                                 Solution sol = solutions.get(k);
                                 DecisionProcess dp = sol.getDp();
@@ -226,14 +225,41 @@ public class GPTest {
                     }
                 }
 
+                // test the best rule
+                Pair<VehiclePolicy, RequestPolicy> bestSolution = result.getBestSolution();
+                solutions = testEvaluationModel.evaluateOriginal(bestSolution.getLeft(), bestSolution.getRight(),
+                        result.getBestTestFitness(), state);
+
+                double avgDecisionTime;
+                if (solutions.isEmpty()) {
+                    avgDecisionTime = 0;
+                }
+                else {
+                    avgDecisionTime = solutions.stream()
+                            .map(Solution::getAvgDecisionTime)
+                            .mapToDouble(Double::doubleValue)
+                            .sum() / result.getSolutions().size();
+                }
+
+                result.setAvgDecisionTime(avgDecisionTime);
+
+                System.out.println("Best individual: test fitness = " +
+                        ((KozaFitness)result.getBestTestFitness()).standardizedFitness());
+
+                long finish = System.currentTimeMillis();
+                long duration = finish - start;
+                System.out.println("Duration = " + duration + " ms.");
+
                 results.add(result);
+
+                // write one of the solutions to output for correctness checking
+                writeSolution(solutions, filePath + "-" + i);
             }
 
             File csvFile = new File(filePath + ".csv");
 
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile.getAbsoluteFile()));
-                // write the title
                 writer.write(csvTitle());
                 writer.newLine();
 
@@ -245,11 +271,9 @@ public class GPTest {
                 for (int i = 0; i < numTrains; i++) {
                     GPResult result = results.get(i);
 
-                    // used to calculate the number of unique terminals
                     UniqueTerminalsGatherer gatherer1;
                     UniqueTerminalsGatherer gatherer2;
 
-                    // write the test results for each generation
                     int numTerminals1;
                     int numTerminals2;
                     int numUnique1;
@@ -298,11 +322,12 @@ public class GPTest {
             }
         }
         else {
-            // create new subdirectory
+            // create subdirectory for manual test output
             File writtenPath = new File(trainPath + "test");
             if (!writtenPath.exists()) {
                 writtenPath.mkdirs();
             }
+
             String filePath = writtenPath + "/manual";
             File csvFile = new File(filePath + ".csv");
 

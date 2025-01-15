@@ -13,8 +13,6 @@ import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +65,13 @@ public abstract class EvaluationModel {
         return objRefValueMap.get(Pair.of(index, objective));
     }
 
+    /**
+     * Get the objective reference value of a particular validation instance and an objective.
+     *
+     * @param index the index of the validation instance.
+     * @param objective the objective.
+     * @return the corresponding objective reference value.
+     */
     public double getValObjRefValue(int index, Objective objective) {
         return valObjRefValueMap.get(Pair.of(index, objective));
     }
@@ -161,6 +166,7 @@ public abstract class EvaluationModel {
 
     /**
      * Calculate the objective reference values from a baseline policy defined in the Objective class.
+     * Do it for the validation set as well if the validation set is specified.
      */
     public void calcObjRefValueMap() {
         int index = 0;

@@ -6,12 +6,13 @@ import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
 
 /**
- * Returns the charging rate of the request. Used to provide an incentive for charging requests.
+ * Returns a larger value if a request is a charging request.
+ * Used to provide an incentive for charging requests.
  *
  * @author William Huang
  */
-public class ChargingRate extends FeatureGPNode {
-    public ChargingRate() {
+public class IsChargingAction extends FeatureGPNode {
+    public IsChargingAction() {
         super();
         name = "CHRG";
     }
@@ -21,8 +22,8 @@ public class ChargingRate extends FeatureGPNode {
         Vehicle vehicle = calcPriorityProblem.getVehicle();
         Request request = calcPriorityProblem.getRequest();
         if (request.getType() == Request.RequestType.CHARGE) {
-            return vehicle.getChargeFillRate();
+            return 1000; //vehicle.getChargeFillRate();
         }
-        return 0;
+        return 1;
     }
 }

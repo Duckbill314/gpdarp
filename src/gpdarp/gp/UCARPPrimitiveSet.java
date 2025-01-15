@@ -28,7 +28,7 @@ public class UCARPPrimitiveSet extends PrimitiveSet {
      *  - Vehicle minimum slack,
      *  - Travel time to charging station,
      *  - Travel time of other best vehicle to serve the request,
-     *  - Charging rate of the request.
+     *  - Whether a request is a charging action.
      *
      * @return the terminal set.
      */
@@ -47,7 +47,7 @@ public class UCARPPrimitiveSet extends PrimitiveSet {
                 new VehicleSlack(),
                 new TimeToStation(),
                 new OtherBestVehicle(),
-                new ChargingRate()
+                new IsChargingAction()
         ));
 
         for (FeatureGPNode terminal : terminals) {

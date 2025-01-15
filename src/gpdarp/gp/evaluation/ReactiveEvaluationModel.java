@@ -3,7 +3,6 @@ package gpdarp.gp.evaluation;
 import ec.EvolutionState;
 import ec.Fitness;
 import ec.gp.koza.KozaFitness;
-import ec.multiobjective.MultiObjectiveFitness;
 import gpdarp.core.Instance;
 import gpdarp.core.Objective;
 import gpdarp.decisionprocess.RequestPolicy;
@@ -13,7 +12,6 @@ import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import gpdarp.representation.Solution;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,6 @@ import java.util.List;
  * A reactive evaluation model is a set of reactive decision processes, corresponding to a set of instances.
  * It evaluates a reactive routing policy by applying the policy on each decision process,
  * and returning the average normalised objective values across the processes.
- *
  * It includes
  *  - A list of instances,
  *  - The reference objective value map, indicating the reference value

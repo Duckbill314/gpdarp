@@ -33,7 +33,7 @@ eval.problem.eval-model.datapath = data/test
 eval.problem.eval-model.rotating = false
 eval.problem.eval-model.batchsize = 1
 eval.problem.eval-model.validating = true
-eval.problem.eval-model.validations = 250
+eval.problem.eval-model.validations = 500
 eval.problem.eval-model.valpath = data/valid
 
 

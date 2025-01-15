@@ -6,6 +6,13 @@ import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 
+/**
+ * This event is invoked when an incoming request is not accepted by any vehicle due to the fact that its
+ * pickup time is too far in the future. It gives the request another chance to be accepted by a vehicle closer
+ * to the request's pickup time.
+ *
+ * @author William Huang
+ */
 public class ReactiveRepeatEvent extends DecisionProcessEvent {
     Request request;
 
