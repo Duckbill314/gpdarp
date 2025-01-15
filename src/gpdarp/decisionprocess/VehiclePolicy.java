@@ -1,5 +1,6 @@
 package gpdarp.decisionprocess;
 
+import gpdarp.core.Instance;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
@@ -8,6 +9,7 @@ import gpdarp.representation.route.EphemeralRoute;
 import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -98,4 +100,28 @@ public abstract class VehiclePolicy {
      * @return the priority of the candidate vehicle.
      */
     public abstract double priority(Vehicle candidate, Request request, EphemeralRoute route, DecisionProcessState state);
+
+    public List<Pair<Vehicle, Route>> debugNext(DecisionProcessState state, Request request) {
+        Instance instance = state.getInstance();
+        List<Vehicle> vehicles = new ArrayList<>(instance.getVehicles());
+        List<Pair<Vehicle, Route>> vehiclePool = new ArrayList<>();
+
+        for (Vehicle vehicle : vehicles) {
+            List<Request> requests = new ArrayList<>(vehicle.getRequests());
+            requests.add(request);
+            List<Route> routes = ((FeasiblePoolFilter) poolFilter).debugRecalculate(vehicle, state, requests);
+
+            for (Route route : routes) {
+                vehiclePool.add(Pair.of(vehicle, route));
+            }
+        }
+
+        vehiclePool.forEach(pair -> {
+            Vehicle vehicle = pair.getKey();
+            Route route = pair.getValue();
+            route.setPriority(priority(vehicle, request, route.getEphemeralRoute(), state));
+        });
+
+        return vehiclePool;
+    }
 }

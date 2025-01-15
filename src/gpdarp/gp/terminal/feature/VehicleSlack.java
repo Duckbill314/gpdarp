@@ -24,7 +24,7 @@ public class VehicleSlack extends FeatureGPNode {
 
         return route.getRequestClones().stream()
                 .filter(r -> r.getType() == Request.RequestType.REQUEST)
-                .map(r -> r.getTMax() - r.getPickup().getArrivalTime())
+                .map(r -> r.getTLate() - r.getPickup().getArrivalTime())
                 .min(Double::compare)
                 .orElse((int) LIMIT);
     }

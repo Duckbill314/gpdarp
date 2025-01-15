@@ -17,6 +17,7 @@ public class Route {
     private List<Arc> arcs;
     private EphemeralRoute ephemeralRoute;
     private double priority;
+    private String violationLog;
 
     public Route(List<Arc> arcs) { this.arcs = arcs; }
 
@@ -28,11 +29,13 @@ public class Route {
     public EphemeralRoute getEphemeralRoute() { return ephemeralRoute; }
     public double getPriority() { return priority; }
     public Node getEndpoint() { return arcs.getLast().to(); }
+    public String getViolationLog() { return violationLog; }
 
     // Setters
     public void setArcs(List<Arc> arcs) { this.arcs = arcs; }
     public void setEphemeralRoute(EphemeralRoute ephemeralRoute) { this.ephemeralRoute = ephemeralRoute; }
     public void setPriority(double priority) { this.priority = priority; }
+    public void setViolationLog(String violationLog) { this.violationLog = violationLog; }
 
     // Manipulators
     public void push(Arc arc) { arcs.add(arc); }

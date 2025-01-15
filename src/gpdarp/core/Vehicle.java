@@ -200,7 +200,8 @@ public class Vehicle {
     public double estimateDepletion(int length) { return chargeState - chargeDepletionRate * length; }
 
     @Override
-    public String toString() { return String.format("Vehicle %d | charge: %f/%f", id, chargeState, chargeMax); }
+    public String toString() { return String.format("Vehicle %d | charge: %f/%f, position: %s",
+            id, chargeState, chargeMax, currPos); }
 
     @Override
     public Vehicle clone() {

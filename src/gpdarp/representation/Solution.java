@@ -1,6 +1,7 @@
 package gpdarp.representation;
 
 import gpdarp.core.Objective;
+import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.representation.route.Route;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Solution {
     private int numRequests;
     private double avgDecisionTime;
     private String name;
+    public DecisionProcess dp;
 
     public Solution(List<Route> routes) {
         this.routes = routes;
@@ -36,6 +38,7 @@ public class Solution {
     public int getNumRequests() { return numRequests; }
     public double getAvgDecisionTime() { return avgDecisionTime; }
     public String getName() { return name; }
+    public DecisionProcess getDp() { return dp; }
 
     // Setters
     public void setRoutes(List<Route> routes) {
@@ -46,6 +49,7 @@ public class Solution {
     public void setNumRequests(int numRequests) { this.numRequests = numRequests; }
     public void setAvgDecisionTime(double avgDecisionTime) { this.avgDecisionTime = avgDecisionTime; }
     public void setName(String name) { this.name = name; }
+    public void setDp(DecisionProcess dp) { this.dp = dp; }
 
     /**
      * Reset this solution by resetting each route.

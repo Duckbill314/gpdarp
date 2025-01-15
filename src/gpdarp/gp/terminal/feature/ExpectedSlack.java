@@ -38,7 +38,7 @@ public class ExpectedSlack extends FeatureGPNode {
         FeasiblePoolFilter poolFilter = new FeasiblePoolFilter();
         List<Pair<Vehicle, Route>> pool = poolFilter.filterVehicles(state, request);
 
-        int tMax = request.getTMax();
+        int tLate = request.getTLate();
 
         int bestTime = pool.stream()
                 .map(pair -> pair.getValue().getEphemeralRoute())
@@ -52,6 +52,6 @@ public class ExpectedSlack extends FeatureGPNode {
                 .min(Double::compare)
                 .orElse((int) LIMIT);
 
-        return tMax - bestTime;
+        return tLate - bestTime;
     }
 }

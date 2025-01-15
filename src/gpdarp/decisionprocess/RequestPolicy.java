@@ -1,5 +1,6 @@
 package gpdarp.decisionprocess;
 
+import gpdarp.core.Node;
 import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
@@ -8,6 +9,8 @@ import gpdarp.representation.route.EphemeralRoute;
 import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -99,4 +102,36 @@ public abstract class RequestPolicy {
      * @return the priority of the candidate request.
      */
     public abstract double priority(Request candidate, Vehicle vehicle, EphemeralRoute route, DecisionProcessState state);
+
+    public List<Pair<Request, Route>> debugNext(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
+        List<Pair<Request, Route>> requestPool = new ArrayList<>();
+
+        for (Request request : requests) {
+            switch (request.getType()) {
+                case CHARGE -> {
+                    List<Node> chargeRoute = new ArrayList<>(Arrays.asList(request.getPickup(), request.getDropoff()));
+                    List<Request> chargeRequest = new ArrayList<>(List.of(request));
+                    requestPool.add(Pair.of(request, Route.buildFromNodeList(chargeRoute, chargeRequest)));
+                }
+
+                case REQUEST -> {
+                    List<Request> vehicleRequests = new ArrayList<>(vehicle.getRequests());
+                    vehicleRequests.add(request);
+                    List<Route> routes = ((FeasiblePoolFilter) poolFilter).debugRecalculate(vehicle, state, vehicleRequests);
+
+                    for (Route route : routes) {
+                        requestPool.add(Pair.of(request, route));
+                    }
+                }
+            }
+        }
+
+        requestPool.forEach(pair -> {
+            Request request = pair.getKey();
+            Route route = pair.getValue();
+            route.setPriority(priority(request, vehicle, route.getEphemeralRoute(), state));
+        });
+
+        return requestPool;
+    }
 }

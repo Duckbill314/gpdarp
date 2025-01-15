@@ -8,7 +8,6 @@ import ec.gp.koza.KozaFitness;
 import ec.util.Parameter;
 import ec.util.ParameterDatabase;
 import gpdarp.core.*;
-import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.allocationpolicy.requestpolicy.GPRequestPolicy;
@@ -100,12 +99,6 @@ public class GPTest {
 
             List<Solution> solutions;
 
-            // create new subdirectory
-            File debugPath = new File(trainPath + "debug");
-            if (!debugPath.exists()) {
-                debugPath.mkdirs();
-            }
-
             for (int i = 0; i < numTrains; i++) {
                 System.out.println("Testing run " + i);
 
@@ -118,115 +111,37 @@ public class GPTest {
                 File timeFile = new File(trainPath + "job." + i + ".stat.csv");
                 result.setTimeStat(GPResult.readTimeFromFile(timeFile));
 
-                // test the rules for each generation
+                // test the best rule
                 long start = System.currentTimeMillis();
 
-                for (int j = 0; j < result.getSolutions().size(); j++) {
-                    double val = result.getValidationAtGen(j);
-                    if (val >= 0 && val < Double.MAX_VALUE) {
-                        Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
-                        solutions = testEvaluationModel.evaluateOriginal(solution.getLeft(), solution.getRight(),
-                                result.getTestFitnessAtGen(j), state);
-                        solutions.removeIf(s -> s.isFeasible());
+                Pair<VehiclePolicy, RequestPolicy> bestSolution = result.getBestSolution();
+                solutions = testEvaluationModel.evaluateOriginal(bestSolution.getLeft(), bestSolution.getRight(),
+                        result.getBestTestFitness(), state);
 
-                        if (((KozaFitness)result.getTestFitnessAtGen(j)).standardizedFitness() > 1000000) {
-                            System.out.printf("Generation %d: num failed tests = %d\n", j, solutions.size());
-                            for (int k = 0; k < solutions.size(); k++) {
-                                Solution sol = solutions.get(k);
-                                DecisionProcess dp = sol.getDp();
-                                List<Request> waitingRequests = dp.getWaitingList();
-                                List<Vehicle> vehicles = dp.getState().getInstance().getVehicles();
-
-                                File txtFile = new File(debugPath + String.format("/%d-%d-%d.txt", i, j, k));
-
-                                try {
-                                    BufferedWriter writer = new BufferedWriter(new FileWriter(txtFile.getAbsoluteFile()));
-
-                                    writer.write("REQUESTS");
-                                    writer.newLine();
-                                    for (Request request : waitingRequests) {
-                                        writer.write(request.toString());
-                                        writer.newLine();
-                                    }
-
-                                    writer.newLine();
-
-                                    writer.write("VEHICLES");
-                                    writer.newLine();
-                                    for (Vehicle vehicle : vehicles) {
-                                        writer.write(vehicle.toString());
-                                        writer.newLine();
-                                    }
-
-                                    writer.newLine();
-                                    writer.newLine();
-
-                                    writer.write("ROUTES");
-                                    writer.newLine();
-                                    for (Route route : sol.getRoutes()) {
-                                        writer.write(route.toString());
-                                        writer.newLine();
-                                    }
-                                    writer.newLine();
-                                    writer.newLine();
-
-
-                                    writer.write("VP PRIORITIES");
-                                    writer.newLine();
-                                    VehiclePolicy vp = dp.getVehiclePolicy();
-                                    for (Request request : waitingRequests) {
-                                        List<Pair<Vehicle, Route>> pool = vp.debugNext(dp.getState(), request);
-                                        for (Pair<Vehicle, Route> pair : pool) {
-                                            Vehicle vehicle = pair.getLeft();
-                                            Route route = pair.getRight();
-                                            String res = String.format("vehicle %d's priority for request %d: %f",
-                                                    vehicle.getId(), request.getId(), route.getPriority());
-                                            writer.write(res);
-                                            writer.newLine();
-                                            writer.write(route.getViolationLog());
-                                            writer.newLine();
-                                        }
-                                    }
-
-                                    writer.newLine();
-
-                                    writer.write("RP PRIORITIES");
-                                    writer.newLine();
-                                    RequestPolicy rp = dp.getRequestPolicy();
-                                    for (Vehicle vehicle : vehicles) {
-                                        List<Pair<Request, Route>> pool = rp.debugNext(vehicle, dp.getState(), new ArrayList<>(waitingRequests));
-                                        for (Pair<Request, Route> pair : pool) {
-                                            Request request = pair.getLeft();
-                                            Route route = pair.getRight();
-                                            String res = String.format("request %d's priority for vehicle %d: %f",
-                                                    request.getId(), vehicle.getId(), route.getPriority());
-                                            writer.write(res);
-                                            writer.newLine();
-                                            writer.write(route.getViolationLog());
-                                            writer.newLine();
-                                        }
-                                    }
-                                    writer.newLine();
-
-                                    writer.write("TREES");
-                                    writer.newLine();
-                                    Pair<String, String> expr = result.getExpressionAtGen(j);
-                                    writer.write(expr.getLeft());
-                                    writer.newLine();
-                                    writer.write(expr.getRight());
-                                    writer.newLine();
-
-                                    writer.close();
-
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
+                double avgDecisionTime;
+                if (solutions.isEmpty()) {
+                    avgDecisionTime = 0;
+                }
+                else {
+                    avgDecisionTime = solutions.stream()
+                            .map(Solution::getAvgDecisionTime)
+                            .mapToDouble(Double::doubleValue)
+                            .sum() / result.getSolutions().size();
                 }
 
+                result.setAvgDecisionTime(avgDecisionTime);
+
+                System.out.println("Best individual: test fitness = " +
+                        ((KozaFitness)result.getBestTestFitness()).standardizedFitness());
+
+                long finish = System.currentTimeMillis();
+                long duration = finish - start;
+                System.out.println("Duration = " + duration + " ms.");
+
                 results.add(result);
+
+                // write to files
+                writeSolution(solutions, filePath + "-" + i);
             }
 
             File csvFile = new File(filePath + ".csv");
@@ -237,56 +152,29 @@ public class GPTest {
                 writer.write(csvTitle());
                 writer.newLine();
 
-                List<Integer> size1 = new ArrayList<>();
-                List<Integer> size2 = new ArrayList<>();
-                List<Integer> unique1 = new ArrayList<>();
-                List<Integer> unique2 = new ArrayList<>();
-
                 for (int i = 0; i < numTrains; i++) {
                     GPResult result = results.get(i);
 
                     // used to calculate the number of unique terminals
-                    UniqueTerminalsGatherer gatherer1;
-                    UniqueTerminalsGatherer gatherer2;
+                    UniqueTerminalsGatherer gatherer1 = new UniqueTerminalsGatherer();
+                    UniqueTerminalsGatherer gatherer2 = new UniqueTerminalsGatherer();
 
-                    // write the test results for each generation
-                    int numTerminals1;
-                    int numTerminals2;
-                    int numUnique1;
-                    int numUnique2;
+                    // write the test results for the best generation
+                    Pair<VehiclePolicy, RequestPolicy> solution = result.getBestSolution();
+                    GPVehiclePolicy tree1 = (GPVehiclePolicy) solution.getLeft();
+                    GPRequestPolicy tree2 = (GPRequestPolicy) solution.getRight();
 
-                    for (int j = 0; j < result.getSolutions().size(); j++) {
-                        gatherer1 = new UniqueTerminalsGatherer();
-                        gatherer2 = new UniqueTerminalsGatherer();
+                    int numTerminals1 = tree1.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
+                    int numTerminals2 = tree2.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
 
-                        Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
-                        GPVehiclePolicy tree1 = (GPVehiclePolicy) solution.getLeft();
-                        GPRequestPolicy tree2 = (GPRequestPolicy) solution.getRight();
-
-                        numTerminals1 = tree1.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
-                        numTerminals2 = tree2.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
-
-                        numUnique1 = tree1.getGPTree().child.numNodes(gatherer1);
-                        numUnique2 = tree2.getGPTree().child.numNodes(gatherer2);
-
-                        writer.write(i + "," + j + ",0," +
-                                numTerminals1 + "," + numUnique1 + "," +
-                                numTerminals2 + "," + numUnique2 + "," +
-                                fitnessString(result, j) + result.getTimeAtGen(j) +
-                                "," + result.getAvgDecisionTime());
-                        writer.newLine();
-
-                        size1.add(numTerminals1);
-                        size2.add(numTerminals2);
-                        unique1.add(numUnique1);
-                        unique2.add(numUnique2);
-                    }
+                    int numUnique1 = tree1.getGPTree().child.numNodes(gatherer1);
+                    int numUnique2 = tree2.getGPTree().child.numNodes(gatherer2);
 
                     int bestIndex = result.getBestIndex();
 
-                    writer.write(i + "," + "-1" + ",0," +
-                            size1.get(bestIndex) + "," + unique1.get(bestIndex) + "," +
-                            size2.get(bestIndex) + "," + unique2.get(bestIndex) + "," +
+                    writer.write(i + "," + bestIndex + ",0," +
+                            numTerminals1 + "," + numUnique1 + "," +
+                            numTerminals2 + "," + numUnique2 + "," +
                             fitnessString(result, -1) + result.getTimeAtGen(bestIndex) +
                             "," + result.getAvgDecisionTime());
                     writer.newLine();

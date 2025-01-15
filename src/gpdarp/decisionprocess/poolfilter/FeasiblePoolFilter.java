@@ -181,4 +181,34 @@ public class FeasiblePoolFilter extends PoolFilter {
         double estimatedChargeState = vehicle.estimateDepletion(routeLength + returnLength);
         return (estimatedChargeState < 0);
     }
+
+    public List<Route> debugRecalculate(Vehicle vehicle, DecisionProcessState state, List<Request> requests) {
+        List<Request> originalRequests = Request.listClone(requests);
+
+        List<List<Node>> candidates = new ArrayList<>();
+        recursiveAdd(candidates, new ArrayList<Node>(), requests);
+        candidates.forEach(candidate -> candidate.addFirst(vehicle.getCurrPos()));
+
+        List<Route> routes = new ArrayList<>();
+
+        candidates.forEach(candidate -> {
+            Route route = Route.buildFromNodeList(candidate, originalRequests);
+            EphemeralRoute ephemeralRoute = route.getEphemeralRoute();
+            ephemeralRoute.updateTimes(state, vehicle);
+            routes.add(route);
+            String log = "CONSTRAINT VIOLATIONS:\n";
+            if (timeConstraintViolation(ephemeralRoute.getRequestClones())) {
+                log += "- TIME\n";
+            }
+            if (demandConstraintViolation(vehicle, ephemeralRoute)) {
+                log += "- DEMAND\n";
+            }
+            if (chargeConstraintViolation(state.getInstance(), vehicle, ephemeralRoute)) {
+                log += "- CHARGE\n";
+            }
+            route.setViolationLog(log);
+        });
+
+        return routes;
+    }
 }

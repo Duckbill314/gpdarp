@@ -124,6 +124,7 @@ public abstract class DecisionProcess {
                     .sum() / decisionTimes.size();
         }
         state.getSolution().setAvgDecisionTime(avgDecisionTime);
+        state.getSolution().setDp(this);
     }
 
     /**

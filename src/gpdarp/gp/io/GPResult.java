@@ -46,13 +46,15 @@ public class GPResult {
     private Fitness bestTestFitness;
     private DescriptiveStatistics timeStat;
     private int bestIndex;
-    private List<Double> avgDecisionTimes = new ArrayList<Double>();
+    private double avgDecisionTime;
+    private List<Double> validations;
 
     public GPResult() {
         expressions = new ArrayList<>();
         solutions = new ArrayList<>();
         trainFitnesses = new ArrayList<>();
         testFitnesses = new ArrayList<>();
+        validations = new ArrayList<>();
     }
 
     // Getters
@@ -67,7 +69,8 @@ public class GPResult {
     public Fitness getTestFitnessAtGen(int gen) { return testFitnesses.get(gen); }
     public double getTimeAtGen(int gen) { return timeStat.getElement(gen); }
     public int getBestIndex() { return bestIndex; }
-    public Double getAvgDecisionTimeAtGen(int gen) { return avgDecisionTimes.get(gen); }
+    public double getAvgDecisionTime() { return avgDecisionTime; }
+    public double getValidationAtGen(int gen) { return validations.get(gen); }
 
     // Setters
     public void setBestExpression(Pair<String, String> bestExpression) { this.bestExpression = bestExpression; }
@@ -76,13 +79,14 @@ public class GPResult {
     public void setBestTestFitness(Fitness bestTestFitness) { this.bestTestFitness = bestTestFitness; }
     public void setTimeStat(DescriptiveStatistics timeStat) { this.timeStat = timeStat; }
     public void setBestIndex(int bestIndex) { this.bestIndex = bestIndex; }
+    public void setAvgDecisionTime(double avgDecisionTime) { this.avgDecisionTime = avgDecisionTime; }
 
     // Adders
     public void addExpression(Pair<String, String> expression) { expressions.add(expression); }
     public void addSolution(Pair<VehiclePolicy, RequestPolicy> solution) { solutions.add(solution); }
     public void addTrainFitness(Fitness fitness) { trainFitnesses.add(fitness); }
     public void addTestFitness(Fitness fitness) { testFitnesses.add(fitness); }
-    public void addAvgDecisionTime(double time) { avgDecisionTimes.add(time); }
+    public void addValidation(Double validation) { validations.add(validation); }
 
     public static GPResult readFromFile(File file,
                                         Problem problem,
@@ -145,6 +149,7 @@ public class GPResult {
                             .getEvaluationModel();
 
                     val = model.validation(vehiclePolicy, requestPolicy);
+                    result.addValidation(val);
 
                     if (val < bestVal) {
                         bestVal = val;
