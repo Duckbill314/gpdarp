@@ -12,3 +12,4 @@
 TODO: include this in the paper
 - Time to wait for the best different vehicle to service the request (OBV) done!
 - Vehicle's remaining charge at its latest point (FRT) done!
+- Whether the request is a charging action (CHRQ) done!
