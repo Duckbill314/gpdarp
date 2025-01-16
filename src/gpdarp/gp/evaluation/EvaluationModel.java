@@ -32,6 +32,7 @@ public abstract class EvaluationModel {
     public static final String P_VALIDATING = "validating";
     public static final String P_VALIDATIONS = "validations";
     public static final String P_VALPATH = "valpath";
+    public static final String P_NORMALISE = "normalise";
 
     protected List<Objective> objectives;
     protected List<Instance> instanceSamples;
@@ -40,6 +41,7 @@ public abstract class EvaluationModel {
     protected int rotationIndex = 0;
     protected List<Instance> validationSamples;
     protected boolean validating;
+    protected boolean normalise;
     protected Map<Pair<Integer, Objective>, Double> objRefValueMap;
     protected Map<Pair<Integer, Objective>, Double> valObjRefValueMap;
 
@@ -157,6 +159,10 @@ public abstract class EvaluationModel {
         this.rotating = state.parameters.getBoolean(p, null, false);
         p = base.push(P_BATCHSIZE);
         this.batchsize = state.parameters.getIntWithDefault(p, null, 5);
+
+        // determine whether normalisation of the test set should occur
+        p = base.push(P_NORMALISE);
+        this.normalise = state.parameters.getBoolean(p, null, true);
 
         // calculate the initial objective reference values
         objRefValueMap = new HashMap<>();

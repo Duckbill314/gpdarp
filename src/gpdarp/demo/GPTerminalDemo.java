@@ -58,7 +58,7 @@ public class GPTerminalDemo {
                 new ExpectedSlack(),
                 new RequestCrowdedness(),
                 new VehicleCapacity(),
-                new VehicleCharge(),
+                new FutureVehicleCharge(),
                 new VehicleSlack(),
                 new TimeToStation(),
                 new OtherBestVehicle()

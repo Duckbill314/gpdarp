@@ -9,10 +9,9 @@ import ec.util.ParameterDatabase;
 /**
  * A simple evolution process, extended/simplified from ec.Evolve.
  * It can be a GA optmisation or GPHH training process.
- *
  * It will produce a file xxx.out.stat.
  *
- * Created by YiMei on 12/09/16.
+ * @author Yi Mei
  */
 
 public class SimpleEvolve extends Evolve {

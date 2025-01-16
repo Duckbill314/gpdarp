@@ -8,7 +8,6 @@ import gpdarp.core.Request;
 import gpdarp.core.Vehicle;
 import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.representation.route.EphemeralRoute;
-import gpdarp.representation.route.Route;
 
 /**
  * The problem for calculating the priority of a candidate vehicle or request.

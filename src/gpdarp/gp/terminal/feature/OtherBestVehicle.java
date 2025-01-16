@@ -5,7 +5,6 @@ import gpdarp.decisionprocess.DecisionProcessState;
 import gpdarp.decisionprocess.poolfilter.FeasiblePoolFilter;
 import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
-import gpdarp.representation.route.EphemeralRoute;
 import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 

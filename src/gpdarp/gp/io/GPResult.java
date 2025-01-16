@@ -29,8 +29,10 @@ import java.util.Objects;
  *  - A list of solutions, each comprised of a paired VehiclePolicy and RequestPolicy.
  *  - A list of training fitnesses, each for a solution.
  *  - A list of test fitnesses, each for a solution.
- *  - The aforementioned information for the best individual of the run (i.e. the last individual in the run).
+ *  - The aforementioned information for the best individual of the run (i.e. the individual with the best validation).
  *  - The time statistics, i.e. the time spent for each generation.
+ *  - A list of the validation fitnesses for all the best individuals per generation.
+ *  - The average decision time of the simulation during testing.
  *
  * @author gphhucarp, William Huang
  */
@@ -114,6 +116,7 @@ public class GPResult {
         String expression2;
         Pair<String, String> expression;
         Pair<VehiclePolicy, RequestPolicy> solution;
+        int infeasibleCount = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (!(line = br.readLine()).equals("Best Individual of Run:")) {
@@ -151,6 +154,10 @@ public class GPResult {
                     val = model.validation(vehiclePolicy, requestPolicy);
                     result.addValidation(val);
 
+                    if (val > 1000000) {
+                        infeasibleCount++;
+                    }
+
                     if (val < bestVal) {
                         bestVal = val;
                         bestFitness = fitness;
@@ -160,6 +167,8 @@ public class GPResult {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Number of invalid individuals: "+ infeasibleCount);
 
         // Identify and set the best solution
         int bestIndex = result.trainFitnesses.indexOf(bestFitness);

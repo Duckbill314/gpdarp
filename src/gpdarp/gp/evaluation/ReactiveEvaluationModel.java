@@ -17,12 +17,12 @@ import java.util.List;
 
 /**
  * A reactive evaluation model is a set of reactive decision processes, corresponding to a set of instances.
- * It evaluates a reactive routing policy by applying the policy on each decision process,
- * and returning the average normalised objective values across the processes.
- * It includes
- *  - A list of instances,
- *  - The reference objective value map, indicating the reference value
- *    of a given reactive decision process and a given objective.
+ * It evaluates a pair of policies by applying them on each decision process,
+ * and returning the average objective values across the processes.
+ * Evaluation can happen batchwise, rotating through all instances.
+ * For the test set, there is the option to return the normalised or raw objective values.
+ * Training and validation are always normalised.
+ * Normalisation divides the objective value by the reference objective value.
  *
  * @author gphhucarp, William Huang
  */
@@ -41,7 +41,7 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     public List<Solution> evaluateOriginal(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                                  Fitness fitness, EvolutionState state) {
 
-        Pair<List<Solution>, Double> solutionPair = evaluateFitnesses(vehiclePolicy, requestPolicy, false);
+        Pair<List<Solution>, Double> solutionPair = evaluateFitnesses(vehiclePolicy, requestPolicy, normalise);
         List<Solution> solutions = solutionPair.getLeft();
         Double fitnessValue = solutionPair.getRight();
 
@@ -51,6 +51,14 @@ public class ReactiveEvaluationModel extends EvaluationModel {
         return solutions;
     }
 
+    /**
+     * Helper method for evaluating the average fitness for a pair of policies across a set of instances.
+     *
+     * @param vehiclePolicy the vehicle allocation policy.
+     * @param requestPolicy the request allocation policy.
+     * @param normalise whether to apply normalisation.
+     * @return a list of all the generated solutions and their corresponding average fitness.
+     */
     public Pair<List<Solution>, Double> evaluateFitnesses(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                                                           boolean normalise) {
 
@@ -73,6 +81,16 @@ public class ReactiveEvaluationModel extends EvaluationModel {
         return Pair.of(solutions, fitnessValue);
     }
 
+    /**
+     * Helper method for evaluating a single solution fitness.
+     *
+     * @param vehiclePolicy the vehicle allocation policy.
+     * @param requestPolicy the request allocation policy.
+     * @param solutions the list for storing the obtained solution.
+     * @param i the index of the instance sample to evaluate.
+     * @param normalise whether to apply normalisation.
+     * @return the obtained singular fitness value.
+     */
     private double getFitnessValue(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                                    List<Solution> solutions, int i, boolean normalise) {
 
@@ -93,6 +111,14 @@ public class ReactiveEvaluationModel extends EvaluationModel {
         return objValue;
     }
 
+    /**
+     * Helper method for running the validation process.
+     * This is only accessed during reading of a GPResult from file.
+     *
+     * @param vehiclePolicy the vehicle allocation policy.
+     * @param requestPolicy the request allocation policy.
+     * @return the average fitness of the individual against the validation set.
+     */
     public double validation(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy) {
         assert (validating);
 

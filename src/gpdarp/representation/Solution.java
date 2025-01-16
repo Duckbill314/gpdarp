@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * A solution is represented as an aggregation of vehicles' historical routes.
+ * It also stores other state based information for the purposes of logging during testing/debugging.
  *
  * @author gphhucarp, William Huang
  */

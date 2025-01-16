@@ -9,7 +9,6 @@ import ec.gp.GPNode;
 import ec.util.Checkpoint;
 import ec.util.Parameter;
 import gpdarp.gp.evaluation.EvaluationModel;
-import gpdarp.gp.evaluation.ReactiveEvaluationModel;
 import gputils.TerminalERCEvolutionState;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import gputils.terminal.DoubleERC;

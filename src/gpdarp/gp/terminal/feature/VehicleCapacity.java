@@ -9,7 +9,7 @@ import gpdarp.representation.route.EphemeralRoute;
 import java.util.List;
 
 /**
- * Returns the remaining capacity of the vehicle.
+ * Returns the remaining capacity of the vehicle at the latest point in its route.
  *
  * @author William Huang
  */

@@ -5,12 +5,12 @@ import gpdarp.gp.CalcPriorityProblem;
 import gpdarp.gp.terminal.FeatureGPNode;
 
 /**
- * Returns the remaining battery charge of the vehicle.
+ * Returns the remaining battery charge of the vehicle at its current point.
  *
  * @author William Huang
  */
-public class VehicleCharge extends FeatureGPNode {
-    public VehicleCharge() {
+public class CurrentVehicleCharge extends FeatureGPNode {
+    public CurrentVehicleCharge() {
         super();
         name = "RT";
     }
