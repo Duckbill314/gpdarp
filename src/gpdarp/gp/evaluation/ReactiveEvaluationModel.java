@@ -5,11 +5,13 @@ import ec.Fitness;
 import ec.gp.koza.KozaFitness;
 import gpdarp.core.Instance;
 import gpdarp.core.Objective;
+import gpdarp.core.Request;
 import gpdarp.decisionprocess.RequestPolicy;
 import gpdarp.decisionprocess.VehiclePolicy;
 import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
 import gpdarp.representation.Solution;
+import gpdarp.representation.route.Route;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import java.util.List;
  * @author gphhucarp, William Huang
  */
 public class ReactiveEvaluationModel extends EvaluationModel {
+    public static double FEASIBLE_THRESHOLD = 1000000;
+
     @Override
     public void evaluate(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                          Fitness fitness, EvolutionState state) {
@@ -62,23 +66,40 @@ public class ReactiveEvaluationModel extends EvaluationModel {
     public Pair<List<Solution>, Double> evaluateFitnesses(VehiclePolicy vehiclePolicy, RequestPolicy requestPolicy,
                                                           boolean normalise) {
 
-        double fitnessValue = 0;
+        boolean feasible = true;
+        double fitness = 0;
         List<Solution> solutions = new ArrayList<>();
 
         if (isRotating()) {
             for (int i = rotationIndex; i < rotationIndex + batchsize; i++) {
-                fitnessValue += getFitnessValue(vehiclePolicy, requestPolicy, solutions, i, normalise);
+                double fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, solutions, i, normalise);
+                if (fitnessValue >= 0 || fitnessValue < FEASIBLE_THRESHOLD) {
+                    fitness += fitnessValue;
+                }
+                else {
+                    feasible = false;
+                }
             }
-            fitnessValue /= batchsize;
+            fitness /= batchsize;
         }
         else {
             for (int i = 0; i < instanceSamples.size(); i++) {
-                fitnessValue += getFitnessValue(vehiclePolicy, requestPolicy, solutions, i, normalise);
+                double fitnessValue = getFitnessValue(vehiclePolicy, requestPolicy, solutions, i, normalise);
+                if (fitnessValue >= 0 || fitnessValue < FEASIBLE_THRESHOLD) {
+                    fitness += fitnessValue;
+                }
+                else {
+                    feasible = false;
+                }
             }
-            fitnessValue /= instanceSamples.size();
+            fitness /= instanceSamples.size();
         }
 
-        return Pair.of(solutions, fitnessValue);
+        if (!feasible) {
+            fitness = Double.MAX_VALUE;
+        }
+
+        return Pair.of(solutions, fitness);
     }
 
     /**
@@ -102,6 +123,12 @@ public class ReactiveEvaluationModel extends EvaluationModel {
 
         Objective objective = objectives.getFirst();
         double objValue = solution.objValue(objective);
+
+        assert (objValue >= 0);
+
+        if (objValue >= FEASIBLE_THRESHOLD) {
+            return Double.MAX_VALUE;
+        }
 
         if (normalise) {
             double refValue = getObjRefValue(i, objective);
@@ -134,7 +161,13 @@ public class ReactiveEvaluationModel extends EvaluationModel {
             double objValue = solution.objValue(objective);
             double refValue = super.getValObjRefValue(i, objective);
 
-            fitness += objValue / refValue;
+            assert (objValue >= 0);
+
+            if (objValue < FEASIBLE_THRESHOLD) {
+                fitness += objValue / refValue;
+            } else {
+                return Double.MAX_VALUE;
+            }
         }
         fitness /= validationSamples.size();
         return fitness;

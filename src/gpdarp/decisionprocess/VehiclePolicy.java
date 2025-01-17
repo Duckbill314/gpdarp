@@ -68,9 +68,10 @@ public abstract class VehiclePolicy {
      *
      * @param state   the decision process state.
      * @param request the request to be served.
+     * @param lastCall if it is the last call, the threshold can be ignored.
      * @return the allocated vehicle and corresponding optimal route.
      */
-    public Pair<Vehicle, Route> next(DecisionProcessState state, Request request) {
+    public Pair<Vehicle, Route> next(DecisionProcessState state, Request request, boolean lastCall) {
         List<Pair<Vehicle, Route>> vehiclePool = poolFilter.filterVehicles(state, request);
 
         vehiclePool.forEach(pair -> {
@@ -80,7 +81,12 @@ public abstract class VehiclePolicy {
         });
 
         return vehiclePool.stream()
-                .filter(e -> e.getValue().getPriority() <= 0)
+                .filter(e -> {
+                    if (lastCall) {
+                        return true;
+                    }
+                    return e.getValue().getPriority() <= 0;
+                })
                 .min((e1, e2) -> {
                     if (Double.compare(e1.getValue().getPriority(), e2.getValue().getPriority()) == 0) {
                         return tieBreaker.breakTie(e1.getKey(), e2.getKey());

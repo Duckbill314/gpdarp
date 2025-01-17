@@ -137,10 +137,8 @@ public class Vehicle {
 
     /**
      * Helper method for handling charging events.
-     *
-     * @param instance the instance of the problem.
      */
-    public void charge(Instance instance) {
+    public void charge() {
         deplete(currArc.length());
         historicalRoute.push(currArc);
 

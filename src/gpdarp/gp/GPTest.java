@@ -50,6 +50,7 @@ public class GPTest {
     public static final String P_SOLUTION_TYPE = "solution-type"; // solution type, e.g. a single routing policy
     public static final String P_FITNESS_TYPE = "fitness-type"; // fitness type, e.g. multiobjective fitness
     public static final String P_NUM_TRAINS = "num-trains"; // number of trains (out.stat files)
+    public static double FEASIBLE_THRESHOLD = 1000000;
 
     public static void main(String[] args) {
         ParameterDatabase parameters = Evolve.loadParameterDatabase(args);
@@ -121,13 +122,13 @@ public class GPTest {
                 for (int j = 0; j < result.getSolutions().size(); j++) {
                     double val = result.getValidationAtGen(j);
 
-                    if (val >= 0 && val < Double.MAX_VALUE) {
+                    if (val >= 0 && val < FEASIBLE_THRESHOLD) {
                         Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
                         solutions = testEvaluationModel.evaluateOriginal(solution.getLeft(), solution.getRight(),
                                 result.getTestFitnessAtGen(j), state);
                         solutions.removeIf(s -> s.isFeasible());
 
-                        if (((KozaFitness)result.getTestFitnessAtGen(j)).standardizedFitness() > 1000000) {
+                        if (((KozaFitness)result.getTestFitnessAtGen(j)).standardizedFitness() >= FEASIBLE_THRESHOLD) {
                             System.out.printf("Generation %d: num failed tests = %d\n", j, solutions.size());
 
                             for (int k = 0; k < solutions.size(); k++) {

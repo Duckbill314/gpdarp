@@ -7,26 +7,24 @@ import gpdarp.decisionprocess.DecisionProcess;
 import gpdarp.decisionprocess.DecisionProcessEvent;
 
 /**
- * This event represents the moment right after a vehicle has finished charging.
- * It will be given one final opportunity to accept a waiting request.
- * Then, a new event is invoked to move to the next point in the route.
- * If it does not move, it will wait where it is until it receives its next fresh request.
+ * This event is for forcefully charging vehicles during last call.
+ * That way, charge constraint violation should no longer be an inhibiting factor for allocation.
  *
  * @author William Huang
  */
-public class ReactiveChargeEvent extends DecisionProcessEvent {
+public class ReactiveLastChargeEvent extends DecisionProcessEvent {
     Vehicle vehicle;
 
-    public ReactiveChargeEvent(int time, Vehicle vehicle) {
-        super("ReactiveChargeEvent", time);
+    public ReactiveLastChargeEvent(int time, Vehicle vehicle) {
+        super("ReactiveLastChargeEvent", time);
         this.vehicle = vehicle;
     }
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        Request request = requestAllocation(decisionProcess, vehicle, false, false);
+        Request request = requestAllocation(decisionProcess, vehicle, false, true);
         if (request != null) {
-            constructiveHeuristic(decisionProcess, vehicle, false);
+            constructiveHeuristic(decisionProcess, vehicle, true);
         }
 
         Node destination = vehicle.updateArcFromPlannedRoute();

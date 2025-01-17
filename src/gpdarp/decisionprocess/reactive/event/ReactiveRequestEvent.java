@@ -29,10 +29,10 @@ public class ReactiveRequestEvent extends DecisionProcessEvent {
 
     @Override
     public void trigger(DecisionProcess decisionProcess) {
-        Vehicle vehicle = vehicleAllocation(decisionProcess, request);
+        Vehicle vehicle = vehicleAllocation(decisionProcess, request, false);
 
         if (vehicle != null) {
-            constructiveHeuristic(decisionProcess, vehicle);
+            constructiveHeuristic(decisionProcess, vehicle, false);
             vehicle.setCurrPos(null);
             Node destination = vehicle.updateArcFromPlannedRoute();
             decisionProcess.addEvent(new ReactivePickupEvent(destination.getArrivalTime(), destination, vehicle));

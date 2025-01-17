@@ -48,12 +48,13 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param request the request to be allocated.
+     * @param lastCall if it is the last call, the threshold can be ignored.
      * @return the vehicle to which the request is allocated.
      */
-    public Vehicle vehicleAllocation(DecisionProcess decisionProcess, Request request) {
+    public Vehicle vehicleAllocation(DecisionProcess decisionProcess, Request request, boolean lastCall) {
         DecisionProcessState state = decisionProcess.getState();
         long startTime = Timer.getCpuTime();
-        Pair<Vehicle, Route> allocation = decisionProcess.getVehiclePolicy().next(state, request);
+        Pair<Vehicle, Route> allocation = decisionProcess.getVehiclePolicy().next(state, request, lastCall);
         long endTime = Timer.getCpuTime();
         decisionProcess.addDecisionTime((double) (endTime - startTime) / 1000000000);
 
@@ -79,9 +80,11 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      * @param decisionProcess the decision process that invoked this event.
      * @param vehicle         the vehicle to which a request is to be allocated.
      * @param includeCharge   whether to also consider returning to a charging station.
+     * @param lastCall if it is the last call, the threshold can be ignored.
      * @return the request allocation.
      */
-    public Request requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, boolean includeCharge) {
+    public Request requestAllocation(DecisionProcess decisionProcess, Vehicle vehicle, boolean includeCharge,
+                                     boolean lastCall) {
         DecisionProcessState state = decisionProcess.getState();
         Node currPos = vehicle.getCurrPos();
         List<Request> waitingList = new ArrayList<>(decisionProcess.getWaitingList());
@@ -93,7 +96,7 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
         }
 
         long startTime = Timer.getCpuTime();
-        Pair<Request, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList);
+        Pair<Request, Route> allocation = decisionProcess.getRequestPolicy().next(vehicle, state, waitingList, lastCall);
         long endTime = Timer.getCpuTime();
         decisionProcess.addDecisionTime((double) (endTime - startTime) / 1000000000);
 
@@ -118,11 +121,12 @@ public abstract class DecisionProcessEvent implements Comparable<DecisionProcess
      *
      * @param decisionProcess the decision process that invoked this event.
      * @param vehicle         the vehicle to which a request is to be allocated.
+     * @param lastCall if it is the last call, the threshold can be ignored.
      */
-    public void constructiveHeuristic(DecisionProcess decisionProcess, Vehicle vehicle) {
+    public void constructiveHeuristic(DecisionProcess decisionProcess, Vehicle vehicle, boolean lastCall) {
         Request allocation;
         do {
-            allocation = requestAllocation(decisionProcess, vehicle, false);
+            allocation = requestAllocation(decisionProcess, vehicle, false, lastCall);
         } while (allocation != null);
     }
 }

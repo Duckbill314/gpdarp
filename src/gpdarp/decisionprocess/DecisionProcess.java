@@ -3,6 +3,7 @@ package gpdarp.decisionprocess;
 import gpdarp.core.Request;
 import gpdarp.core.Instance;
 import gpdarp.decisionprocess.reactive.ReactiveDecisionProcess;
+import gpdarp.decisionprocess.reactive.event.ReactiveLastCallEvent;
 import gpdarp.decisionprocess.reactive.event.ReactiveRequestEvent;
 
 import java.util.ArrayList;
@@ -86,18 +87,20 @@ public abstract class DecisionProcess {
      * Run the decision process.
      */
     public void run() {
-        while (!eventQueue.isEmpty()) {
-            DecisionProcessEvent event = eventQueue.poll();
-            // System.out.println(event);
-            state.setTime(event.getTime());
-            event.trigger(this);
-            state.updateSolution();
+        runEvents();
+
+        if (!waitingList.isEmpty()) {
+            eventQueue.add(new ReactiveLastCallEvent(state.getTime()));
+            runEvents();
         }
+
         if (waitingList.isEmpty()) {
             state.getSolution().setFeasible(true);
         }
+
         state.getSolution().setNumRequests(state.getInstance().getNumRequests());
         state.getSolution().setName(state.getInstance().getName());
+
         double avgDecisionTime;
         if (decisionTimes.isEmpty()) {
             avgDecisionTime = 0;
@@ -107,8 +110,22 @@ public abstract class DecisionProcess {
                     .mapToDouble(Double::doubleValue)
                     .sum() / decisionTimes.size();
         }
+
         state.getSolution().setAvgDecisionTime(avgDecisionTime);
         state.getSolution().setDp(this);
+    }
+
+    /**
+     * Helper method for running the decision process.
+     */
+    private void runEvents() {
+        while (!eventQueue.isEmpty()) {
+            DecisionProcessEvent event = eventQueue.poll();
+            // System.out.println(event);
+            state.setTime(event.getTime());
+            event.trigger(this);
+            state.updateSolution();
+        }
     }
 
     /**

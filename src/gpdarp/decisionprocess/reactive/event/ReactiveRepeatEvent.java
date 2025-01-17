@@ -24,10 +24,10 @@ public class ReactiveRepeatEvent extends DecisionProcessEvent {
     @Override
     public void trigger(DecisionProcess decisionProcess) {
         if (decisionProcess.getWaitingList().contains(request)) {
-            Vehicle vehicle = vehicleAllocation(decisionProcess, request);
+            Vehicle vehicle = vehicleAllocation(decisionProcess, request, true);
 
             if (vehicle != null) {
-                constructiveHeuristic(decisionProcess, vehicle);
+                constructiveHeuristic(decisionProcess, vehicle, true);
                 vehicle.setCurrPos(null);
                 Node destination = vehicle.updateArcFromPlannedRoute();
                 decisionProcess.addEvent(new ReactivePickupEvent(destination.getArrivalTime(), destination, vehicle));

@@ -38,14 +38,12 @@ import java.util.Objects;
  */
 
 public class GPResult {
+    public static double FEASIBLE_THRESHOLD = 1000000;
+
     private List<Pair<String, String>> expressions;
-    private Pair<String, String> bestExpression;
     private List<Pair<VehiclePolicy, RequestPolicy>> solutions;
-    private Pair<VehiclePolicy, RequestPolicy> bestSolution;
     private List<Fitness> trainFitnesses;
-    private Fitness bestTrainFitness;
     private List<Fitness> testFitnesses;
-    private Fitness bestTestFitness;
     private DescriptiveStatistics timeStat;
     private int bestIndex;
     private double avgDecisionTime;
@@ -60,11 +58,11 @@ public class GPResult {
     }
 
     // Getters
-    public Pair<String, String> getBestExpression() { return bestExpression; }
+    public Pair<String, String> getBestExpression() { return getExpressionAtGen(bestIndex); }
     public List<Pair<VehiclePolicy, RequestPolicy>> getSolutions() { return solutions; }
-    public Pair<VehiclePolicy, RequestPolicy> getBestSolution() { return bestSolution; }
-    public Fitness getBestTrainFitness() { return bestTrainFitness; }
-    public Fitness getBestTestFitness() { return bestTestFitness; }
+    public Pair<VehiclePolicy, RequestPolicy> getBestSolution() { return getSolutionAtGen(bestIndex); }
+    public Fitness getBestTrainFitness() { return getTrainFitnessAtGen(bestIndex); }
+    public Fitness getBestTestFitness() { return getTestFitnessAtGen(bestIndex); }
     public Pair<String, String> getExpressionAtGen(int gen) { return expressions.get(gen); }
     public Pair<VehiclePolicy, RequestPolicy> getSolutionAtGen(int gen) { return solutions.get(gen); }
     public Fitness getTrainFitnessAtGen(int gen) { return trainFitnesses.get(gen); }
@@ -75,10 +73,6 @@ public class GPResult {
     public double getValidationAtGen(int gen) { return validations.get(gen); }
 
     // Setters
-    public void setBestExpression(Pair<String, String> bestExpression) { this.bestExpression = bestExpression; }
-    public void setBestSolution(Pair<VehiclePolicy, RequestPolicy> bestSolution) { this.bestSolution = bestSolution; }
-    public void setBestTrainFitness(Fitness bestTrainFitness) { this.bestTrainFitness = bestTrainFitness; }
-    public void setBestTestFitness(Fitness bestTestFitness) { this.bestTestFitness = bestTestFitness; }
     public void setTimeStat(DescriptiveStatistics timeStat) { this.timeStat = timeStat; }
     public void setBestIndex(int bestIndex) { this.bestIndex = bestIndex; }
     public void setAvgDecisionTime(double avgDecisionTime) { this.avgDecisionTime = avgDecisionTime; }
@@ -109,7 +103,6 @@ public class GPResult {
 
         String line;
         Fitness fitness;
-        Fitness bestFitness = null;
         double val;
         double bestVal = Double.MAX_VALUE;
         String expression1;
@@ -154,13 +147,13 @@ public class GPResult {
                     val = model.validation(vehiclePolicy, requestPolicy);
                     result.addValidation(val);
 
-                    if (val > 1000000) {
+                    if (val < 0 || val >= FEASIBLE_THRESHOLD) {
                         infeasibleCount++;
                     }
-
-                    if (val < bestVal) {
-                        bestVal = val;
-                        bestFitness = fitness;
+                    else {
+                        if (val < bestVal) {
+                            bestVal = val;
+                        }
                     }
                 }
             }
@@ -171,12 +164,8 @@ public class GPResult {
         System.out.println("Number of invalid individuals: "+ infeasibleCount);
 
         // Identify and set the best solution
-        int bestIndex = result.trainFitnesses.indexOf(bestFitness);
+        int bestIndex = result.validations.indexOf(bestVal);
         result.setBestIndex(bestIndex);
-        result.setBestExpression(result.getExpressionAtGen(bestIndex));
-        result.setBestSolution(result.getSolutionAtGen(bestIndex));
-        result.setBestTrainFitness(result.getTrainFitnessAtGen(bestIndex));
-        result.setBestTestFitness((Fitness)result.getTrainFitnessAtGen(bestIndex).clone());
 
         return result;
     }
