@@ -389,11 +389,19 @@ public class GPTest {
                 for (Arc arc : route.getArcs()) {
                     Node node = arc.to();
                     switch (node.getType()) {
-                        case PICKUP -> visits += " " + node.getRequest().getId();
-                        case DROPOFF -> visits += " -" + node.getRequest().getId();
-                        case STATION -> visits += " " + ((Station)node).getId();
+                        case PICKUP -> {
+                            visits += " " + node.getRequest().getId();
+                            times += " " + node.getDepartureTime();
+                        }
+                        case DROPOFF -> {
+                            visits += " -" + node.getRequest().getId();
+                            times += " " + node.getArrivalTime();
+                        }
+                        case STATION -> {
+                            visits += " " + ((Station)node).getId();
+                            times += " " + node.getArrivalTime();
+                        }
                     }
-                    times += " " + node.getArrivalTime();
                 }
 
                 writer.write(visits);
