@@ -32,7 +32,7 @@ import java.util.Objects;
  *  - The aforementioned information for the best individual of the run (i.e. the individual with the best validation).
  *  - The time statistics, i.e. the time spent for each generation.
  *  - A list of the validation fitnesses for all the best individuals per generation.
- *  - The average decision time of the simulation during testing.
+ *  - The average decision times of the simulation during testing of each generation's individual.
  *
  * @author gphhucarp, William Huang
  */
@@ -46,7 +46,7 @@ public class GPResult {
     private List<Fitness> testFitnesses;
     private DescriptiveStatistics timeStat;
     private int bestIndex;
-    private double avgDecisionTime;
+    private List<Double> avgDecisionTimes;
     private List<Double> validations;
 
     public GPResult() {
@@ -54,7 +54,12 @@ public class GPResult {
         solutions = new ArrayList<>();
         trainFitnesses = new ArrayList<>();
         testFitnesses = new ArrayList<>();
+        avgDecisionTimes = new ArrayList<>();
         validations = new ArrayList<>();
+
+        for (int i = 0; i < 50; i++) {
+            avgDecisionTimes.add(0.0);
+        }
     }
 
     // Getters
@@ -69,13 +74,13 @@ public class GPResult {
     public Fitness getTestFitnessAtGen(int gen) { return testFitnesses.get(gen); }
     public double getTimeAtGen(int gen) { return timeStat.getElement(gen); }
     public int getBestIndex() { return bestIndex; }
-    public double getAvgDecisionTime() { return avgDecisionTime; }
+    public double getAvgDecisionTimeAtGen(int i) { return avgDecisionTimes.get(i); }
     public double getValidationAtGen(int gen) { return validations.get(gen); }
 
     // Setters
     public void setTimeStat(DescriptiveStatistics timeStat) { this.timeStat = timeStat; }
     public void setBestIndex(int bestIndex) { this.bestIndex = bestIndex; }
-    public void setAvgDecisionTime(double avgDecisionTime) { this.avgDecisionTime = avgDecisionTime; }
+    public void setAvgDecisionTimeAtGen(int i, double d) { this.avgDecisionTimes.add(i, d); }
 
     // Adders
     public void addExpression(Pair<String, String> expression) { expressions.add(expression); }
