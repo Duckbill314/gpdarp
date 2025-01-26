@@ -126,6 +126,19 @@ public class GPTest {
                         Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
                         solutions = testEvaluationModel.evaluateOriginal(solution.getLeft(), solution.getRight(),
                                 result.getTestFitnessAtGen(j), state);
+
+                        double avgDecisionTime;
+                        if (solutions.isEmpty()) {
+                            avgDecisionTime = 0;
+                        }
+                        else {
+                            avgDecisionTime = solutions.stream()
+                                    .map(Solution::getAvgDecisionTime)
+                                    .mapToDouble(Double::doubleValue)
+                                    .sum() / result.getSolutions().size();
+                        }
+                        result.setAvgDecisionTimeAtGen(j, avgDecisionTime);
+
                         solutions.removeIf(s -> s.isFeasible());
 
                         if (((KozaFitness)result.getTestFitnessAtGen(j)).standardizedFitness() >= FEASIBLE_THRESHOLD) {
@@ -241,8 +254,7 @@ public class GPTest {
                             .mapToDouble(Double::doubleValue)
                             .sum() / result.getSolutions().size();
                 }
-
-                result.setAvgDecisionTime(avgDecisionTime);
+                result.setAvgDecisionTimeAtGen(result.getBestIndex(), avgDecisionTime);
 
                 System.out.println("Best individual: test fitness = " +
                         ((KozaFitness)result.getBestTestFitness()).standardizedFitness());
@@ -267,11 +279,32 @@ public class GPTest {
                 for (int i = 0; i < numTrains; i++) {
                     GPResult result = results.get(i);
 
-                    // used to calculate the number of unique terminals
-                    UniqueTerminalsGatherer gatherer1 = new UniqueTerminalsGatherer();
+                    // write the test results for all generations
+                    for (int j = 0; j < result.getSolutions().size(); j++) {
+                        UniqueTerminalsGatherer gatherer1 = new UniqueTerminalsGatherer();
+                        UniqueTerminalsGatherer gatherer2 = new UniqueTerminalsGatherer();
+
+                        Pair<VehiclePolicy, RequestPolicy> solution = result.getSolutionAtGen(j);
+                        GPVehiclePolicy tree1 = (GPVehiclePolicy) solution.getLeft();
+                        GPRequestPolicy tree2 = (GPRequestPolicy) solution.getRight();
+
+                        int numTerminals1 = tree1.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
+                        int numTerminals2 = tree2.getGPTree().child.numNodes(GPNode.NODESEARCH_ALL);
+
+                        int numUnique1 = tree1.getGPTree().child.numNodes(gatherer1);
+                        int numUnique2 = tree2.getGPTree().child.numNodes(gatherer2);
+
+                        writer.write(i + "," + j + ",0," +
+                                numTerminals1 + "," + numUnique1 + "," +
+                                numTerminals2 + "," + numUnique2 + "," +
+                                fitnessString(result, j) + result.getTimeAtGen(j) +
+                                "," + result.getAvgDecisionTimeAtGen(j));
+                        writer.newLine();
+                    }
+                    // write the test results for the best generation
+                    /* UniqueTerminalsGatherer gatherer1 = new UniqueTerminalsGatherer();
                     UniqueTerminalsGatherer gatherer2 = new UniqueTerminalsGatherer();
 
-                    // write the test results for the best generation
                     Pair<VehiclePolicy, RequestPolicy> solution = result.getBestSolution();
                     GPVehiclePolicy tree1 = (GPVehiclePolicy) solution.getLeft();
                     GPRequestPolicy tree2 = (GPRequestPolicy) solution.getRight();
@@ -284,12 +317,12 @@ public class GPTest {
 
                     int bestIndex = result.getBestIndex();
 
-                    writer.write(i + "," + bestIndex + ",0," +
+                    writer.write(i + "," + "-1" + ",0," +
                             numTerminals1 + "," + numUnique1 + "," +
                             numTerminals2 + "," + numUnique2 + "," +
                             fitnessString(result, -1) + result.getTimeAtGen(bestIndex) +
-                            "," + result.getAvgDecisionTime());
-                    writer.newLine();
+                            "," + result.getAvgDecisionTimeAtGen(bestIndex));
+                    writer.newLine(); */
                 }
                 writer.close();
 
@@ -389,11 +422,19 @@ public class GPTest {
                 for (Arc arc : route.getArcs()) {
                     Node node = arc.to();
                     switch (node.getType()) {
-                        case PICKUP -> visits += " " + node.getRequest().getId();
-                        case DROPOFF -> visits += " -" + node.getRequest().getId();
-                        case STATION -> visits += " " + ((Station)node).getId();
+                        case PICKUP -> {
+                            visits += " " + node.getRequest().getId();
+                            times += " " + node.getDepartureTime();
+                        }
+                        case DROPOFF -> {
+                            visits += " -" + node.getRequest().getId();
+                            times += " " + node.getArrivalTime();
+                        }
+                        case STATION -> {
+                            visits += " " + ((Station)node).getId();
+                            times += " " + node.getArrivalTime();
+                        }
                     }
-                    times += " " + node.getArrivalTime();
                 }
 
                 writer.write(visits);

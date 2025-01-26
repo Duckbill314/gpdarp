@@ -14,7 +14,7 @@ import gputils.LispUtils;
 public class LispReaderDemo {
     public static void main(String[] args) {
         String expression =
-                "(* (+ (min (max TVPU CRD) (/ COST DUR)) (- DEM SLACK)) (+ (/ RQ (- RT VSLACK)) (+ TVC OBV)))";
+                "(- (+ (/ OBV (+ FRT FRT)) (max 0.391850379355835 0.496835288299747)) (max DEM RT))";
 
         expression = LispUtils.simplifyExpression(expression);
 
