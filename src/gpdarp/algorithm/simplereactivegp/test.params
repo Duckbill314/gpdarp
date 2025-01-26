@@ -2,7 +2,7 @@
 # The training results
 # ==============================
 policy-type = gp-evolved
-# policy-type = manual
+policy-type = manual
 
 # for manual policies
 manual-vehicle-policies = 1
@@ -35,6 +35,7 @@ eval.problem.eval-model.batchsize = 1
 eval.problem.eval-model.validating = true
 eval.problem.eval-model.validations = 500
 eval.problem.eval-model.valpath = data/valid
+# eval.problem.eval-model.normalise = false
 
 
 

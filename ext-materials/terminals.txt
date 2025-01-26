@@ -9,7 +9,6 @@
 - Vehicle slack: the minimal slack of the requests in the vehicle's planned route (VSLACK) done!
 - Current distance of the vehicle from the closest charging station (TVC) done!
 
-TODO: include this in the paper
 - Time to wait for the best different vehicle to service the request (OBV) done!
 - Vehicle's remaining charge at its latest point (FRT) done!
 - Whether the request is a charging action (CHRQ) done!
