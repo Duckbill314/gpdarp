@@ -76,6 +76,7 @@ public class GPResult {
     public int getBestIndex() { return bestIndex; }
     public double getAvgDecisionTimeAtGen(int i) { return avgDecisionTimes.get(i); }
     public double getValidationAtGen(int gen) { return validations.get(gen); }
+    public double getBestValidation() { return validations.get(bestIndex); }
 
     // Setters
     public void setTimeStat(DescriptiveStatistics timeStat) { this.timeStat = timeStat; }
