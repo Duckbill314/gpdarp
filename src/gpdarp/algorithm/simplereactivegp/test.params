@@ -2,7 +2,7 @@
 # The training results
 # ==============================
 policy-type = gp-evolved
-policy-type = manual
+# policy-type = manual
 
 # for manual policies
 manual-vehicle-policies = 1
