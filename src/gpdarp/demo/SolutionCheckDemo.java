@@ -14,12 +14,12 @@ public class SolutionCheckDemo {
         Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
 
         List<String> instanceNames = new ArrayList<>();
-        List<Integer> travelTimes = new ArrayList<>();
-        List<Integer> penalties = new ArrayList<>();
+        List<Double> travelTimes = new ArrayList<>();
+        List<Double> penalties = new ArrayList<>();
 
         for (int i = 0; i < 30; i++) {
             int travelTime = 0;
-            int penalty = 0;
+            double penalty = 0;
 
             // read a solution file
             File sol = new File(String.format("%s/test/gp-%d.sol", root, i));
@@ -99,7 +99,7 @@ public class SolutionCheckDemo {
                                 Request request = instanceRequests.get(id - 1);
                                 int lateness = arrivalTime - request.getTLate();
                                 if (lateness > 0) {
-                                    penalty += (int) (instance.getLatenessPenalty() * lateness);
+                                    penalty += instance.getLatenessPenalty() * lateness;
                                 }
                             }
                         }
@@ -110,7 +110,7 @@ public class SolutionCheckDemo {
                 e.printStackTrace();
             }
 
-            travelTimes.add(travelTime);
+            travelTimes.add((double) travelTime);
             penalties.add(penalty);
         }
 
@@ -120,7 +120,7 @@ public class SolutionCheckDemo {
             writer.newLine();
 
             for (int i = 0; i < 30; i++) {
-                writer.write(String.format("%d,%s,%d,%d,%d",
+                writer.write(String.format("%d,%s,%.2f,%.2f,%.2f",
                         i,
                         instanceNames.get(i),
                         travelTimes.get(i),
