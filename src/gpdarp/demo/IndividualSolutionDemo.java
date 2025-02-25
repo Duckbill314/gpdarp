@@ -9,41 +9,47 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class SolutionCheckDemo {
+public class IndividualSolutionDemo {
     public static void main(String[] args) {
         Path root = FileSystems.getDefault().getPath("").toAbsolutePath();
 
-        List<String> instanceNames = new ArrayList<>();
         List<Integer> travelTimes = new ArrayList<>();
         List<Integer> penalties = new ArrayList<>();
 
-        for (int i = 0; i < 30; i++) {
-            int travelTime = 0;
-            int penalty = 0;
+        // read a solution file
+        File sol = new File(String.format("%s/test/gp-%d.sol", root, 0));
+        String line;
+        String[] segments;
 
-            // read a solution file
-            File sol = new File(String.format("%s/test/gp-%d.sol", root, i));
-            String line;
-            String[] segments;
+        try (BufferedReader reader = new BufferedReader(new FileReader(sol))) {
+            // identify the test instance used for this solution
+            line = reader.readLine();
+            segments = line.split("\\s+");
+            int numVehicles = Integer.parseInt(segments[0]);
+            String name = segments[2];
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(sol))) {
-                // identify the test instance used for this solution
-                line = reader.readLine();
-                segments = line.split("\\s+");
-                int numVehicles = Integer.parseInt(segments[0]);
-                String name = segments[2];
-                instanceNames.add(name);
+            // initialise the associated instance
+            File inst = new File(String.format("%s/data/test/%s.txt", root, name));
+            Instance instance = Instance.readFromFile(inst);
 
-                // initialise the associated instance
-                File inst = new File(String.format("%s/data/test/%s.txt", root, name));
-                Instance instance = Instance.readFromFile(inst);
+            assert instance != null;
+            List<Request> instanceRequests = instance.getRequests();
+            List<Station> instanceStations = instance.getStations();
+            List<Vehicle> instanceVehicles = instance.getVehicles();
 
-                assert instance != null;
-                List<Request> instanceRequests = instance.getRequests();
-                List<Station> instanceStations = instance.getStations();
-                List<Vehicle> instanceVehicles = instance.getVehicles();
+            File dataFile = new File(root + "/indsolutiondata.txt");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile.getAbsoluteFile()))) {
+                writer.write(String.format("test instance %s", name));
+                writer.newLine();
+                writer.newLine();
 
                 for (int vehicle = 0; vehicle < numVehicles; vehicle++) {
+                    int travelTime = 0;
+                    double penalty = 0;
+
+                    writer.write(String.format("Route %d", vehicle+1));
+                    writer.newLine();
+
                     // request IDs
                     line = reader.readLine();
                     segments = line.split("\\s+");
@@ -67,7 +73,12 @@ public class SolutionCheckDemo {
                         Node pickup = instanceRequests.get(first - 1).getPickup();
 
                         int dist = start.calcDist(pickup);
-                        travelTime += instance.calculateTravelTime(dist);
+                        int time = instance.calculateTravelTime(dist);
+                        travelTime += time;
+
+                        writer.write(String.format("0 -> %d = %s -> %s = %d; total = %d",
+                                first, start, pickup, time, travelTime));
+                        writer.newLine();
 
                         for (int ind = 0; ind < requests.size()-1; ind++) {
                             int id1 = requests.get(ind);
@@ -93,7 +104,14 @@ public class SolutionCheckDemo {
                             }
 
                             dist = pairedNodes.get(0).calcDist(pairedNodes.get(1));
-                            travelTime += instance.calculateTravelTime(dist);
+                            time = instance.calculateTravelTime(dist);
+                            travelTime += time;
+
+                            writer.write(String.format("%d -> %d = %s -> %s = %d; total = %d",
+                                    id1, id2,
+                                    pairedNodes.get(0), pairedNodes.get(1),
+                                    time, travelTime));
+                            writer.newLine();
                         }
                     }
 
@@ -106,37 +124,44 @@ public class SolutionCheckDemo {
                                 Request request = instanceRequests.get(id - 1);
                                 int lateness = arrivalTime - request.getTLate();
                                 if (lateness > 0) {
-                                    penalty += (int) (instance.getLatenessPenalty() * lateness);
+                                    penalty += instance.getLatenessPenalty() * lateness;
                                 }
                             }
                         }
                     }
+
+                    travelTimes.add(travelTime);
+                    penalties.add((int) penalty);
+
+                    writer.newLine();
                 }
+
+                StringBuilder totalString = new StringBuilder(String.format("total travel duration = %d", travelTimes.getFirst()));
+                travelTimes.stream()
+                        .skip(1)
+                                .forEach(t -> totalString.append(String.format(" + %d", t)));
+
+                int totalTime = travelTimes.stream()
+                        .reduce(0, Integer::sum);
+
+                totalString.append(String.format(" = %d", totalTime));
+                writer.write(totalString.toString());
+                writer.newLine();
+
+                int totalPenalty = penalties.stream()
+                        .reduce(0, Integer::sum);
+                writer.write(String.format("penalty = %d", totalPenalty));
+                writer.newLine();
+
+                writer.write(String.format("total objective value = %d + %d = %d",
+                        totalTime,
+                        totalPenalty,
+                        totalTime + totalPenalty));
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            travelTimes.add(travelTime);
-            penalties.add(penalty);
-        }
-
-        File dataFile = new File(root + "/solutiondata.csv");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile.getAbsoluteFile()))) {
-            writer.write("run,instance,travelTime,penalty,totalCost");
-            writer.newLine();
-
-            for (int i = 0; i < 30; i++) {
-                writer.write(String.format("%d,%s,%d,%d,%d",
-                        i,
-                        instanceNames.get(i),
-                        travelTimes.get(i),
-                        penalties.get(i),
-                        travelTimes.get(i) + penalties.get(i)));
-                writer.newLine();
-            }
-
-            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
