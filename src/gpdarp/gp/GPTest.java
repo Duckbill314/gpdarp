@@ -99,7 +99,10 @@ public class GPTest {
             if (!outputPath.exists()) {
                 outputPath.mkdirs();
             }
-            String filePath = outputPath + "/gp";
+            File filePath = new File(outputPath + "/gp/");
+            if (!filePath.exists()) {
+                filePath.mkdirs();
+            }
 
             // create subdirectory for debug output
             File debugPath = new File(trainPath + "debug");
@@ -265,11 +268,16 @@ public class GPTest {
 
                 results.add(result);
 
+                File solPath = new File(filePath + "/" + i + "/");
+                if (!solPath.exists()) {
+                    solPath.mkdirs();
+                }
+
                 // write one of the solutions to output for correctness checking
-                writeSolution(solutions, filePath + "-" + i);
+                writeSolution(solutions, solPath.toString());
             }
 
-            File csvFile = new File(filePath + ".csv");
+            File csvFile = new File(filePath + "/testresults.csv");
 
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile.getAbsoluteFile()));
@@ -302,7 +310,7 @@ public class GPTest {
                         writer.newLine();
                     }
                     // write the test results for the best generation
-                    /* UniqueTerminalsGatherer gatherer1 = new UniqueTerminalsGatherer();
+                    UniqueTerminalsGatherer gatherer1 = new UniqueTerminalsGatherer();
                     UniqueTerminalsGatherer gatherer2 = new UniqueTerminalsGatherer();
 
                     Pair<VehiclePolicy, RequestPolicy> solution = result.getBestSolution();
@@ -322,7 +330,7 @@ public class GPTest {
                             numTerminals2 + "," + numUnique2 + "," +
                             fitnessString(result, -1) + result.getTimeAtGen(bestIndex) +
                             "," + result.getAvgDecisionTimeAtGen(bestIndex));
-                    writer.newLine(); */
+                    writer.newLine();
                 }
                 writer.close();
 
@@ -332,13 +340,16 @@ public class GPTest {
         }
         else {
             // create subdirectory for manual test output
-            File writtenPath = new File(trainPath + "test");
-            if (!writtenPath.exists()) {
-                writtenPath.mkdirs();
+            File outputPath = new File(trainPath + "test");
+            if (!outputPath.exists()) {
+                outputPath.mkdirs();
+            }
+            File filePath = new File(outputPath + "/manual/");
+            if (!filePath.exists()) {
+                filePath.mkdirs();
             }
 
-            String filePath = writtenPath + "/manual";
-            File csvFile = new File(filePath + ".csv");
+            File csvFile = new File(filePath + "/testresults.csv");
 
             Parameter vb = new Parameter(P_MANUAL_VEHICLE_POLICIES);
             Parameter rb = new Parameter(P_MANUAL_REQUEST_POLICIES);
@@ -359,7 +370,13 @@ public class GPTest {
 
                     KozaFitness fit = new KozaFitness();
                     List<Solution> solutions = testEvaluationModel.evaluateOriginal(vehiclePolicy, requestPolicy, fit, state);
-                    writeSolution(solutions, filePath + "-" + i);
+
+                    File solPath = new File(filePath + "/" + i + "/");
+                    if (!solPath.exists()) {
+                        solPath.mkdirs();
+                    }
+
+                    writeSolution(solutions, solPath.toString());
 
                     writer.write(String.format("%s,%s,%f", vehiclePolicy.getName(), requestPolicy.getName(),
                             fit.standardizedFitness()));
@@ -400,51 +417,50 @@ public class GPTest {
     }
 
     private static void writeSolution(List<Solution> solutions, String filePath) {
-        Random rand = new Random();
-        int sample = rand.nextInt(solutions.size());
-        Solution solution = solutions.get(sample);
+        for (Solution solution : solutions) {
+            int numVehicles = solution.getRoutes().size();
+            int numRequests = solution.getNumRequests();
+            String name = solution.getName().replace(".txt", "");
 
-        int numVehicles = solution.getRoutes().size();
-        int numRequests = solution.getNumRequests();
-        String name = solution.getName().replace(".txt", "");
+            File solFile = new File(filePath + "/" + name + ".sol");
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(solFile.getAbsoluteFile()));
+                writer.write(String.format("%d %d %s", numVehicles, numRequests, name));
+                writer.newLine();
 
-        File solFile = new File(filePath + ".sol");
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(solFile.getAbsoluteFile()));
-            writer.write(String.format("%d %d %s", numVehicles, numRequests, name));
-            writer.newLine();
+                for (int i = 0; i < numVehicles; i++) {
+                    Route route = solution.getRoutes().get(i);
+                    String visits = String.valueOf(i+1);
+                    String times = String.valueOf(i+1);
 
-            for (int i = 0; i < numVehicles; i++) {
-                Route route = solution.getRoutes().get(i);
-                String visits = String.valueOf(i+1);
-                String times = String.valueOf(i+1);
-
-                for (Arc arc : route.getArcs()) {
-                    Node node = arc.to();
-                    switch (node.getType()) {
-                        case PICKUP -> {
-                            visits += " " + node.getRequest().getId();
-                            times += " " + node.getDepartureTime();
-                        }
-                        case DROPOFF -> {
-                            visits += " -" + node.getRequest().getId();
-                            times += " " + node.getArrivalTime();
-                        }
-                        case STATION -> {
-                            visits += " " + ((Station)node).getId();
-                            times += " " + node.getArrivalTime();
+                    for (Arc arc : route.getArcs()) {
+                        Node node = arc.to();
+                        switch (node.getType()) {
+                            case PICKUP -> {
+                                visits += " " + node.getRequest().getId();
+                                times += " " + node.getDepartureTime();
+                            }
+                            case DROPOFF -> {
+                                visits += " -" + node.getRequest().getId();
+                                times += " " + node.getArrivalTime();
+                            }
+                            case STATION -> {
+                                visits += " " + ((Station)node).getId();
+                                times += " " + node.getArrivalTime();
+                            }
                         }
                     }
-                }
 
-                writer.write(visits);
-                writer.newLine();
-                writer.write(times);
-                writer.newLine();
+                    writer.write(visits);
+                    writer.newLine();
+                    writer.write(times);
+                    writer.newLine();
+                }
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+
         }
     }
 }

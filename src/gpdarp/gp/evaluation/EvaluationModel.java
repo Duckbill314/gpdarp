@@ -29,6 +29,12 @@ public abstract class EvaluationModel {
     public static final String P_DATAPATH = "datapath";
     public static final String P_ROTATING = "rotating";
     public static final String P_BATCHSIZE = "batchsize";
+
+    public static final String P_REQUESTS = "requests";
+    public static final String P_VEHICLES = "vehicles";
+    public static final String P_DISTRIBUTION = "distribution";
+    public static final String P_TRAINTEST = "traintest";
+
     public static final String P_VALIDATING = "validating";
     public static final String P_VALIDATIONS = "validations";
     public static final String P_VALPATH = "valpath";
@@ -114,13 +120,24 @@ public abstract class EvaluationModel {
             System.exit(1);
         }
 
+        // set up file name formatting
+        p = base.push(P_REQUESTS);
+        int numRequests = state.parameters.getIntWithDefault(p, null, 0);
+        p = base.push(P_VEHICLES);
+        int numVehicles = state.parameters.getIntWithDefault(p, null, 0);
+        p = base.push(P_DISTRIBUTION);
+        String distribution = state.parameters.getStringWithDefault(p, null, "");
+        p = base.push(P_TRAINTEST);
+        String traintest = state.parameters.getStringWithDefault(p, null, "");
+
         // the path containing the dataset of interest
         p = base.push(P_DATAPATH);
         String datapath = state.parameters.getStringWithDefault(p, null, "");
 
         instanceSamples = new ArrayList<>();
         for (int i = 0; i < numInstances; i++) {
-            File file = new File(String.format("%s/%d.txt", datapath, i+1));
+            File file = new File(String.format("%s/n%05d-m%04d-%s-%s%05d.txt",
+                    datapath, numRequests, numVehicles, distribution, traintest, i+1));
             Instance instance = Instance.readFromFile(file);
             Instance original = Instance.readFromFile(file);
             instance.setOriginalCopy(original);
@@ -146,7 +163,8 @@ public abstract class EvaluationModel {
 
             validationSamples = new ArrayList<>();
             for (int i = 0; i < numVals; i++) {
-                File file = new File(String.format("%s/%d.txt", valpath, i+1));
+                File file = new File(String.format("%s/n%05d-m%04d-%s-%s%05d.txt",
+                        valpath, numRequests, numVehicles, distribution, "valid", i+1));
                 Instance instance = Instance.readFromFile(file);
                 Instance original = Instance.readFromFile(file);
                 instance.setOriginalCopy(original);

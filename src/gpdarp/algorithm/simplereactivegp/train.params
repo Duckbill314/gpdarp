@@ -231,6 +231,11 @@ eval.problem.eval-model.datapath = data/train
 eval.problem.eval-model.rotating = true
 eval.problem.eval-model.batchsize = 5
 
+eval.problem.eval-model.requests = 10000
+eval.problem.eval-model.vehicles = 400
+eval.problem.eval-model.distribution = uniform
+eval.problem.eval-model.traintest = train
+
 # ==============================
 # The GPHH evolution state parameters
 # ==============================

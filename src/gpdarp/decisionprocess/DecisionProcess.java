@@ -85,13 +85,20 @@ public abstract class DecisionProcess {
 
     /**
      * Run the decision process.
+     * First, run the process as usual.
+     * Then, for any remaining requests, use the last chance system to pick them up.
+     * The maximum number of chances (strictness) can be specified.
      */
     public void run() {
         runEvents();
 
-        if (!waitingList.isEmpty()) {
+        int maxChances = 10;
+        int numChances = 0;
+
+        while (!waitingList.isEmpty() && numChances < maxChances) {
             eventQueue.add(new ReactiveLastCallEvent(state.getTime()));
             runEvents();
+            numChances++;
         }
 
         if (waitingList.isEmpty()) {

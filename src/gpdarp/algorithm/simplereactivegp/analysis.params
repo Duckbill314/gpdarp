@@ -23,9 +23,16 @@ eval.problem.eval-model.instances = 1
 eval.problem.eval-model.datapath = data/test
 eval.problem.eval-model.rotating = false
 eval.problem.eval-model.batchsize = 1
+
+eval.problem.eval-model.requests = 10
+eval.problem.eval-model.vehicles = 2
+eval.problem.eval-model.distribution = uniform
+eval.problem.eval-model.traintest = test
+
 eval.problem.eval-model.validating = true
 eval.problem.eval-model.validations = 1
 eval.problem.eval-model.valpath = data/valid
+# eval.problem.eval-model.normalise = false
 
 
 
