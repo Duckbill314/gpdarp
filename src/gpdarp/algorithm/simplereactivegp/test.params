@@ -1,14 +1,14 @@
 # ==============================
 # The training results
 # ==============================
-policy-type = gp-evolved
-# policy-type = manual
+# policy-type = gp-evolved
+policy-type = manual
 
 # for manual policies
 manual-vehicle-policies = 1
-manual-vehicle-policies.0 = gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.NearestVehiclePolicy
+manual-vehicle-policies.0 = gpdarp.decisionprocess.allocationpolicy.vehiclepolicy.LowestCostVehiclePolicy
 manual-request-policies = 1
-manual-request-policies.0 = gpdarp.decisionprocess.allocationpolicy.requestpolicy.NearestRequestPolicy
+manual-request-policies.0 = gpdarp.decisionprocess.allocationpolicy.requestpolicy.LowestCostRequestPolicy
 
 # for gp-evolved policies
 # train-path =

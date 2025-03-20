@@ -136,8 +136,9 @@ public abstract class EvaluationModel {
 
         instanceSamples = new ArrayList<>();
         for (int i = 0; i < numInstances; i++) {
-            File file = new File(String.format("%s/n%05d-m%04d-%s-%s%05d.txt",
-                    datapath, numRequests, numVehicles, distribution, traintest, i+1));
+            File file = new File(String.format("%s/%d.txt", datapath, i+1));
+            /*File file = new File(String.format("%s/n%05d-m%04d-%s-%s%05d.txt",
+                    datapath, numRequests, numVehicles, distribution, traintest, i+1));*/
             Instance instance = Instance.readFromFile(file);
             Instance original = Instance.readFromFile(file);
             instance.setOriginalCopy(original);
@@ -163,8 +164,9 @@ public abstract class EvaluationModel {
 
             validationSamples = new ArrayList<>();
             for (int i = 0; i < numVals; i++) {
-                File file = new File(String.format("%s/n%05d-m%04d-%s-%s%05d.txt",
-                        valpath, numRequests, numVehicles, distribution, "valid", i+1));
+                File file = new File(String.format("%s/%d.txt", valpath, i+1));
+                /*File file = new File(String.format("%s/n%05d-m%04d-%s-%s%05d.txt",
+                        valpath, numRequests, numVehicles, distribution, "valid", i+1));*/
                 Instance instance = Instance.readFromFile(file);
                 Instance original = Instance.readFromFile(file);
                 instance.setOriginalCopy(original);
